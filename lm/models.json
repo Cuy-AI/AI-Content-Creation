@@ -1,0 +1,12 @@
+{
+    "models":[
+        "openai/gpt-oss-20b:free",
+        "deepseek/deepseek-r1-distill-llama-70b:free",
+        "deepseek/deepseek-r1:free",
+        "deepseek/deepseek-chat-v3-0324:free",
+        "meta-llama/llama-3.1-405b-instruct:free",
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "qwen/qwen3-235b-a22b:free",
+        "mistralai/mistral-small-3.2-24b-instruct:free"
+    ]
+}
