@@ -1,0 +1,3 @@
+Chatterbox:
+Perform a git clone and follow installation instructions:
+git clone https://github.com/resemble-ai/chatterbox.git

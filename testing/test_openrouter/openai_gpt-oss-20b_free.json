@@ -1,0 +1,132 @@
+{
+  "model": "openai/gpt-oss-20b:free",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "caption": {
+        "type": "string"
+      },
+      "resume": {
+        "type": "string"
+      },
+      "number_of_scenes": {
+        "type": "integer"
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string"
+            },
+            "script": {
+              "type": "string"
+            },
+            "image_prompt": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ]
+  },
+  "parameters": {
+    "temperature": 1.2,
+    "top_p": 0.9,
+    "max_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "logit_bias": {},
+    "top_logprobs": 0,
+    "prediction": null
+  },
+  "output": {
+    "title": "Codefall: The Hidden Cipher",
+    "caption": "When an old app’s code unlocks a global mystery, one coder races against time. What did she uncover?",
+    "resume": "Alex, a restless coder, stumbles on a backdoor in a vintage news app. While debugging, she discovers a pattern of encrypted strings that hint at a covert surveillance network called GlobalGrid, an initiative launched by a clandestine government cabal to monitor citizens worldwide. The deeper Alex delves, the more urgent her quest becomes: outsmart anonymous threats, uncover a hidden tech museum housing the original source code, and expose the conspiracy before a shadow organization eliminates her. She ends up trapped in a makeshift bunker with a dead cat, decrypting the final script and broadcasting the evidence to the world in a last-ditch hack, but not before a creeping realization—someone she trusted sent her a warning voice message.\n\nWith every line of code, Alex uncovers hidden layers of control, culminating in a dramatic revelation that this old app was only the first ripple in a tidal wave of global data manipulation.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "Alex swiped her phone, expecting the usual clumsy buggy update. Instead, the glowing lock screen flickered with an impossible message: ‘USER NOT AUTHORIZED’. Confused, she launches the debugger.",
+        "image_prompt": "A close‑up of a sleek smartphone screen showing an error pop‑up, light filtering through a cityscape at dusk, rain droplets on the glass, with subtle digital glitch overlays, cinematic lighting"
+      },
+      {
+        "character": "Alex",
+        "script": "What the—this shouldn't be possible. The source is compiled, final release. Time to dig into the logs.",
+        "image_prompt": "A young coder, mid‑20s, hunched over a laptop in a cluttered apartment, dim glow from the screen, long black hair, concentration in eyes, half‑baked pizza in a bowl, techy vibes"
+      },
+      {
+        "character": "Friend (Maya)",
+        "script": "Alex, you don't look like you can trust free software from a server that's been down for years. Too risky.",
+        "image_prompt": "Two friends in a coffee shop, Maya leaning against the counter with a latte, Alex with a laptop open, chat bubble pop‑ups representing code, latte art mirrors code snippets"
+      },
+      {
+        "character": "Alex",
+        "script": "Besides, the error is linked to the main database sync. If the code runs, something else is trying to take over.",
+        "image_prompt": "Mid‑night view of a basement server room, rows of blinking servers, Alex lifting a hot panel, sparks of connection lines, a sense of imminent threat"
+      },
+      {
+        "character": "Alex",
+        "script": "Look at this—hex strings disguised as comments. They repeat every commit: 3A1F9B… .",
+        "image_prompt": "Screen fill of hexadecimal text, highlighted segments glowing green, Alex squinting at lines, cursor bouncing, cables trailing like arteries"
+      },
+      {
+        "character": "Narrator",
+        "script": "The secrets can only be found in archived versions. Alex downloads the Git history, then walks the dark corridors of the Internet.",
+        "image_prompt": "Digital representation of Git commit graph flowing into a neon‑lit tunnel, electrodes humming, a figure strides along lines of code, old server builds ripple in"
+      },
+      {
+        "character": "Professor (Dr. Ellison)",
+        "script": "Alex, your curiosity blinds you. That app was built by me, but you can't just read my private stash.",
+        "image_prompt": "Academic office with stacks of journals, a tech professor with glasses, old hardware behind books, flickering overhead bulb, a sense of secrecy"
+      },
+      {
+        "character": "Alex",
+        "script": "You think this is just a joke? I see patterns… (she looks at her device) – they’re coordinates.",
+        "image_prompt": "Alex's close‑up, face illuminated by device glow, abstract geo‑lines on screen, a surreal intersection of circuitry and world map, tension palpable"
+      },
+      {
+        "character": "Narrator",
+        "script": "An anonymous email arrives, bold words flashing: ’STOP OR BE SEEN.’ The app’s code is the key, but it won’t help if she’s watched.",
+        "image_prompt": "An overhead view of a darkened bedroom with a blue light, notification envelope glowing on the screen, shadows swirling, sense of being tracked"
+      },
+      {
+        "character": "Alex",
+        "script": "So, the global grid… 3837… 89I%… it’s almost… (She hears a knock)",
+        "image_prompt": "Room split into two; one side showing Alex coding, the other a shadowy figure on a hallway door, rain slapping windows, tension in atmosphere"
+      },
+      {
+        "character": "Alex",
+        "script": "What's the answer? I'll load the legacy source. If it's real, the key will flash.",
+        "image_prompt": "A futuristic hall filled with floating screens, a blinking code array in the center, Alex at the helm, a sci‑fi lasso, the tension maximizing at screen glow"
+      },
+      {
+        "character": "Narrator",
+        "script": "The code clack‑clacks over a distant server, revealing a map to the network’s core. Alex bypasses. The last line encrypts a URL that changes in real time. As she types, a security drone appears behind her, sensors aiming to lock in a microlight beam. She bolts away through a hidden vent, her emergency key stored on her wrist – just in time, someone says, in her head. A shadow lunges. The story ends with her new code highlighted in black, a crime marked, a chance at justice, all discovered in a cat’s fur, fresh from the dry mud.",
+        "image_prompt": "Breathtaking CGI: Alex sprinting down a high‑tech tunnel with a humming drone, background of luminous code turning into a mountain range, emergency lights flicker, digital stamps appear, laser beams focus, cinematic grandeur"
+      }
+    ]
+  }
+}
