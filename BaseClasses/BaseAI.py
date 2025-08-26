@@ -12,9 +12,8 @@ class BaseAI:
         - Generate a response with self.params
         """
         self.params = {}
-        self.params_path = "params.json"
         self.default_params = {}
-
+        self.params_path = "params.json"
 
     def set_default_params(self, params_path: str|None):
         """
@@ -59,9 +58,14 @@ class BaseAI:
             else:
                 raise KeyError(f"Unknown parameter '{key}' for model '{self.model_name}'")
 
-    def generate_seed(self) -> int:
+    def generate_random(self) -> int:
         """
         Method that generates a random int to be used as a seed
         """
         return randint(0, 2**32 - 1)
 
+    def generate(self) -> dict:
+        """
+        This method must be overwritten with the AI generation code
+        """
+        return {}
