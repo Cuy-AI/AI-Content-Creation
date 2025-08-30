@@ -1,0 +1,120 @@
+{
+  "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+  "input": "\nYou are a professional YouTube content creator. \nGenerate a complete video script about \"The Future of Artificial Intelligence in Everyday Life\". \nMake it engaging, informative, and concise. \nUse storytelling where possible. \nThe response must strictly follow the provided JSON schema.\n",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "hook": {
+        "type": "string",
+        "description": "An engaging opening line to grab attention within 10 seconds"
+      },
+      "intro": {
+        "type": "string",
+        "description": "Brief introduction to set context and expectations"
+      },
+      "sections": {
+        "type": "array",
+        "description": "Main content sections of the video",
+        "items": {
+          "type": "object",
+          "properties": {
+            "heading": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            },
+            "visual_suggestions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Suggested visuals or b-roll ideas"
+            }
+          },
+          "required": [
+            "heading",
+            "content"
+          ]
+        },
+        "minItems": 3
+      },
+      "call_to_action": {
+        "type": "string",
+        "description": "Encourage user to like, subscribe, or follow"
+      },
+      "outro": {
+        "type": "string",
+        "description": "Closing message wrapping up the video"
+      },
+      "estimated_duration_minutes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 15,
+        "description": "Estimated length of the video in minutes"
+      }
+    },
+    "required": [
+      "title",
+      "hook",
+      "intro",
+      "sections",
+      "call_to_action",
+      "outro",
+      "estimated_duration_minutes"
+    ]
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "logit_bias": {},
+    "top_logprobs": 0,
+    "prediction": null
+  },
+  "save_path": "/app/outputs/openrouter_latest_8000/execution01/example_output.json",
+  "output": {
+    "title": "The Future of AI in Everyday Life",
+    "hook": "From smart homes to self-driving cars, AI is changing how we live, work, and play. But what does the future hold?",
+    "intro": "AI is no longer the stuff of sci-fi movies. It's already here, transforming our daily lives in ways we never imagined. In this video, we'll explore how AI will continue to shape our world in the coming years.",
+    "sections": [
+      {
+        "heading": "Smart Homes of the Future",
+        "content": "Imagine waking up to a home that anticipates your every need. AI-powered smart homes will learn your habits and adjust lighting, temperature, and even cooking. Say hello to a life of convenience and efficiency."
+      },
+      {
+        "heading": "AI in Healthcare",
+        "content": "AI is revolutionizing healthcare. From diagnosing diseases to personalizing treatments, AI helps doctors make better decisions faster. The future of medicine is smarter and more precise."
+      },
+      {
+        "heading": "The Rise of Autonomous Vehicles",
+        "content": "Self-driving cars are on the horizon. With AI, vehicles will navigate safely, reduce accidents, and transform how we travel. The roads of tomorrow will be smarter and safer."
+      },
+      {
+        "heading": "AI in Education",
+        "content": "AI is transforming learning. Adaptive learning platforms tailor education to individual needs, making learning more effective and accessible. The future of education is personalized."
+      },
+      {
+        "heading": "AI and Employment",
+        "content": "As AI takes over routine tasks, there's concern about job displacement. But AI also creates new opportunities. The key is preparing for a future where humans and AI collaborate."
+      },
+      {
+        "heading": "Ethics and Safety",
+        "content": "With great power comes great responsibility. Ensuring AI is used ethically and safely is crucial. We must address bias, privacy, and transparency to build trust in AI systems."
+      }
+    ],
+    "call_to_action": "What are your thoughts on the future of AI? Let us know in the comments below. Don’t forget to like, share, and subscribe for more insightful content!",
+    "outro": "AI is not just the future—it’s the present. Embrace it, understand it, and let’s shape a better tomorrow together.",
+    "estimated_duration_minutes": 8
+  }
+}

@@ -2,7 +2,6 @@ import os
 import json
 from random import randint
 
-
 class BaseAI:
     
     def __init__(self):
@@ -34,11 +33,20 @@ class BaseAI:
         # Set the params to default params
         self.params = self.default_params
 
+        return "Default Parameters were set successfully"
+
     def get_params(self) -> dict:
         """
         Method will return a dictionary with current params
         """
-        return self.params.copy()
+        safe_params = {}
+        for k, v in self.params.items():
+            try:
+                json.dumps(v)  # test if serializable
+                safe_params[k] = v
+            except TypeError:
+                safe_params[k] = str(v)  # fallback: convert to string
+        return safe_params
 
     def set_params(self, **kwargs):
         """
@@ -57,8 +65,10 @@ class BaseAI:
                     raise TypeError(f"Expected type {type(self.params[key])} for parameter '{key}', got {type(value)}")
             else:
                 raise KeyError(f"Unknown parameter '{key}' for model '{self.model_name}'")
+        
+        return "All parameters were set successfully"
 
-    def generate_random(self) -> int:
+    def _generate_random(self) -> int:
         """
         Method that generates a random int to be used as a seed
         """
@@ -69,3 +79,4 @@ class BaseAI:
         This method must be overwritten with the AI generation code
         """
         return {}
+
