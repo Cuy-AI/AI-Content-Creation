@@ -1,0 +1,133 @@
+{
+  "model": "mistralai/mistral-nemo-instruct-2407",
+  "input": null,
+  "schema": {
+    "name": "qa_schema",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "A catchy YouTube video title under 60 characters"
+        },
+        "caption": {
+          "type": "string",
+          "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+        },
+        "resume": {
+          "type": "string",
+          "description": "A summary of the full story, including spoilers"
+        },
+        "number_of_scenes": {
+          "type": "integer"
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "character": {
+                "type": "string",
+                "description": "The name of the character that is speaking or narrating during the scene",
+                "enum": [
+                  "David",
+                  "Lucy",
+                  "Narrator"
+                ]
+              },
+              "script": {
+                "type": "string",
+                "description": "The dialogue or narration for the scene"
+              },
+              "image_prompt": {
+                "type": "string",
+                "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+              }
+            },
+            "required": [
+              "character",
+              "script",
+              "image_prompt"
+            ]
+          }
+        }
+      },
+      "required": [
+        "title",
+        "caption",
+        "resume",
+        "number_of_scenes",
+        "scenes"
+      ]
+    },
+    "strict": false
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "stop": null,
+    "stream": false
+  },
+  "save_path": "output_chat.json",
+  "output": {
+    "title": "The Rise and Fall of Blockbuster: How Netflix Changed Entertainment Forever",
+    "caption": "A tale of two titans, one's rise and another's fall, reshaping entertainment history.",
+    "resume": "In this captivating journey, we explore the story behind the rise of Blockbuster Video and its eventual downfall, while witnessing the ascendancy of Netflix, a company that revolutionized home entertainment forever.",
+    "number_of_scenes": 10,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "In the late 80s and early 90s, there was one name synonymous with video rentals - Blockbuster. But how did this giant of home entertainment come to dominate the market?",
+        "image_prompt": "Archival footage of bustling Blockbuster stores"
+      },
+      {
+        "character": "David",
+        "script": "*In a thick southern drawl* Well, I'll tell ya, it was all about convenience. We had that blue and red logo everywhere - malls, strip malls, even in some neighborhoods.",
+        "image_prompt": "David sitting in a retro Blockbuster store"
+      },
+      {
+        "character": "Narrator",
+        "script": "But the winds of change were blowing, and they came in the form of an innovative idea called 'Netflix'.",
+        "image_prompt": "Archival footage of early Netflix DVDs and mailers"
+      },
+      {
+        "character": "Lucy",
+        "script": "*Smiling* We started as a simple subscription service. You could keep movies for as long as you liked, no late fees!",
+        "image_prompt": "Lucy holding old Netflix envelope and DVDs"
+      },
+      {
+        "character": "Narrator",
+        "script": "Blockbuster laughed at this new upstart. Why would anyone want to wait for their movies in the mail when they could have them instantly?",
+        "image_prompt": "Side-by-side images of Blockbuster store and Netflix DVD in mail"
+      },
+      {
+        "character": "David",
+        "script": "*Chuckles* Yeah, we thought it was a fad. But then they started talkin' 'bout this thing called streaming...",
+        "image_prompt": "David looking at old computer screen showing early Netflix website"
+      },
+      {
+        "character": "Narrator",
+        "script": "While Blockbuster struggled with debt and a changing market, Netflix invested heavily in technology.",
+        "image_prompt": "Side-by-side images of Blockbuster store closing sign and Netflix logo on smart TV"
+      },
+      {
+        "character": "Lucy",
+        "script": "*Nods* We saw the future - no more DVDs, just instant entertainment at your fingertips.",
+        "image_prompt": "Lucy using a tablet to browse Netflix library"
+      },
+      {
+        "character": "Narrator",
+        "script": "The rest is history. Blockbuster filed for bankruptcy in 2010, and the last store closed its doors in 2014. Meanwhile, Netflix continues to grow, now a streaming giant with over 200 million subscribers worldwide.",
+        "image_prompt": "Side-by-side images of empty Blockbuster store and bustling Netflix office"
+      },
+      {
+        "character": "David",
+        "script": "*Shakes head* Who would've thought? A little company that started with DVDs by mail changed the game forever.",
+        "image_prompt": "David looking at old Blockbuster uniform and new Netflix t-shirt"
+      }
+    ]
+  }
+}

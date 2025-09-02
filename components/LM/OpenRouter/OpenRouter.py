@@ -54,10 +54,9 @@ class OpenRouter(BaseAI):
         try:
             Draft7Validator.check_schema(schema.copy())
             self.schema = schema.copy()
-            print(self.schema)
             return "Json schema was set successfully"
         except Exception as e:
-             raise ValueError("The json schema is not valid")
+             raise ValueError(f"The json schema is not valid: {e}")
 
     def get_schema(self):
         return self.schema.copy()
@@ -139,12 +138,14 @@ class OpenRouter(BaseAI):
         if save_path:
             # If save_path looks like a file (has an extension), handle as file
             if os.path.splitext(save_path)[1]:  
-                os.makedirs(os.path.dirname(save_path), exist_ok=True)  # ensure parent dir exists
+                if os.path.dirname(save_path) != '':
+                    os.makedirs(os.path.dirname(save_path), exist_ok=True)  # ensure parent dir exists
                 with open(save_path, "w", encoding="utf-8") as f:
                     json.dump(final_output, f, indent=2, ensure_ascii=False)
             else:
                 # treat as directory -> auto-generate a filename
-                os.makedirs(save_path, exist_ok=True)
+                if os.path.dirname(save_path) != '':
+                    os.makedirs(save_path, exist_ok=True)
                 file_path = os.path.join(save_path, "output.json")
                 with open(file_path, "w", encoding="utf-8") as f:
                     json.dump(final_output, f, indent=2, ensure_ascii=False)
