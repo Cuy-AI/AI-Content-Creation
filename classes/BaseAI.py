@@ -14,7 +14,7 @@ class BaseAI:
         self.default_params = {}
         self.params_path = "params.json"
 
-    def set_default_params(self, params_path: str|None):
+    def set_default_params(self, params_path: str|None = None):
         """
         Method that sets parameters to their default settings
         """
