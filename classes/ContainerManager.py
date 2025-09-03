@@ -4,21 +4,24 @@ import time
 import os
 
 class ContainerManager:
-    def __init__(self, image: str, port: int, name: str = None):
-        fixed_image_name = image.replace(':', '_')
+    def __init__(self, image: str, port: int, name: str = None, use_gpu: bool = True):
         self.client = docker.from_env()
         self.image = image
         self.port = port
+        fixed_image_name = image.replace(':', '_')
         self.name = name or f"{fixed_image_name}_{port}"
         self.container = None
+        self.use_gpu = use_gpu
         
-        # Set volume paths
-        self.host_volume = os.path.join(
-            os.getcwd().replace('\\', '/'), 
-            f'volume_output/{fixed_image_name.replace('_latest', '')}'
+        # Set host volume paths
+        self.host_volume = f'volume'
+        self.full_host_volume = os.path.join(
+            os.getcwd().replace('\\', '/'), self.host_volume
         ).replace('\\', '/')
         os.makedirs(self.host_volume, exist_ok=True)  # ensure dir exists
-        self.container_volume = f"/app/outputs/{self.name}"
+
+        # Set container volume path
+        self.container_volume = "/app/volume"
 
     def _find_running_container(self):
         """
@@ -59,19 +62,26 @@ class ContainerManager:
             ports={f"{self.port}/tcp": self.port},
             environment={},  # pass env vars if needed
             volumes={
-                self.host_volume: {
+                self.full_host_volume: {
                     "bind": self.container_volume,
                     "mode": "rw",
                 }
-            }
+            },
+            device_requests=[
+                docker.types.DeviceRequest(
+                    count=-1,  # expose all GPUs
+                    capabilities=[["gpu"]]
+                )
+            ] if self.use_gpu else None
         )
 
         # Wait until health is ok
-        for _ in range(30):
+        print(f"Checking container {self.image} until is OK...")
+        for _ in range(50):
             if self.is_healthy():
                 print(f"✅ {self.image} container ready")
                 return
-            time.sleep(2)
+            time.sleep(5)
 
         raise RuntimeError(f"❌ {self.image} container failed to start")
 
@@ -91,7 +101,6 @@ class ContainerManager:
         self.start()
 
     def is_healthy(self):
-        print(f"Checking container {self.image}...")
         try:
             r = requests.get(f"http://localhost:{self.port}/health", timeout=2)
             return r.json().get("status") == "ok"

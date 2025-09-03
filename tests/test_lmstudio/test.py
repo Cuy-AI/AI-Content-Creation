@@ -74,7 +74,7 @@ def test_lmstudio():
     print(answ)
 
     # 6.1) Set volume path
-    save_path = "volume_output/lmstudio/test02/output_chat.json"
+    save_path = "volume/output/lmstudio/test03/output_chat.json"
 
     # 6.2) Generate (chat)
     messages = [
@@ -101,7 +101,7 @@ def test_lmstudio():
     print("Saved result:\n", json_output)
 
     # 7.1) Set volume path
-    save_path = "volume_output/lmstudio/test02/output_prompt.json"
+    save_path = "volume/output/lmstudio/test03/output_prompt.json"
 
     # 7.2) Generate (text completion/prompt)
     prompt = """

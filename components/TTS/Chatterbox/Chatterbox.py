@@ -1,73 +1,71 @@
 import os
 import json
-import torchaudio as ta
+import uvicorn
+
 import torch
+import torchaudio as ta
 from chatterbox.tts import ChatterboxTTS
 
+from classes.BaseAI import BaseAI
+from classes.Server import Server
 
-class Chatterbox:
+class Chatterbox(BaseAI):
 
-    def __init__(self, params_path: str ="tts/Chatterbox/params.json"):
+    def __init__(self):
+
+        super().__init__()
 
         self.device = self._get_device()
         self.model = ChatterboxTTS.from_pretrained(device=self.device)
-
-        self.params_path = params_path
-        self.default_params = self._load_default_params(self.params_path)
-        self.params = self.default_params
-
-
-    def _load_default_params(self, params_path: str) -> dict:
-        # Check if params file exist
-        if not os.path.exists(params_path):
-            raise FileNotFoundError(f"Params json file not found: {params_path}")
-
-        # Open and save configurations
-        with open(params_path, "r", encoding="utf-8") as f:
-            default_params = json.load(f)
-        
-        return default_params
+        # self.params_path = "components/TTS/Chatterbox/params.json" # Host
+        self.params_path = "params.json" # Docker
+        self.set_default_params()
 
 
     def _get_device(self):
         # Automatically detect device
         if torch.cuda.is_available():
+            print(f"[INFO]: Successfully found cuda as device")
             return "cuda"
+        if torch.backends.mps.is_available():
+            device = "mps"
         else:
-            raise EnvironmentError("No suitable device found. Please ensure you have a compatible GPU or CPU available.")
+            device = "cpu"
+
+        print(f"[WARN]: Using {device} as device")
+        # raise EnvironmentError(f"No GPU device found. Please ensure you have a compatible GPU available.")
+        return device
         
-    
-    def get_parameters(self) -> dict:
-        # Return a copy of the current parameters
-        return self.params.copy()
 
-    def set_parameters(self, **kwargs):
-        # For every parameter
-        for key, value in kwargs.items():
-            # Check if the parameter exists
-            if key in self.params:
-                # Check if the type is correct
-                if isinstance(value, type(self.params[key])):
-                    self.params[key] = value
-                else:
-                    raise TypeError(f"Expected type {type(self.params[key])} for parameter '{key}', got {type(value)}")
-            else:
-                raise KeyError(f"Unknown parameter '{key}' for model '{self.model_name}'")
-
-
-    def generate(self, prompt, save_path=None):
+    def generate(self, prompt: str, save_path: str|None = None):
 
         wav = self.model.generate(
-            prompt, 
+            prompt,
+            seed=self._generate_random()
             **self.params
         )
         
         if save_path:
-            ta.save(save_path, wav, self.model.sr)
-        else:
-            ta.save("tts/Chatterbox/output.wav", wav, self.model.sr)
+            # If save_path looks like a file (has an extension), handle as file
+            if os.path.splitext(save_path)[1]:  
+                if os.path.dirname(save_path) != '':
+                    os.makedirs(os.path.dirname(save_path), exist_ok=True)  # ensure parent dir exists
+                ta.save(save_path, wav, self.model.sr)
+            else:
+                # treat as directory -> auto-generate a filename
+                if os.path.dirname(save_path) != '':
+                    os.makedirs(save_path, exist_ok=True)
+                save_path = os.path.join(save_path, "output.wav")
+                ta.save(save_path, wav, self.model.sr)
 
         return {
             "prompt": prompt,
+            "save_path": save_path,
             **self.params
         }
+
+
+if __name__ == "__main__":
+    chatterbox_server = Server(ai_class=Chatterbox)
+    app = chatterbox_server.app
+    uvicorn.run(app, host="0.0.0.0", port=8002)

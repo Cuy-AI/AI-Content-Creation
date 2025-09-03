@@ -71,7 +71,7 @@
     "stop": null,
     "stream": false
   },
-  "save_path": "volume_output/lmstudio/test01/output_chat.json",
+  "save_path": "volume/output/lmstudio/test01/output_chat.json",
   "output": {
     "title": "The Rise and Fall of Blockbuster: How Netflix Changed Entertainment Forever",
     "caption": "Join us as we explore the incredible journey of Blockbuster, from video rental giant to pop culture icon, and how Netflix revolutionized the entertainment industry forever.",

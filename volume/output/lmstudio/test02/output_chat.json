@@ -1,0 +1,133 @@
+{
+  "model": "mistralai/mistral-nemo-instruct-2407",
+  "input": null,
+  "schema": {
+    "name": "qa_schema",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "A catchy YouTube video title under 60 characters"
+        },
+        "caption": {
+          "type": "string",
+          "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+        },
+        "resume": {
+          "type": "string",
+          "description": "A summary of the full story, including spoilers"
+        },
+        "number_of_scenes": {
+          "type": "integer"
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "character": {
+                "type": "string",
+                "description": "The name of the character that is speaking or narrating during the scene",
+                "enum": [
+                  "David",
+                  "Lucy",
+                  "Narrator"
+                ]
+              },
+              "script": {
+                "type": "string",
+                "description": "The dialogue or narration for the scene"
+              },
+              "image_prompt": {
+                "type": "string",
+                "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+              }
+            },
+            "required": [
+              "character",
+              "script",
+              "image_prompt"
+            ]
+          }
+        }
+      },
+      "required": [
+        "title",
+        "caption",
+        "resume",
+        "number_of_scenes",
+        "scenes"
+      ]
+    },
+    "strict": false
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "stop": null,
+    "stream": false
+  },
+  "save_path": "volume/output/lmstudio/test02/output_chat.json",
+  "output": {
+    "title": "The Rise and Fall of Blockbuster: How Netflix Changed Entertainment Forever",
+    "caption": "A tale of two titans in the world of entertainment.",
+    "resume": "In this episode, we explore how Netflix disrupted the traditional video rental industry, led by a once-great giant named Blockbuster.",
+    "number_of_scenes": 10,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "Once upon a time, in an era before streaming, there was a video rental empire called Blockbuster.",
+        "image_prompt": "Archive footage of bustling Blockbuster stores"
+      },
+      {
+        "character": "David",
+        "script": "I remember as a kid, every Friday night we'd go to Blockbuster. It was like a treasure hunt for movies.",
+        "image_prompt": "Young David in front of Blockbuster store"
+      },
+      {
+        "character": "Lucy",
+        "script": "Blockbuster wasn't just about renting videos, it was an experience. The smell of new DVDs, the endless aisles... it was magic.",
+        "image_prompt": "Lucy in front of Blockbuster shelves"
+      },
+      {
+        "character": "Narrator",
+        "script": "But as with all empires, change was on the horizon. A small startup called Netflix was about to shake things up.",
+        "image_prompt": "Netflix logo evolution"
+      },
+      {
+        "character": "David",
+        "script": "I got my first Netflix disc in the mail around 2001. It was like magic! No more driving, no late fees... it was the future.",
+        "image_prompt": "First Netflix disc in the mail"
+      },
+      {
+        "character": "Lucy",
+        "script": "Remember when we used to have to wait for the postman? Now it's instant. That's what Netflix did. They made waiting obsolete.",
+        "image_prompt": "Lucy with a Netflix envelope"
+      },
+      {
+        "character": "Narrator",
+        "script": "Blockbuster, however, was slow to react. They laughed off the idea of mailing DVDs, underestimating the power of convenience.",
+        "image_prompt": "Archive footage of Blockbuster executives"
+      },
+      {
+        "character": "David",
+        "script": "By 2010, I hadn't set foot in a Blockbuster for years. The writing was on the wall.",
+        "image_prompt": "Empty Blockbuster store"
+      },
+      {
+        "character": "Lucy",
+        "script": "And then, one by one, the stores started closing. It was sad, but it was progress too.",
+        "image_prompt": "Blockbuster store closing sign"
+      },
+      {
+        "character": "Narrator",
+        "script": "Today, Blockbuster is but a memory, a relic of a time before streaming. But its legacy lives on in every binge-watch session.",
+        "image_prompt": "Last Blockbuster store sign"
+      }
+    ]
+  }
+}

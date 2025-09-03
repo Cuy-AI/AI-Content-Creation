@@ -19,7 +19,7 @@ class Component:
                         r = requests.post(
                             f"http://localhost:{self.port}/{name}",
                             json=kwargs,
-                            timeout=30
+                            timeout=25 if name != "generate" else 120
                         )
                         r.raise_for_status()
                         return r.json()
