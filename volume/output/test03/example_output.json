@@ -1,0 +1,146 @@
+{
+  "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "caption": {
+        "type": "string",
+        "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+      },
+      "resume": {
+        "type": "string",
+        "description": "A summary of the full story, including spoilers"
+      },
+      "number_of_scenes": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 15
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string",
+              "description": "The name of the character that is speaking or narrating during the scene"
+            },
+            "script": {
+              "type": "string",
+              "description": "The dialogue or narration for the scene"
+            },
+            "image_prompt": {
+              "type": "string",
+              "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+            }
+          },
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ]
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "logit_bias": {},
+    "top_logprobs": 0,
+    "prediction": null
+  },
+  "save_path": "/app/volume/output/test03/example_output.json",
+  "output": {
+    "title": "The Code Conspiracy",
+    "caption": "When a young coder stumbles upon a hidden message in an old app's code, she uncovers a global conspiracy that threatens everything.",
+    "resume": "A young coder named Maya discovers a cryptic message in the code of an old app she's analyzing. As she digs deeper, she realizes it's part of a global surveillance network controlled by a shadowy organization. With the help of a mysterious ally, she races against time to expose the truth before they catch up to her.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Maya",
+        "script": "I've been staring at this code for hours, but nothing makes sense. It's like someone intentionally messed it up.",
+        "image_prompt": "A young woman in a dimly lit room, surrounded by multiple computer screens displaying lines of code. Her face shows confusion and frustration."
+      },
+      {
+        "character": "Maya",
+        "script": "Wait a minute, this isn't part of the original code. It's a hidden message. Let me try to decode it.",
+        "image_prompt": "Close-up of a computer screen showing lines of code with a highlighted section that looks out of place."
+      },
+      {
+        "character": "Maya",
+        "script": "Oh my god, it's a map. But it's not just any map—it's a network connecting major cities worldwide.",
+        "image_prompt": "The woman zooms in on a digital map, revealing interconnected dots across the globe."
+      },
+      {
+        "character": "Maya",
+        "script": "This can't be right. Why would an old app have this? It must be some kind of surveillance system.",
+        "image_prompt": "The woman looks worried, leaning back in her chair with her hands behind her head, staring at the screen."
+      },
+      {
+        "character": "Maya",
+        "script": "I need to tell someone. But who can I trust? The more I dig, the more I realize how deep this goes.",
+        "image_prompt": "The woman is on her phone, scrolling through contacts, her expression uncertain and anxious."
+      },
+      {
+        "character": "Maya",
+        "script": "Finally, a lead. There's a encrypted file labeled 'Eclipse.' Let's see what it is.",
+        "image_prompt": "The woman's hands typing furiously on the keyboard, the screen showing an encrypted file being decrypted."
+      },
+      {
+        "character": "Maya",
+        "script": "Oh no, they know I'm in. The system is trying to trace my location. I have to get out of here, now!",
+        "image_prompt": "The woman quickly shuts down her computers and grabs her belongings, looking around nervously."
+      },
+      {
+        "character": "Maya",
+        "script": "I can't let them catch me. I need to find a safe place to continue this.",
+        "image_prompt": "The woman is running down a dark alley, clutching her laptop bag tightly."
+      },
+      {
+        "character": "Maya",
+        "script": "This must be the place. It's an old cybercafe. Hopefully, it's not connected to their network.",
+        "image_prompt": "The woman enters a dimly lit, retro-style cybercafe with old computers and neon lights."
+      },
+      {
+        "character": "Maya",
+        "script": "Let me try to access the mainframe again. If I can get in, I might find the evidence I need.",
+        "image_prompt": "The woman sits at an old computer, typing intently, the screen glowing with code."
+      },
+      {
+        "character": "Maya",
+        "script": "Yes! I'm in. Now, where is the server located? Let me trace the IP address.",
+        "image_prompt": "The woman smiles as she works, the screen showing a successful access message."
+      },
+      {
+        "character": "Maya",
+        "script": "It's in an abandoned warehouse on the outskirts of the city. I have to go there tonight.",
+        "image_prompt": "The woman looks determined, planning her next move on a map of the city."
+      },
+      {
+        "character": "Maya",
+        "script": "I'm not going to let them get away with this. It's time to expose the truth.",
+        "image_prompt": "The woman stands in front of a city skyline at night, looking determined and ready for action."
+      }
+    ]
+  }
+}

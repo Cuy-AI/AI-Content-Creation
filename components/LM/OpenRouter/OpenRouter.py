@@ -131,7 +131,6 @@ class OpenRouter(BaseAI):
             "input": prompt,
             "schema": self.schema,
             "parameters": self.params,
-            "save_path": save_path,
             "output": output_json,
         }
 
@@ -146,9 +145,11 @@ class OpenRouter(BaseAI):
                 # treat as directory -> auto-generate a filename
                 if os.path.dirname(save_path) != '':
                     os.makedirs(save_path, exist_ok=True)
-                file_path = os.path.join(save_path, "output.json")
-                with open(file_path, "w", encoding="utf-8") as f:
+                save_path = os.path.join(save_path, "output.json")
+                with open(save_path, "w", encoding="utf-8") as f:
                     json.dump(final_output, f, indent=2, ensure_ascii=False)
+
+        final_output["save_path"] = save_path
         
         return final_output
     

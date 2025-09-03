@@ -1,0 +1,122 @@
+{
+  "model": "mistralai/mistral-nemo-instruct-2407",
+  "input": null,
+  "schema": {
+    "name": "qa_schema",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "A catchy YouTube video title under 60 characters"
+        },
+        "caption": {
+          "type": "string",
+          "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+        },
+        "resume": {
+          "type": "string",
+          "description": "A summary of the full story, including spoilers"
+        },
+        "number_of_scenes": {
+          "type": "integer"
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "character": {
+                "type": "string",
+                "description": "The name of the character that is speaking or narrating during the scene",
+                "enum": [
+                  "David",
+                  "Lucy",
+                  "Narrator"
+                ]
+              },
+              "script": {
+                "type": "string",
+                "description": "The dialogue or narration for the scene"
+              },
+              "image_prompt": {
+                "type": "string",
+                "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+              }
+            },
+            "required": [
+              "character",
+              "script",
+              "image_prompt"
+            ]
+          }
+        }
+      },
+      "required": [
+        "title",
+        "caption",
+        "resume",
+        "number_of_scenes",
+        "scenes"
+      ]
+    },
+    "strict": false
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "stop": null,
+    "stream": false
+  },
+  "output": {
+    "title": "The Rise and Fall of Blockbuster: How Netflix Changed Entertainment Forever",
+    "caption": "From VHS to streaming, witness the era of giants.",
+    "resume": "This is a dramatic retelling of how Netflix revolutionized entertainment at the expense of Blockbuster.",
+    "number_of_scenes": 8,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "Once upon a time, in an era dominated by physical media, there was one name that reigned supreme: Blockbuster.",
+        "image_prompt": "A shot of the iconic Blockbuster logo and storefront"
+      },
+      {
+        "character": "David",
+        "script": "I remember as a kid, Saturday nights were for heading down to the local Blockbuster. The smell of fresh popcorn, the towering shelves of movies... It was magic.",
+        "image_prompt": "David reminiscing in an empty Blockbuster store"
+      },
+      {
+        "character": "Lucy",
+        "script": "But even back then, there were rumblings of change. This new thing called 'DVDs' was coming out. And with it, a tiny startup called Netflix.",
+        "image_prompt": "Lucy looking at old newspapers and magazines featuring DVDs"
+      },
+      {
+        "character": "Narrator",
+        "script": "Netflix started as a mail-order service, offering DVDs by post for a monthly subscription fee. It was convenient, but it wasn't yet the disruptor we know today.",
+        "image_prompt": "A Netflix envelope being mailed"
+      },
+      {
+        "character": "David",
+        "script": "Then one day, they announced they were going digital. I thought, 'Why would anyone want to watch a movie on their computer?' Little did I know...",
+        "image_prompt": "David laughing at his old self"
+      },
+      {
+        "character": "Lucy",
+        "script": "With the launch of streaming, Netflix changed everything. No more waiting for movies to arrive in the mail. Now, they were just a click away.",
+        "image_prompt": "Lucy clicking on a movie on her laptop"
+      },
+      {
+        "character": "Narrator",
+        "script": "Blockbuster tried to fight back with their own online rental service. But it was too little, too late. The writing was already on the wall.",
+        "image_prompt": "A struggling Blockbuster employee trying to use an old computer"
+      },
+      {
+        "character": "David",
+        "script": "The last Blockbuster store closed its doors in 2018. An era had ended. But as we mourned the past, we couldn't deny that Netflix had changed entertainment forever.",
+        "image_prompt": "David standing outside the last Blockbuster store"
+      }
+    ]
+  }
+}

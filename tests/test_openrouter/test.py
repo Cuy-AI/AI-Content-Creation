@@ -7,7 +7,7 @@ from components.LM.OpenRouter.OpenRouter import OpenRouter
 
 def test_openrouter():
     # Create the OpenRouter container
-    openRouter_container = ContainerManager(image="openrouter:latest", port=8000)
+    openRouter_container = ContainerManager(image="openrouter:latest", port=8000, use_gpu = False)
     openRouter_container.start()
 
     # Create the OpenRouter component
@@ -81,7 +81,7 @@ def test_openrouter():
     # Get container output dir:
     saved_output_host = openRouter_container.host_volume
     saved_output_container = openRouter_container.container_volume
-    additional_path = "/test02/example_output.json" # A sample additional path
+    additional_path = "/output/test03/example_output.json" # A sample additional path
 
     # Good prompt for generating a video script
     video_prompt = """
