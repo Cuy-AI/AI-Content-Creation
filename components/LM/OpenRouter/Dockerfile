@@ -10,9 +10,6 @@ COPY components/LM/OpenRouter/ .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Check requirements
-RUN pip list
-
 # Create folder and copy shared classes
 RUN mkdir -p classes
 COPY classes/BaseAI.py classes/

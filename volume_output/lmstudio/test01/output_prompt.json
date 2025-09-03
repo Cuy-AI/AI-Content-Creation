@@ -1,0 +1,148 @@
+{
+  "model": "mistralai/mistral-nemo-instruct-2407",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    Character of the story: 'David', 'Lucy', 'Narrator'\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating. I will give you the allowed characters on the json schema as an enum).\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "name": "qa_schema",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "A catchy YouTube video title under 60 characters"
+        },
+        "caption": {
+          "type": "string",
+          "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+        },
+        "resume": {
+          "type": "string",
+          "description": "A summary of the full story, including spoilers"
+        },
+        "number_of_scenes": {
+          "type": "integer"
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "character": {
+                "type": "string",
+                "description": "The name of the character that is speaking or narrating during the scene",
+                "enum": [
+                  "David",
+                  "Lucy",
+                  "Narrator"
+                ]
+              },
+              "script": {
+                "type": "string",
+                "description": "The dialogue or narration for the scene"
+              },
+              "image_prompt": {
+                "type": "string",
+                "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+              }
+            },
+            "required": [
+              "character",
+              "script",
+              "image_prompt"
+            ]
+          }
+        }
+      },
+      "required": [
+        "title",
+        "caption",
+        "resume",
+        "number_of_scenes",
+        "scenes"
+      ]
+    },
+    "strict": false
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "stop": null,
+    "stream": false
+  },
+  "save_path": "volume_output/lmstudio/test01/output_prompt.json",
+  "output": {
+    "title": "The Glitch",
+    "caption": "A hidden conspiracy unravels in ones and zeros. Can he stop it before it's too late?",
+    "resume": "David, a young coder, discovers an encrypted message within an outdated app. As he deciphers it, he realizes it holds information about a global conspiracy. With the help of Lucy, his former mentor, they race against time to expose the truth before they become targets themselves.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "In the heart of Silicon Valley, a young coder named David stumbles upon something unusual...",
+        "image_prompt": "A close-up shot of David's face, intense and curious, as he types away on his laptop in a cluttered, tech-filled room."
+      },
+      {
+        "character": "David",
+        "script": "'This can't be right. An app from 10 years ago with this kind of encryption?'",
+        "image_prompt": "A wide shot of David's workspace, filled with old laptops and stacks of books, a vintage map of the world on the wall."
+      },
+      {
+        "character": "David",
+        "script": "He decides to dig deeper. Little does he know, he's about to unearth a conspiracy that will change everything...",
+        "image_prompt": "David hunched over his laptop, late at night, shadows dancing on the walls as he works."
+      },
+      {
+        "character": "Lucy",
+        "script": "*picks up phone* David? It's been ages. What do you need?",
+        "image_prompt": "A woman in her 40s, professional yet casual, speaking on the phone, a city skyline behind her."
+      },
+      {
+        "character": "David",
+        "script": "Lucy, I found something. An old app, encrypted messages... It's big, Lucy. Like global-conspiracy big.",
+        "image_prompt": "David pacing back and forth on his balcony at night, city lights reflecting in the windows."
+      },
+      {
+        "character": "Lucy",
+        "script": "Meet me tomorrow. We'll figure this out together.",
+        "image_prompt": "A neutral café interior, a few patrons chatting softly, Lucy sitting alone at a table with her laptop."
+      },
+      {
+        "character": "David",
+        "script": "I think... I think they're onto us. Someone's been in my apartment.",
+        "image_prompt": "David's apartment door ajar, light streaming in, boxes scattered on the floor as if searched."
+      },
+      {
+        "character": "Lucy",
+        "script": "We need to be careful. This could be dangerous, David.",
+        "image_prompt": "Close-up of Lucy's face, concerned and serious, under soft café lighting."
+      },
+      {
+        "character": "Narrator",
+        "script": "As they delve deeper into the code, they begin to uncover a sinister truth...",
+        "image_prompt": "A dark room filled with screens displaying lines of code scrolling rapidly."
+      },
+      {
+        "character": "David",
+        "script": "This is... This is a list of targets. Thousands of them.",
+        "image_prompt": "David and Lucy working side by side on their laptops, the glow of the screens lighting their faces."
+      },
+      {
+        "character": "Lucy",
+        "script": "We need to expose this. Now.",
+        "image_prompt": "Lucy's hands typing quickly, determination in her eyes."
+      },
+      {
+        "character": "Narrator",
+        "script": "But exposing the truth won't be easy... And it might just get them killed.",
+        "image_prompt": "A tense, dramatic shot of David and Lucy looking out a window at a dark, stormy night."
+      },
+      {
+        "character": "David",
+        "script": "We can't stop now. We've come too far.",
+        "image_prompt": "Close-up of David's face, resolved and focused, as he types the final lines of code."
+      }
+    ]
+  }
+}

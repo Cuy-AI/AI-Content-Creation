@@ -1,0 +1,133 @@
+{
+  "model": "mistralai/mistral-nemo-instruct-2407",
+  "input": null,
+  "schema": {
+    "name": "qa_schema",
+    "schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "A catchy YouTube video title under 60 characters"
+        },
+        "caption": {
+          "type": "string",
+          "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+        },
+        "resume": {
+          "type": "string",
+          "description": "A summary of the full story, including spoilers"
+        },
+        "number_of_scenes": {
+          "type": "integer"
+        },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "character": {
+                "type": "string",
+                "description": "The name of the character that is speaking or narrating during the scene",
+                "enum": [
+                  "David",
+                  "Lucy",
+                  "Narrator"
+                ]
+              },
+              "script": {
+                "type": "string",
+                "description": "The dialogue or narration for the scene"
+              },
+              "image_prompt": {
+                "type": "string",
+                "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+              }
+            },
+            "required": [
+              "character",
+              "script",
+              "image_prompt"
+            ]
+          }
+        }
+      },
+      "required": [
+        "title",
+        "caption",
+        "resume",
+        "number_of_scenes",
+        "scenes"
+      ]
+    },
+    "strict": false
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 1.0,
+    "max_tokens": 2048,
+    "frequency_penalty": 0.0,
+    "presence_penalty": 0.0,
+    "stop": null,
+    "stream": false
+  },
+  "save_path": "volume_output/lmstudio/test01/output_chat.json",
+  "output": {
+    "title": "The Rise and Fall of Blockbuster: How Netflix Changed Entertainment Forever",
+    "caption": "Join us as we explore the incredible journey of Blockbuster, from video rental giant to pop culture icon, and how Netflix revolutionized the entertainment industry forever.",
+    "resume": "",
+    "number_of_scenes": 10,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "In the late 20th century, there was a video store in almost every neighborhood. The biggest of them all was Blockbuster.",
+        "image_prompt": "A vintage image of people lining up outside a Blockbuster store"
+      },
+      {
+        "character": "Lucy",
+        "script": "I remember when Blockbuster first opened in our town. It was like a movie theater for video tapes!",
+        "image_prompt": "A young Lucy with her friends in front of the new Blockbuster store"
+      },
+      {
+        "character": "Narrator",
+        "script": "At its peak, Blockbuster had over 9,000 stores worldwide and a market value of $5 billion.",
+        "image_prompt": "A map with thousands of red pins marking the locations of Blockbuster stores"
+      },
+      {
+        "character": "David",
+        "script": "As an employee, I saw firsthand how Blockbuster shaped pop culture. People would come in looking for specific movies they'd heard about from friends or seen on TV.",
+        "image_prompt": "David standing behind the counter of a bustling Blockbuster store"
+      },
+      {
+        "character": "Narrator",
+        "script": "But change was on the horizon. A new player entered the scene, promising movies without the trip to the store - Netflix.",
+        "image_prompt": "The iconic Netflix red envelope and logo"
+      },
+      {
+        "character": "Lucy",
+        "script": "When we got our first DVD from Netflix in the mail, it felt like magic. No more late fees or lines at Blockbuster!",
+        "image_prompt": "Lucy opening a Netflix DVD envelope at home"
+      },
+      {
+        "character": "David",
+        "script": "I saw the writing on the wall when people started asking us if we had 'that newfangled Netflix' instead of specific movies.",
+        "image_prompt": "David looking concerned behind the counter as customers ask about Netflix"
+      },
+      {
+        "character": "Narrator",
+        "script": "By 2010, Blockbuster had filed for bankruptcy. The once-mighty video store was no more.",
+        "image_prompt": "A 'closed' sign on the door of an abandoned Blockbuster store"
+      },
+      {
+        "character": "Lucy",
+        "script": "We'd go back to visit old Blockbusters that had become antique stores or gyms. It was like visiting ghosts of movies past.",
+        "image_prompt": "Lucy walking through a former Blockbuster now converted into another business"
+      },
+      {
+        "character": "Narrator",
+        "script": "But even as Blockbuster faded away, its legacy lived on. Streaming services like Netflix brought us closer to entertainment than ever before.",
+        "image_prompt": "A modern living room with a smart TV streaming movies from Netflix"
+      }
+    ]
+  }
+}
