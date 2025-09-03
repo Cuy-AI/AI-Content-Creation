@@ -1,0 +1,146 @@
+{
+  "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "caption": {
+        "type": "string",
+        "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+      },
+      "resume": {
+        "type": "string",
+        "description": "A summary of the full story, including spoilers"
+      },
+      "number_of_scenes": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 15
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string",
+              "description": "The name of the character that is speaking or narrating during the scene"
+            },
+            "script": {
+              "type": "string",
+              "description": "The dialogue or narration for the scene"
+            },
+            "image_prompt": {
+              "type": "string",
+              "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+            }
+          },
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ]
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "logit_bias": {},
+    "top_logprobs": 0,
+    "prediction": null
+  },
+  "save_path": "/app/outputs/openrouter_latest_8000/test02/example_output.json",
+  "output": {
+    "title": "The Code of Deception",
+    "caption": "A young coder stumbles upon a hidden message in an old app's code, leading her into a dangerous game of cat and mouse with a powerful organization.",
+    "resume": "In this modern tech thriller, a young coder named Alex discovers a cryptic message in an old app's code. As she digs deeper, she uncovers a global conspiracy involving a powerful organization that will stop at nothing to keep their secrets buried. With the help of a mysterious ally, Alex must race against time to expose the truth before she becomes the next victim.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Alex",
+        "script": "I can't believe I found this. It's like a message from the past, hidden deep in the code.",
+        "image_prompt": "A young woman with a determined look on her face, sitting in a dimly lit room filled with computer screens. The screens display lines of code with a hidden message highlighted."
+      },
+      {
+        "character": "Alex",
+        "script": "Who wrote this? And why is it here?",
+        "image_prompt": "A close-up of Alex's hands typing furiously on her keyboard, the code on the screen reflecting in her glasses."
+      },
+      {
+        "character": "Alex",
+        "script": "This can't be a coincidence. There must be more to this.",
+        "image_prompt": "Alex leaning back in her chair, looking at the screen with a mixture of confusion and curiosity."
+      },
+      {
+        "character": "Alex",
+        "script": "I need to dig deeper. Let's see what else I can find.",
+        "image_prompt": "Alex's face illuminated by the glow of her computer screens, her eyes wide with determination."
+      },
+      {
+        "character": "Alex",
+        "script": "What the...? This code is changing on its own!",
+        "image_prompt": "A chaotic mess of code on the screen, with lines shifting and rearranging rapidly."
+      },
+      {
+        "character": "Alex",
+        "script": "Okay, so someone is watching me. I need to be careful.",
+        "image_prompt": "Alex looking over her shoulder nervously, the room darkened with only the computer screens providing light."
+      },
+      {
+        "character": "Alex",
+        "script": "I have to find out what this code is doing. Maybe it's connected to something bigger.",
+        "image_prompt": "Alex scribbling notes on a pad, the camera zoomed in on her hand moving quickly across the paper."
+      },
+      {
+        "character": "Alex",
+        "script": "This feels too big for me to handle alone. I need help.",
+        "image_prompt": "Alex's face showing a mix of fear and determination as she picks up her phone to make a call."
+      },
+      {
+        "character": "Mysterious Ally",
+        "script": "You shouldn't have looked into this. Now you're in danger.",
+        "image_prompt": "A shadowy figure on the other end of the phone call, their face obscured by darkness."
+      },
+      {
+        "character": "Alex",
+        "script": "Who are you? How do you know about this?",
+        "image_prompt": "Alex sitting in her room, phone in hand, looking worried and unsure."
+      },
+      {
+        "character": "Mysterious Ally",
+        "script": "I used to be on the inside. But I got out when I realized what they were doing.",
+        "image_prompt": "The shadowy figure stepping into the light, revealing a man with a serious expression."
+      },
+      {
+        "character": "Alex",
+        "script": "We need to expose them. We can't let them get away with this.",
+        "image_prompt": "Alex and the mysterious ally sitting at a table, laptops open, planning their next move."
+      },
+      {
+        "character": "Alex",
+        "script": "It's time to take them down. Let's do this.",
+        "image_prompt": "Alex standing confidently, looking at her computer with determination, ready for action."
+      }
+    ]
+  }
+}

@@ -5,14 +5,18 @@ import os
 
 class ContainerManager:
     def __init__(self, image: str, port: int, name: str = None):
+        fixed_image_name = image.replace(':', '_')
         self.client = docker.from_env()
         self.image = image
         self.port = port
-        self.name = name or f"{image.replace(':', '_')}_{port}"
+        self.name = name or f"{fixed_image_name}_{port}"
         self.container = None
         
-         # Set volume paths
-        self.host_volume = os.path.join(os.getcwd().replace('\\', '/'), f'volume_output/{self.name}').replace('\\', '/')
+        # Set volume paths
+        self.host_volume = os.path.join(
+            os.getcwd().replace('\\', '/'), 
+            f'volume_output/{fixed_image_name.replace('_latest', '')}'
+        ).replace('\\', '/')
         os.makedirs(self.host_volume, exist_ok=True)  # ensure dir exists
         self.container_volume = f"/app/outputs/{self.name}"
 
