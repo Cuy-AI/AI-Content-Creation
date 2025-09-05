@@ -14,6 +14,10 @@ if [ -z "$1" ] || [ "$1" = "all" ]; then
   docker build -t chatterbox \
     --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
     -f ./components/TTS/Chatterbox/Dockerfile .
+
+  docker build -t openvoice \
+    --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
+    -f ./components/TTS/OpenVoice/Dockerfile .
 else
   echo "Building image for: $1"
   if [ "$1" = "openrouter" ]; then
@@ -23,6 +27,10 @@ else
     docker build -t chatterbox \
       --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
       -f ./components/TTS/Chatterbox/Dockerfile .
+  elif [ "$1" = "openvoice" ]; then
+    docker build -t openvoice \
+      --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
+      -f ./components/TTS/OpenVoice/Dockerfile .
   else 
     echo "Image $1 was not recognized"
   fi
