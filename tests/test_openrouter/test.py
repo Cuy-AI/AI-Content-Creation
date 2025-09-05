@@ -81,7 +81,7 @@ def test_openrouter():
     # Get container output dir:
     saved_output_host = openRouter_container.host_volume
     saved_output_container = openRouter_container.container_volume
-    additional_path = "/output/test03/example_output.json" # A sample additional path
+    additional_path = "/output/openrouter/test03/example_output.json" # A sample additional path
 
     # Good prompt for generating a video script
     video_prompt = """

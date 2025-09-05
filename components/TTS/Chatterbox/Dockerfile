@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git \
 RUN git clone https://github.com/resemble-ai/chatterbox.git /tmp/chatterbox \
     && pip install --no-cache-dir -e /tmp/chatterbox
 
-# Copy OpenRouter files
+# Copy Chatterbox files
 COPY components/TTS/Chatterbox/ .
 
 # Install dependencies
