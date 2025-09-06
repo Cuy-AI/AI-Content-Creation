@@ -1,8 +1,6 @@
 import os
 import json
-from classes.Component import Component
 from classes.ContainerManager import ContainerManager
-from components.LM.OpenRouter.OpenRouter import OpenRouter
 
 
 def test_openrouter():
@@ -11,18 +9,18 @@ def test_openrouter():
     openRouter_container.start()
 
     # Create the OpenRouter component
-    openRouter_component = Component(ai_class=OpenRouter, port=8000)
+    openRouter_client = openRouter_container.create_client()
 
     # Set model name (OpenRouter method)
-    answer = openRouter_component.set_model_name(model_name="deepseek/deepseek-r1-distill-llama-70b:free")
+    answer = openRouter_client.set_model_name(model_name="deepseek/deepseek-r1-distill-llama-70b:free")
     print("Set model answer", answer)
 
     # Set params (BaseAI method)
-    answer = openRouter_component.set_params(temperature=0.7, max_tokens=2048)
+    answer = openRouter_client.set_params(temperature=0.7, max_tokens=2048)
     print("Set params answer", answer)
 
     # Get params (BaseAI method)
-    params = openRouter_component.get_params()
+    params = openRouter_client.get_params()
     print("Get params answer", params)
 
     # Define challenging JSON schema for video script generation
@@ -72,10 +70,10 @@ def test_openrouter():
     }
 
     # Set schema (OpenRouter method)
-    answer = openRouter_component.set_schema(schema=video_script_schema)
+    answer = openRouter_client.set_schema(schema=video_script_schema)
     print("Set schema answer", answer)
 
-    answer = openRouter_component.get_schema()
+    answer = openRouter_client.get_schema()
     print("Get schema answer", answer)
 
     # Get container output dir:
@@ -103,7 +101,7 @@ def test_openrouter():
     """
 
     # Generate the video script
-    result = openRouter_component.generate(prompt=video_prompt, save_path=saved_output_container+additional_path)
+    result = openRouter_client.generate(prompt=video_prompt, save_path=saved_output_container+additional_path)
     print("Generation result:\n", result)
 
     # Check if output was saved

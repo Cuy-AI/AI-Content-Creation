@@ -41,7 +41,6 @@ class Chatterbox(BaseAI):
 
         wav = self.model.generate(
             prompt,
-            seed=self._generate_random()
             **self.params
         )
         

@@ -1,8 +1,6 @@
 import os
 import json
 from classes.ContainerManager import ContainerManager
-from classes.Component import Component
-from components.TTS.Chatterbox.Chatterbox import Chatterbox
 
 
 def test_chatterbox():
@@ -12,7 +10,7 @@ def test_chatterbox():
     chatterbox_container.start()
 
     # Create the OpenRouter component
-    chatb = Component(ai_class=Chatterbox, port=8002)
+    chatterbox_client = chatterbox_container.create_client()
 
     test_folder = "output/chatterbox/test02/"
     resources_folder = "resources/voices/"
@@ -23,14 +21,14 @@ def test_chatterbox():
     resources_container = chatterbox_container.container_volume + '/' + resources_folder
 
     # Cartoon voice ---------------------------
-    chatb.set_params(
+    chatterbox_client.set_params(
         temperature=0.8,
         exaggeration=0.5,
         cfg_weight=0.5,
         audio_prompt_path= resources_container + "cartoon_girl.mp3"
     )
 
-    result = chatb.generate(
+    result = chatterbox_client.generate(
         prompt="Alex hit 'Enter.' The counter-code rippled through the network, unraveling the hidden surveillance web. Screens flashed red, logs deleted, and for the first time, the truth was no longer locked inside a server. The world woke up to the shadows that had watched it for years. The conspiracy was exposed, and a new era of transparency began, all sparked by a young coder's curiosity.", 
         save_path= output_container + "output_cartoon_girl.wav"
     )
@@ -39,11 +37,11 @@ def test_chatterbox():
     print("Successfully generated audio with parameters:\n", json.dumps(result, indent=4))
 
     # Deep voice ---------------------------
-    chatb.set_params(
+    chatterbox_client.set_params(
         audio_prompt_path= resources_container + "deep_voice.wav"
     )
 
-    result = chatb.generate(
+    result = chatterbox_client.generate(
         prompt="Alex hit 'Enter.' The counter-code rippled through the network, unraveling the hidden surveillance web. Screens flashed red, logs deleted, and for the first time, the truth was no longer locked inside a server. The world woke up to the shadows that had watched it for years. The conspiracy was exposed, and a new era of transparency began, all sparked by a young coder's curiosity.", 
         save_path= output_container + "output_deep_voice.wav"
     )
@@ -52,11 +50,11 @@ def test_chatterbox():
     print("Successfully generated audio with parameters:\n", json.dumps(result, indent=4))
 
     # Homer voice ---------------------------
-    chatb.set_params(
+    chatterbox_client.set_params(
         audio_prompt_path= resources_container + "homer_simpson.mp3"
     )
 
-    result = chatb.generate(
+    result = chatterbox_client.generate(
         prompt="Alex hit 'Enter.' The counter-code rippled through the network, unraveling the hidden surveillance web. Screens flashed red, logs deleted, and for the first time, the truth was no longer locked inside a server. The world woke up to the shadows that had watched it for years. The conspiracy was exposed, and a new era of transparency began, all sparked by a young coder's curiosity.", 
         save_path= output_container + "output_homer_simpson.wav"
     )
@@ -65,11 +63,11 @@ def test_chatterbox():
     print("Successfully generated audio with parameters:\n", json.dumps(result, indent=4))
 
     # Puss in boots voice ---------------------------
-    chatb.set_params(
+    chatterbox_client.set_params(
         audio_prompt_path= resources_container + "puss_in_boots.mp3"
     )
 
-    result = chatb.generate(
+    result = chatterbox_client.generate(
         prompt="Alex hit 'Enter.' The counter-code rippled through the network, unraveling the hidden surveillance web. Screens flashed red, logs deleted, and for the first time, the truth was no longer locked inside a server. The world woke up to the shadows that had watched it for years. The conspiracy was exposed, and a new era of transparency began, all sparked by a young coder's curiosity.", 
         save_path= output_container + "output_puss_in_boots.wav"
     )

@@ -1,7 +1,9 @@
+import os
+import time
 import docker
 import requests
-import time
-import os
+from classes.Client import Client
+
 
 class ContainerManager:
     def __init__(self, image: str, port: int, name: str = None, use_gpu: bool = True):
@@ -106,3 +108,20 @@ class ContainerManager:
             return r.json().get("status") == "ok"
         except Exception:
             return False
+        
+    def create_client(self):
+        """
+        Create a Client instance based on the methods exposed
+        by the container's /info/methods endpoint.
+        """
+        if not self.is_healthy():
+            raise RuntimeError("Container is not healthy, cannot create client")
+
+        try:
+            r = requests.get(f"http://localhost:{self.port}/info/methods", timeout=5)
+            r.raise_for_status()
+            methods_dict = r.json()
+        except Exception as e:
+            raise RuntimeError(f"Failed to fetch methods from container: {e}")
+
+        return Client(methods_dict, self.port)
