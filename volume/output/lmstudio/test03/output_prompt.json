@@ -73,69 +73,14 @@
   },
   "output": {
     "title": "The Hidden Code",
-    "caption": "A late-night coding session reveals a global conspiracy hidden in plain sight. Can David expose it before it's too late?",
-    "resume": "David, a young coder, stumbles upon an old app's code that hides a global conspiracy while working on a freelance project. With the help of his friend Lucy, they dig deeper and uncover a sinister plot involving world leaders and powerful corporations. As David tries to expose it, he becomes a target, leading to a thrilling chase against time.",
+    "caption": "A young coder uncovers a global conspiracy buried in an old app's code. Can he expose it before it's too late?",
+    "resume": "David, a brilliant but struggling coder, stumbles upon encrypted messages in an outdated app. As he deciphers them, he realizes they're predicting worldwide disasters. With Lucy's help, they race against time to warn the world and stop the conspiracy.",
     "number_of_scenes": 12,
     "scenes": [
       {
-        "character": "David",
-        "script": "Just another freelance project... or is it?",
-        "image_prompt": "A close-up of David's hands typing on a keyboard in a dimly lit room, with the reflection of code lines scrolling on his glasses"
-      },
-      {
         "character": "Narrator",
-        "script": "David was an ordinary coder. Until he wasn't.",
-        "image_prompt": "A silhouette of David working late at night, surrounded by empty coffee cups and scattered notes"
-      },
-      {
-        "character": "Lucy",
-        "script": "Hey Dave, what's got you so worked up?",
-        "image_prompt": "Lucy leaning in concern towards David's laptop screen, with a blurred cityscape behind them"
-      },
-      {
-        "character": "David",
-        "script": "I found something... weird. In this old app's code.",
-        "image_prompt": "David pointing at lines of code on his laptop, with Lucy looking over his shoulder"
-      },
-      {
-        "character": "Lucy",
-        "script": "What do you mean 'weird'? Like, glitches or bugs?",
-        "image_prompt": "Lucy squinting at David's laptop screen, with a puzzled expression"
-      },
-      {
-        "character": "David",
-        "script": "No, it's like... hidden messages. And they're not just random either.",
-        "image_prompt": "Close-up of code lines revealing strings of numbers and letters that form a recognizable pattern"
-      },
-      {
-        "character": "Narrator",
-        "script": "Little did David know, he was about to uncover a conspiracy that would change everything.",
-        "image_prompt": "David typing furiously, with a sudden look of realization on his face"
-      },
-      {
-        "character": "Lucy",
-        "script": "Dave, you're scaring me. What are we dealing with here?",
-        "image_prompt": "Lucy looking worriedly at David, with her phone in hand, ready to call for help"
-      },
-      {
-        "character": "David",
-        "script": "I don't know yet, but I think it's big. And I need your help to find out.",
-        "image_prompt": "David and Lucy hunched over his laptop, with a determined look on their faces"
-      },
-      {
-        "character": "Narrator",
-        "script": "Meanwhile, in the shadows, they were watching.",
-        "image_prompt": "A dark figure observing David's apartment from across the street at night"
-      },
-      {
-        "character": "David",
-        "script": "We need to be careful. If this really is what I think it is...",
-        "image_prompt": "David looking out his window into the darkness, with a worried expression"
-      },
-      {
-        "character": "Lucy",
-        "script": "Then we'll be careful. But we're doing this, Dave. Together.",
-        "image_prompt": "Close-up of Lucy's determined face, with her hand on David's shoulder"
+        "script": "In a world where technology is everywhere...",
+        "image_prompt": "A vast cityscape at night, filled with neon lights and towering skyscrapers, reflecting on the dark surface of a river."
       }
     ]
   }

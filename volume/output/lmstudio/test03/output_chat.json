@@ -73,49 +73,34 @@
   },
   "output": {
     "title": "The Rise and Fall of Blockbuster: How Netflix Changed Entertainment Forever",
-    "caption": "From VHS to streaming, witness the era of giants.",
-    "resume": "This is a dramatic retelling of how Netflix revolutionized entertainment at the expense of Blockbuster.",
-    "number_of_scenes": 8,
+    "caption": "A tale of two titans in the world of entertainment.",
+    "resume": "Join us as we explore the rise and fall of Blockbuster, the once mighty video rental chain, and how its demise paved the way for streaming giant Netflix to revolutionize the way we consume entertainment forever.",
+    "number_of_scenes": 5,
     "scenes": [
       {
         "character": "Narrator",
-        "script": "Once upon a time, in an era dominated by physical media, there was one name that reigned supreme: Blockbuster.",
-        "image_prompt": "A shot of the iconic Blockbuster logo and storefront"
+        "script": "In the late 1980s and early '90s, there was one name that ruled the world of home entertainment: Blockbuster.",
+        "image_prompt": "A busy Blockbuster store, filled with VHS tapes."
       },
       {
         "character": "David",
-        "script": "I remember as a kid, Saturday nights were for heading down to the local Blockbuster. The smell of fresh popcorn, the towering shelves of movies... It was magic.",
-        "image_prompt": "David reminiscing in an empty Blockbuster store"
+        "script": "I remember as a kid, my parents would take me to Blockbuster every weekend. It was like going to Disneyland for movies.",
+        "image_prompt": "A young David with his family at a Blockbuster store."
       },
       {
         "character": "Lucy",
-        "script": "But even back then, there were rumblings of change. This new thing called 'DVDs' was coming out. And with it, a tiny startup called Netflix.",
-        "image_prompt": "Lucy looking at old newspapers and magazines featuring DVDs"
+        "script": "But as the internet became more accessible in the late '90s, everything started to change. Netflix saw an opportunity and launched their DVD-by-mail service in 1998.",
+        "image_prompt": "A scene from a '90s office with early Netflix employees."
       },
       {
         "character": "Narrator",
-        "script": "Netflix started as a mail-order service, offering DVDs by post for a monthly subscription fee. It was convenient, but it wasn't yet the disruptor we know today.",
-        "image_prompt": "A Netflix envelope being mailed"
+        "script": "Blockbuster, however, was slow to react. They dismissed the idea of mail-order movies and even turned down an offer to buy Netflix for just $50 million in 2000.",
+        "image_prompt": "A Blockbuster manager laughing off the idea of renting movies by mail."
       },
       {
         "character": "David",
-        "script": "Then one day, they announced they were going digital. I thought, 'Why would anyone want to watch a movie on their computer?' Little did I know...",
-        "image_prompt": "David laughing at his old self"
-      },
-      {
-        "character": "Lucy",
-        "script": "With the launch of streaming, Netflix changed everything. No more waiting for movies to arrive in the mail. Now, they were just a click away.",
-        "image_prompt": "Lucy clicking on a movie on her laptop"
-      },
-      {
-        "character": "Narrator",
-        "script": "Blockbuster tried to fight back with their own online rental service. But it was too little, too late. The writing was already on the wall.",
-        "image_prompt": "A struggling Blockbuster employee trying to use an old computer"
-      },
-      {
-        "character": "David",
-        "script": "The last Blockbuster store closed its doors in 2018. An era had ended. But as we mourned the past, we couldn't deny that Netflix had changed entertainment forever.",
-        "image_prompt": "David standing outside the last Blockbuster store"
+        "script": "I remember when we finally got Netflix, it was a game-changer. No more late fees, no more driving to the store. We could just watch what we wanted, whenever we wanted.",
+        "image_prompt": "David and his family enjoying a movie at home with their first Netflix DVD."
       }
     ]
   }

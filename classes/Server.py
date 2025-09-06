@@ -55,12 +55,15 @@ class Server:
         async def health():
             return {"status": "ok"}
         
-        # Add a debug endpoint to check AI instance
-        @self.app.get("/debug/ai_instance")
-        async def debug_ai():
-            return {
-                "ai_class": self.AI.__class__.__name__,
-                "ai_id": id(self.AI),
-                "schema": getattr(self.AI, 'schema', 'No schema attribute')
-            }
+        # New endpoint: list all methods with parameter names
+        @self.app.get("/info/methods")
+        async def list_methods():
+            methods_info = {}
+            for method_name in all_methods:
+                method_obj = getattr(self.AI, method_name)
+                sig = inspect.signature(method_obj)
+                # Exclude "self" if present
+                params = [p.name for p in sig.parameters.values() if p.name != "self"]
+                methods_info[method_name] = params
+            return methods_info
 

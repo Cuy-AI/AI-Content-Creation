@@ -1,17 +1,14 @@
 import requests
 from types import MethodType
 
-class Component:
-    def __init__(self, ai_class, port: int):
-        self.ai = ai_class
+class Client:
+    def __init__(self, methods_dict: dict, port: int):
+        self.methods_dict = methods_dict
         self.port = port
 
-        # Dynamically create methods based on ai_class methods
         created_methods = []
-        for method_name in dir(ai_class):
-            if method_name.startswith("_"):
-                continue  # skip dunder/private methods
-            
+
+        for method_name in methods_dict.keys():
             # create a function bound to this instance
             def make_endpoint_func(name):
                 def endpoint_func(self, **kwargs):
@@ -32,5 +29,4 @@ class Component:
             setattr(self, method_name, MethodType(func, self))
             created_methods.append(method_name)
 
-        print(f"The following methods were created for the component {ai_class.__name__}:")
-        print(created_methods)
+        print(f"📡 Client initialized with methods: {created_methods}")
