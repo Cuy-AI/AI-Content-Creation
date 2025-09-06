@@ -1,0 +1,145 @@
+{
+  "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "caption": {
+        "type": "string",
+        "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+      },
+      "resume": {
+        "type": "string",
+        "description": "A summary of the full story, including spoilers"
+      },
+      "number_of_scenes": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 15
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string",
+              "description": "The name of the character that is speaking or narrating during the scene"
+            },
+            "script": {
+              "type": "string",
+              "description": "The dialogue or narration for the scene"
+            },
+            "image_prompt": {
+              "type": "string",
+              "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+            }
+          },
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ]
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "logit_bias": {},
+    "top_logprobs": 0,
+    "prediction": null
+  },
+  "output": {
+    "title": "The Code of Shadows",
+    "caption": "When a young coder stumbles upon a hidden message in an old app, she uncovers a conspiracy that could change the world. How far will she go to expose the truth?",
+    "resume": "In 'The Code of Shadows,' Alex, a brilliant but reclusive coder, discovers a hidden message in an old app she's analyzing. As she digs deeper, she uncovers a global conspiracy involving corrupt corporations and government agencies using the app to manipulate public opinion and control populations. With the help of an anonymous ally, she races against time to expose the truth before she becomes the next target. The story is a thrilling ride filled with suspense, intrigue, and a race against time.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "In a world where technology reigns supreme, secrets hide in every line of code. Tonight, one young coder will uncover a truth that could change everything.",
+        "image_prompt": "A close-up of a computer screen displaying lines of code, with a faint shadowy figure in the background, hinting at a hidden presence."
+      },
+      {
+        "character": "Alex",
+        "script": "What the hell is this? Some kind of Easter egg? Or maybe a glitch? Let me dig deeper.",
+        "image_prompt": "Alex, a young woman with a determined look, sitting in a dimly lit room filled with computer screens, typing furiously on her keyboard."
+      },
+      {
+        "character": "Narrator",
+        "script": "Alex, a brilliant but reclusive coder, had always been fascinated by the abandoned app 'Echo-7.' Tonight, she found something that would change her life forever.",
+        "image_prompt": "A dark room with a single desk lamp on, casting a dim glow over Alex's setup, with multiple monitors displaying lines of code."
+      },
+      {
+        "character": "Alex",
+        "script": "This isn't just code. It's a message. Someone wanted this found, but not by just anyone.",
+        "image_prompt": "Alex's face illuminated by the glow of her computer screens, eyes wide with a mix of fear and excitement."
+      },
+      {
+        "character": "Anonymous Message",
+        "script": "You shouldn't have looked here. Now, you're in danger. Meet me at the old warehouse at midnight if you want to survive.",
+        "image_prompt": "A black screen with a chat window open, displaying the ominous message, the text glowing in green against the dark background."
+      },
+      {
+        "character": "Alex",
+        "script": "Who are you? How do I know this isn't a trap?",
+        "image_prompt": "Alex sitting in her room, looking at her phone with the message displayed, her expression a mix of fear and curiosity."
+      },
+      {
+        "character": "Anonymous Message",
+        "script": "You don't. But if you don't come, they'll find you. You have until midnight.",
+        "image_prompt": "The chat window again, with the new message appearing, the text flashing as if urgent."
+      },
+      {
+        "character": "Alex",
+        "script": "Alright, I need to gather everything I can. I can't trust anyone. Not yet.",
+        "image_prompt": "Alex packing her bag with her laptop, external drives, and other tech gadgets, her movements quick and nervous."
+      },
+      {
+        "character": "Narrator",
+        "script": "As midnight approaches, Alex makes her way to the old warehouse, unsure of what awaits her.",
+        "image_prompt": "A wide shot of Alex walking down a dark alley, the only sound being the echo of her footsteps and distant traffic hum."
+      },
+      {
+        "character": "Alex",
+        "script": "This place is creepy. Where is he? Or is this a trap?",
+        "image_prompt": "Alex standing in front of a dimly lit warehouse, the entrance slightly ajar, casting long shadows in the moonlight."
+      },
+      {
+        "character": "Anonymous Ally",
+        "script": "You're late. Come inside quickly.",
+        "image_prompt": "A shadowy figure stepping out from the darkness of the warehouse, gesturing for Alex to enter."
+      },
+      {
+        "character": "Alex",
+        "script": "Who are you? What's going on?",
+        "image_prompt": "Inside the warehouse, Alex and the shadowy figure standing near a large screen displaying a global map with red markers indicating locations around the world."
+      },
+      {
+        "character": "Anonymous Ally",
+        "script": "I'm someone who knows the truth. The app you found is just the tip of the iceberg. It's part of a global network controlling information, manipulating opinions, and keeping the population in the dark. We need your help to expose them before they silence you.",
+        "image_prompt": "A close-up of the global map on the screen, red markers pulsing ominously, as the ally's voiceover explains the conspiracy."
+      }
+    ]
+  }
+}

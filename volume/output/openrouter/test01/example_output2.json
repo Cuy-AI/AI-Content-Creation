@@ -1,0 +1,141 @@
+{
+  "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "caption": {
+        "type": "string",
+        "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+      },
+      "resume": {
+        "type": "string",
+        "description": "A summary of the full story, including spoilers"
+      },
+      "number_of_scenes": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 15
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string",
+              "description": "The name of the character that is speaking or narrating during the scene"
+            },
+            "script": {
+              "type": "string",
+              "description": "The dialogue or narration for the scene"
+            },
+            "image_prompt": {
+              "type": "string",
+              "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+            }
+          },
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ]
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "logit_bias": {},
+    "top_logprobs": 0,
+    "prediction": null
+  },
+  "save_path": "/app/outputs/openrouter_latest_8000/test01/example_output.json",
+  "output": {
+    "title": "The Code of Deception",
+    "caption": "A young coder stumbles upon a mysterious app that holds the key to a global conspiracy. Will she decode the truth before it's too late?",
+    "resume": "The story follows a young coder named Alex who discovers a hidden message in an old app's code. As she digs deeper, she uncovers a global conspiracy involving powerful corporations and governments. With the help of her friend, a cybersecurity expert, they race against time to expose the truth before the conspirators silence them.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Alex",
+        "script": "I can't believe I found this. It's like nothing I've ever seen before.",
+        "image_prompt": "A young woman with glasses and a hoodie sits in a dimly lit room filled with computer screens. The screens display lines of code with a hidden message highlighted."
+      },
+      {
+        "character": "Alex",
+        "script": "This app hasn't been updated in years. Why is it suddenly sending out encrypted messages?",
+        "image_prompt": "Close-up of a computer screen showing an old app's interface with encrypted messages popping up in the background."
+      },
+      {
+        "character": "Alex",
+        "script": "Who are you? How did you get into my system?",
+        "image_prompt": "Alex looks shocked as a chat window appears on her screen with an anonymous message."
+      },
+      {
+        "character": "Anonymous",
+        "script": "You shouldn't have looked into this. Now you're in danger.",
+        "image_prompt": "A dark chat window with a threatening message from an anonymous sender."
+      },
+      {
+        "character": "Alex",
+        "script": "What's going on? What's this app really for?",
+        "image_prompt": "Alex is seen in a crowded café, looking worried while typing on her laptop."
+      },
+      {
+        "character": "Sam",
+        "script": "I think it's a backdoor. Someone's been using it to gather data from millions of users.",
+        "image_prompt": "A cybersecurity expert, Sam, sits across from Alex in a café, explaining the situation with a serious expression."
+      },
+      {
+        "character": "Alex",
+        "script": "We have to tell someone. This is too big for us to handle alone.",
+        "image_prompt": "Alex and Sam in a hushed conversation, looking around nervously in the café."
+      },
+      {
+        "character": "Sam",
+        "script": "We can't trust anyone. Not even the authorities. They might be involved.",
+        "image_prompt": "Sam leans in close, speaking in a hushed tone with a paranoid expression."
+      },
+      {
+        "character": "Alex",
+        "script": "What if they find us? We need to disappear, at least for a while.",
+        "image_prompt": "Alex packs her bag quickly, looking around her apartment with a sense of urgency."
+      },
+      {
+        "character": "Sam",
+        "script": "I know a place. Follow me.",
+        "image_prompt": "Sam leads Alex out of the apartment building, both carrying backpacks and looking over their shoulders."
+      },
+      {
+        "character": "Alex",
+        "script": "This is getting too real. I just wanted to code, not save the world.",
+        "image_prompt": "Alex and Sam walking down a dark alley, the city lights reflecting off wet pavement."
+      },
+      {
+        "character": "Sam",
+        "script": "You did the right thing. We're in this together now.",
+        "image_prompt": "Sam places a reassuring hand on Alex's shoulder as they approach a hidden entrance."
+      }
+    ]
+  }
+}
