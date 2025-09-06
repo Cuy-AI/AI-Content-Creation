@@ -1,0 +1,146 @@
+{
+  "model": "deepseek/deepseek-r1-distill-llama-70b:free",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "caption": {
+        "type": "string",
+        "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+      },
+      "resume": {
+        "type": "string",
+        "description": "A summary of the full story, including spoilers"
+      },
+      "number_of_scenes": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 20
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string",
+              "description": "The name of the character that is speaking or narrating during the scene"
+            },
+            "script": {
+              "type": "string",
+              "description": "The dialogue or narration for the scene"
+            },
+            "image_prompt": {
+              "type": "string",
+              "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+            }
+          },
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ]
+  },
+  "parameters": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "logit_bias": {},
+    "top_logprobs": 0,
+    "prediction": null
+  },
+  "save_path": "/app/outputs/openrouter_latest_8000/test01/example_output.json",
+  "output": {
+    "title": "The Code Conspiracy",
+    "caption": "A young coder stumbles upon a hidden message in an old app's code that leads to a dangerous conspiracy.",
+    "resume": "The story follows Alex, a young coder who discovers a mysterious message in an old app's code. As Alex delves deeper, they uncover a global conspiracy involving data manipulation and control. With the help of a hacker friend, Sam, Alex races against time to expose the truth before it's too late.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Alex",
+        "script": "I can't believe I found this. Some kind of hidden message deep in the code.",
+        "image_prompt": "A close-up of a computer screen with lines of code and a highlighted message that reads, 'They're watching.' The room is dimly lit with only the screen's light."
+      },
+      {
+        "character": "Alex",
+        "script": "This isn't just any code. It's a backdoor. Someone intentionally hid this here.",
+        "image_prompt": "A young coder, Alex, sitting in a dimly lit room, looking at the computer screen with a mix of confusion and fear."
+      },
+      {
+        "character": "Alex",
+        "script": "I need to dig deeper. Let's see where this goes.",
+        "image_prompt": "Alex's hands typing rapidly on the keyboard, the screen showing lines of code scrolling by quickly."
+      },
+      {
+        "character": "Alex",
+        "script": "What the...? This leads to a server I've never seen before. It's encrypted.",
+        "image_prompt": "Alex leaning in closer to the screen, eyes wide with surprise, as the server details appear with encrypted files."
+      },
+      {
+        "character": "Sam (hacker friend)",
+        "script": "Alex, you shouldn't be poking around here. This isn't safe.",
+        "image_prompt": "Sam appears on a video call, looking concerned, with a dark background and a hoodie covering their head."
+      },
+      {
+        "character": "Alex",
+        "script": "You won't believe what I found. It's some kind of surveillance network.",
+        "image_prompt": "Alex's face showing determination and fear as they explain their findings to Sam via video call."
+      },
+      {
+        "character": "Sam",
+        "script": "If this is as big as you say, we need to move fast. Meet me at the old warehouse at midnight.",
+        "image_prompt": "Sam's face on the screen, serious and urgent, as they give instructions."
+      },
+      {
+        "character": "Alex",
+        "script": "Got it. But what if they're already watching us?",
+        "image_prompt": "Alex looking around the room nervously, checking if someone is listening or watching."
+      },
+      {
+        "character": "Alex",
+        "script": "The warehouse is creepy at night. I hope Sam is here.",
+        "image_prompt": "Alex walking into a dimly lit, abandoned warehouse, flashlight in hand, casting long shadows."
+      },
+      {
+        "character": "Sam",
+        "script": "I'm here. Let's get to work before we run out of time.",
+        "image_prompt": "Sam stepping out of the shadows, holding a laptop, with a determined look."
+      },
+      {
+        "character": "Alex",
+        "script": "This is it. The proof we need to expose them.",
+        "image_prompt": "Alex and Sam huddled around a laptop, looking at the screen with a mix of excitement and fear as they uncover the conspiracy."
+      },
+      {
+        "character": "Alex",
+        "script": "We did it. But now we have to get this out before they stop us.",
+        "image_prompt": "Alex and Sam quickly gathering their things, looking over their shoulders as if they're being watched."
+      },
+      {
+        "character": "Alex",
+        "script": "Let's go. We have a story to tell.",
+        "image_prompt": "Alex and Sam exiting the warehouse, determined, as the sun starts to rise in the background."
+      }
+    ]
+  }
+}

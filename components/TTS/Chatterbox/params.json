@@ -1,0 +1,6 @@
+{
+    "exaggeration":0.5,
+    "cfg_weight":0.5,
+    "temperature":0.8,
+    "audio_prompt_path": "tts/voices/deep_voice.wav"
+}
