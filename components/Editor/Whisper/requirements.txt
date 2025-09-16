@@ -1,0 +1,5 @@
+torch
+openai-whisper
+moviepy==1.0.3
+fastapi
+uvicorn

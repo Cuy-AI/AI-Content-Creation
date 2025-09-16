@@ -1,4 +1,7 @@
 **/.env
 **/__pycache__/
 processed/
-test.py
+resources_compilation/
+volume/resources/videos/background/*
+volume/resources/videos/test/*
+/test.py

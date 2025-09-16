@@ -58,11 +58,13 @@ class BaseAI:
         for key, value in kwargs.items():
             # Check if the parameter exists
             if key in self.params:
+                self.params[key] = value
+                
                 # Check if the type is correct
-                if isinstance(value, type(self.params[key])):
-                    self.params[key] = value
-                else:
-                    raise TypeError(f"Expected type {type(self.params[key])} for parameter '{key}', got {type(value)}")
+                # if isinstance(value, type(self.params[key])):
+                #     self.params[key] = value
+                # else:
+                #     raise TypeError(f"Expected type {type(self.params[key])} for parameter '{key}', got {type(value)}")
             else:
                 raise KeyError(f"Unknown parameter '{key}' for model '{self.model_name}'")
         

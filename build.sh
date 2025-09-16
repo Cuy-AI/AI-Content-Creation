@@ -18,6 +18,10 @@ if [ -z "$1" ] || [ "$1" = "all" ]; then
   docker build -t openvoice \
     --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
     -f ./components/TTS/OpenVoice/Dockerfile .
+
+  docker build -t whisper \
+    --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
+    -f ./components/Editor/Whisper/Dockerfile .
 else
   echo "Building image for: $1"
   if [ "$1" = "openrouter" ]; then
@@ -31,6 +35,10 @@ else
     docker build -t openvoice \
       --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
       -f ./components/TTS/OpenVoice/Dockerfile .
+  elif [ "$1" = "whisper" ]; then
+    docker build -t whisper \
+      --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
+      -f ./components/Editor/Whisper/Dockerfile .
   else 
     echo "Image $1 was not recognized"
   fi
