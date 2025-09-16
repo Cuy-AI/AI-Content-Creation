@@ -3,4 +3,5 @@
 processed/
 resources_compilation/
 volume/resources/videos/background/*
+volume/resources/videos/test/*
 /test.py
