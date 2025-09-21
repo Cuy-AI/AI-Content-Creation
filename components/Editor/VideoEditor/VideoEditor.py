@@ -544,3 +544,121 @@ class VideoEditor:
 
         self._run(cmd)
         return output_path
+
+
+    def change_ratio(
+        self,
+        input_path: str,
+        ratio: str,
+        mode: str = "pad",   # "pad" or "crop"
+        pad_style: str = "black",  # "black", "blur", or path to image
+        output_path: Optional[str] = None,
+        width: Optional[int] = None,
+        reencode: bool = True
+    ) -> str:
+        """
+        Change the aspect ratio of the given video with flexible modes.
+
+        Supported ratios:
+            - "vertical"       -> 9:16
+            - "widescreen"     -> 16:9
+            - "ultrawide"      -> 21:9
+
+        Modes:
+            - "pad"  -> keep full video, add background (black, blur, or image)
+            - "crop" -> fill screen, but cut excess
+
+        Parameters:
+        -----------
+        input_path : str
+            Path to input video file.
+        ratio : str
+            Target ratio ("vertical", "widescreen", "ultrawide").
+        mode : str
+            "pad" or "crop" (default: "pad")
+        pad_style : str
+            If pad mode:
+                - "black" (default)
+                - "blur" (blurred video background)
+                - path to an image file (jpg/png)
+        output_path : str, optional
+            Path to save output. If None, a temp file is created.
+        width : int, optional
+            Target width (default 1080). Height derived from ratio.
+        reencode : bool
+            Whether to reencode (True) or try stream copy if not needed.
+
+        Returns:
+        --------
+        str : path to the converted video.
+        """
+
+        # Pick ratio numbers
+        if ratio == "vertical":
+            target_ratio = (9, 16)
+        elif ratio == "widescreen":
+            target_ratio = (16, 9)
+        elif ratio == "ultrawide":
+            target_ratio = (21, 9)
+        else:
+            raise ValueError("Unsupported ratio. Use 'vertical', 'widescreen', or 'ultrawide'.")
+
+        if width is None:
+            width = 1080
+
+        target_w = width
+        target_h = int(width * target_ratio[1] / target_ratio[0])
+
+        if output_path is None:
+            output_path = self._mktemp(".mp4")
+        else:
+            os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+
+        codec_name, codec_params = self._choose_encoder() if reencode else ("copy", [])
+
+        # Decide ffmpeg filter
+        use_complex = False
+        if mode == "crop":
+            vf = f"scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h}"
+        elif mode == "pad":
+            if pad_style == "black":
+                if target_w < target_h:
+                    vf = f"scale={target_w}:{target_h}:force_original_aspect_ratio=decrease," \
+                     f"pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black"
+                else:
+                    adjusted_target_w = target_w if target_w % 2 == 0 else target_w - 1
+                    adjusted_target_h = target_h if target_h % 2 == 0 else target_h - 1
+                    use_complex = False
+                    vf = f"scale={adjusted_target_w}:{adjusted_target_h}:force_original_aspect_ratio=decrease,pad={adjusted_target_w}:{adjusted_target_h}:(ow-iw)/2:(oh-ih)/2:black"
+                    
+            elif pad_style == "blur":
+                use_complex = True
+                vf = (
+                    f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h},"
+                    f"boxblur={20}:{10}[bg];"
+                    f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease[fg];"
+                    f"[bg][fg]overlay=(W-w)/2:(H-h)/2"
+                )
+            else:
+                raise ValueError("Invalid pad_style. Must be 'black', 'blur', or image path.")
+        else:
+            raise ValueError("mode must be 'pad' or 'crop'.")
+
+        cmd = [
+            "ffmpeg", "-y", "-i", input_path,
+        ]
+
+        if use_complex:
+            cmd += ["-filter_complex", vf]
+        else:
+            cmd += ["-vf", vf]
+
+        cmd += [
+            "-c:v", codec_name, *codec_params,
+            "-c:a", "aac" if reencode else "copy",
+            output_path
+        ]
+
+        self._run(cmd)
+        return output_path
+ 
