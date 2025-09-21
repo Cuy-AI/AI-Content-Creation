@@ -47,7 +47,7 @@ class VideoEditor:
         return json.loads(out)
 
     def _run(self, cmd: List[str]):
-        print("Running:", ' '.join(cmd))
+        # print("Running:", ' '.join(cmd))
         proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         if proc.returncode != 0:
             raise RuntimeError(f"ffmpeg/ffprobe command failed:\n{' '.join(cmd)}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}")
@@ -129,6 +129,15 @@ class VideoEditor:
                 return float(s["duration"])
         return 0.0
 
+    def get_ratio(self, input_path: str) -> str:
+        """Return aspect ratio as string "W:H" (e.g. "16:9")"""
+        w, h = self.get_size(input_path)
+        def gcd(a: int, b: int) -> int:
+            while b:
+                a, b = b, a % b
+            return a
+        g = gcd(w, h)
+        return f"{w//g}:{h//g}"
 
     # -------------------
     # Core operations
