@@ -20,10 +20,11 @@ class VideoEditor:
     Methods accept input_path (and optional output_path) and return output_path.
     """
 
-    def __init__(self, temp_dir: Optional[str] = None):
+    def __init__(self, temp_dir: Optional[str] = None, device_selection = "auto"):
         """
         :param temp_dir: optional folder for temporary files. If None, a temp folder is created.
         """
+        self.device = device_selection if device_selection in ("auto", "gpu", "cpu") else "auto"
         self._ensure_ffmpeg()
         if temp_dir:
             os.makedirs(temp_dir, exist_ok=True)
@@ -58,10 +59,9 @@ class VideoEditor:
         Return (codec_name, params_list) adapted to GPU if available.
         Uses NVENC (h264_nvenc) when torch.cuda.is_available() is True.
         """
-        if _HAS_TORCH and torch.cuda.is_available():
+        if (self.device == "auto" or self.device == "gpu") and _HAS_TORCH and torch.cuda.is_available():
             # NVENC params: tweak as desired
-            # return "h264_nvenc", ["-preset", "fast", "-rc", "vbr_hq", "-cq", "19"]
-            return "libx264", ["-preset", "fast", "-crf", "23", "-threads", str(max(1, os.cpu_count() or 1))]
+            return "h264_nvenc", ["-preset", "fast", "-rc", "vbr_hq", "-cq", "19"]
         else:
             # CPU x264
             return "libx264", ["-preset", "fast", "-crf", "23", "-threads", str(max(1, os.cpu_count() or 1))]

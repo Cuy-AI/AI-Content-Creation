@@ -9,7 +9,7 @@ from components.Editor.ImageEditor.ImageEditor import ImageEditor
 def test_video_editor():
 
     # Create editor (uses temp folder internally)
-    veditor = VideoEditor()
+    veditor = VideoEditor(device_selection = "cpu")
     img_editor = ImageEditor()
 
     # Input video
