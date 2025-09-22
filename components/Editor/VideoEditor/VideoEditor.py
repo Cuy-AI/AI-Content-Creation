@@ -439,6 +439,7 @@ class VideoEditor:
         y: int = 0,
         padding_x: int = 10,
         padding_y: int = 10,
+        text_align: str = "center",
         output_path: Optional[str] = None
     ) -> str:
         """
@@ -533,6 +534,7 @@ class VideoEditor:
                 f"shadowy={shadowy}",
                 f"x={_pos_x(x)}",
                 f"y={_pos_y(y)}",
+                f"text_align={text_align}",
                 f"enable='between(t,{start},{end})'"
             ])
 
