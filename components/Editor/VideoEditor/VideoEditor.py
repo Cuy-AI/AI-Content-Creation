@@ -559,8 +559,8 @@ class VideoEditor:
         self,
         input_path: str,
         ratio: str,
-        mode: str = "pad",   # "pad" or "crop"
-        pad_style: str = "black",  # "black", "blur", or path to image
+        mode: str = "pad",  # "pad" or "crop"
+        style: Optional[dict] = None,  # unified style dictionary
         output_path: Optional[str] = None,
         width: Optional[int] = None,
         reencode: bool = True
@@ -585,11 +585,15 @@ class VideoEditor:
             Target ratio ("vertical", "widescreen", "ultrawide").
         mode : str
             "pad" or "crop" (default: "pad")
-        pad_style : str
-            If pad mode:
-                - "black" (default)
-                - "blur" (blurred video background)
-                - path to an image file (jpg/png)
+        Style dictionary options (only used when mode == "pad"):
+            {
+                "type": "color" | "blur" | "image",
+                # --- for color ---
+                "color": "#RRGGBB" or "black"   (default: black)
+                # --- for blur ---
+                "blur_strength": 20,   # default
+                "blur_power": 10,      # default
+            }
         output_path : str, optional
             Path to save output. If None, a temp file is created.
         width : int, optional
@@ -630,26 +634,42 @@ class VideoEditor:
         if mode == "crop":
             vf = f"scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h}"
         elif mode == "pad":
-            if pad_style == "black":
+
+            style = style or {"type": "color", "color": "black"}
+
+            if style["type"] == "color":
+                color = style.get("color", "black")
+
+                # Check if color is str and if its black or a valid hex
+                if not isinstance(color, str):
+                    raise ValueError("Color must be a string (e.g. 'black' or '#RRGGBB').")
+                if color.lower() != "black":
+                    if not (color.startswith("#") and len(color) == 7 and all(c in "0123456789abcdefABCDEF" for c in color[1:])):
+                        raise ValueError("Color must be 'black' or a valid hex string like '#RRGGBB'.")
+
                 if target_w < target_h:
                     vf = f"scale={target_w}:{target_h}:force_original_aspect_ratio=decrease," \
-                     f"pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:black"
+                     f"pad={target_w}:{target_h}:(ow-iw)/2:(oh-ih)/2:{color}"
                 else:
                     adjusted_target_w = target_w if target_w % 2 == 0 else target_w - 1
                     adjusted_target_h = target_h if target_h % 2 == 0 else target_h - 1
                     use_complex = False
-                    vf = f"scale={adjusted_target_w}:{adjusted_target_h}:force_original_aspect_ratio=decrease,pad={adjusted_target_w}:{adjusted_target_h}:(ow-iw)/2:(oh-ih)/2:black"
+                    vf = f"scale={adjusted_target_w}:{adjusted_target_h}:force_original_aspect_ratio=decrease,pad={adjusted_target_w}:{adjusted_target_h}:(ow-iw)/2:(oh-ih)/2:{color}"
                     
-            elif pad_style == "blur":
+            elif style["type"] == "blur":
+                blur_strength = style.get("blur_strength", 20)
+                blur_power = style.get("blur_power", 10)
+                blur_strength = blur_strength if isinstance(blur_strength, int) else 20
+                blur_power = blur_power if isinstance(blur_power, int) else 10
                 use_complex = True
                 vf = (
                     f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h},"
-                    f"boxblur={20}:{10}[bg];"
+                    f"boxblur={blur_strength}:{blur_power}[bg];"
                     f"[0:v]scale={target_w}:{target_h}:force_original_aspect_ratio=decrease[fg];"
                     f"[bg][fg]overlay=(W-w)/2:(H-h)/2"
                 )
             else:
-                raise ValueError("Invalid pad_style. Must be 'black', 'blur', or image path.")
+                raise ValueError("Invalid style['type']. Must be 'color', 'blur', or 'image'.")
         else:
             raise ValueError("mode must be 'pad' or 'crop'.")
 
