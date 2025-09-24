@@ -35,6 +35,11 @@ class VideoEditor:
             self._own_temp = True
         self._temp_files = set()
 
+    
+    # destructor that cleans up temp files if any
+    def __del__(self):
+        self.cleanup()
+
     # -------------------
     # Helpers
     # -------------------
