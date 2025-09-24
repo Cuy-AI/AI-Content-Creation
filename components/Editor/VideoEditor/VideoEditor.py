@@ -486,6 +486,8 @@ class VideoEditor:
         def _escape(text: str) -> str:
             return (
                 text
+                # ⚠️ Keep the replacing order (backslash first)
+                .replace("\\", "\\\\\\\\\\\\\\\\\\")
                 .replace(":", r'\\:')
                 .replace(";", "\\;")
                 .replace('"', r'\"')

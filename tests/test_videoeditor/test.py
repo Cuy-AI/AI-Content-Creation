@@ -217,6 +217,9 @@ def test_video_editor():
     response = whisperer.generate(path="/app/" + temp_file)
     captions = response['answer']
 
+    # Add a \ symbol randomly in the text to test escaping
+    captions[0]['text'] += " - This is a \\ backslash"
+
     print("\nCaptions to be inserted:")
     for idx, seg in enumerate(captions):
         text = seg['text'].strip()
