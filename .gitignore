@@ -2,6 +2,15 @@
 **/__pycache__/
 processed/
 resources_compilation/
-volume/resources/videos/background/*
-volume/resources/videos/test/*
 /test.py
+
+# Ignore all kind of video files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.flv
+*.wmv
+*.webm
+*.mpeg
+*.mpg
