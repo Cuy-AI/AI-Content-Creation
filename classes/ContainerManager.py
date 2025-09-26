@@ -15,15 +15,14 @@ class ContainerManager:
         self.container = None
         self.use_gpu = use_gpu
         
-        # Set host volume paths
-        self.host_volume = f'volume'
-        self.full_host_volume = os.path.join(
-            os.getcwd().replace('\\', '/'), self.host_volume
-        ).replace('\\', '/')
-        os.makedirs(self.host_volume, exist_ok=True)  # ensure dir exists
+        # Setting volume path
+        # On host: 
+        #   The volume is on the project root directory, so you can use a relative path
+        # On container: 
+        #   You can also use a relative path. 
+        #   Because the volume will be inside "/app/" and the working directory is also set to "/app/"
+        self.volume_path = "volume"
 
-        # Set container volume path
-        self.container_volume = "/app/volume"
 
     def _find_running_container(self):
         """
@@ -56,16 +55,23 @@ class ContainerManager:
 
         print(f"Starting new container {self.image} as {self.name}...")
 
+        # Set up host volume directory:
+        full_host_volume = os.path.join(
+            os.getcwd().replace('\\', '/'), self.volume_path
+        ).replace('\\', '/')
+        os.makedirs(self.volume_path, exist_ok=True)
+
         # Run container
         self.container = self.client.containers.run(
             self.image,
             name=self.name,
             detach=True,
+            working_dir="/app/",
             ports={f"{self.port}/tcp": self.port},
             environment={},  # pass env vars if needed
             volumes={
-                self.full_host_volume: {
-                    "bind": self.container_volume,
+                full_host_volume: {
+                    "bind": "/app/" + self.volume_path,
                     "mode": "rw",
                 }
             },
