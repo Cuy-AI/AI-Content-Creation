@@ -16,11 +16,13 @@ def test_whisper():
     whisperer.set_params(language="en", task="transcribe")
 
     # Transcribe a video
-    subs = whisperer.generate(path="/app/volume/resources/videos/test/test01.mp4")
+    input_video = whisper_container.volume_path + "/resources/videos/test/test01.mp4"
+    subs = whisperer.generate(path=input_video)
     print("Video:\n", subs)
 
     # Transcribe an audio
-    subs2 = whisperer.generate(path="/app/volume/resources/audios/test/test01.mp3")
+    input_audio = whisper_container.volume_path + "/resources/audios/test/test01.mp3"
+    subs2 = whisperer.generate(path=input_audio)
     print("Audio:\n", subs2)
 
 
