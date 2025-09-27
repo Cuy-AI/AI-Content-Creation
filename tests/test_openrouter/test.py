@@ -77,9 +77,7 @@ def test_openrouter():
     print("Get schema answer", answer)
 
     # Get container output dir:
-    saved_output_host = openRouter_container.host_volume
-    saved_output_container = openRouter_container.container_volume
-    additional_path = "/output/openrouter/test03/example_output.json" # A sample additional path
+    saved_output = openRouter_container.volume_path + "/output/openrouter/test04/example_output.json" # A sample additional path
 
     # Good prompt for generating a video script
     video_prompt = """
@@ -101,15 +99,16 @@ def test_openrouter():
     """
 
     # Generate the video script
-    result = openRouter_client.generate(prompt=video_prompt, save_path=saved_output_container+additional_path)
+    result = openRouter_client.generate(prompt=video_prompt, save_path=saved_output)
     print("Generation result:\n", result)
 
     # Check if output was saved
-    saved_path = saved_output_host+additional_path
+    saved_path = saved_output
     if not os.path.exists(saved_path):
         raise FileNotFoundError(f"Output json file not found: {saved_path}")
 
     # Open saved output
+    print("Saved json at:", saved_path)
     with open(saved_path, "r", encoding="utf-8") as f:
         json_output = json.load(f)
 
