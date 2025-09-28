@@ -1,5 +1,6 @@
 import os
 import requests
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
 class GoogleSearchEngine:
@@ -55,3 +56,46 @@ class GoogleSearchEngine:
                 results.append(result)
 
         return results
+
+
+    def extract_content(self, url, ignore_tags=None, required_tags=None, only_required_tags=False):
+        """
+        Extract structured text content from a given URL, preserving order.
+        :param url: The webpage URL
+        :param ignore_tags: list of tags to ignore (e.g. ["script", "style", "footer"])
+        :param required_tags: list of tags that must exist (e.g. ["title", "h1"])
+        :param only_required_tags: if True, extract only required_tags; if False, extract all except ignored
+        :return: list of dicts [{tag: "p", content: "..."}], in DOM order
+        """
+
+        if only_required_tags and not required_tags:
+            raise ValueError(f"Only mandatory tags flag is active but no mandatory tags were given: {required_tags}")
+
+        if ignore_tags is None:
+            ignore_tags = ["script", "style", "noscript", "header", "footer", "meta", "link", "svg"]
+
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+
+        content_type = response.headers.get("Content-Type", "")
+        if "html" not in content_type: # Not HTML, nothing to parse
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        extracted = []
+
+        # Flatten relevant tags from soup in order
+        for element in soup.find_all(True):  # all tags
+            tag = element.name
+
+            # skip ignored tags
+            if tag in ignore_tags: continue
+
+            # Skip if not in required and only_required_tags = true
+            if only_required_tags and tag not in required_tags: continue
+
+            text = element.get_text(strip=True)
+            if text: extracted.append({"tag": tag, "content": text})
+
+        return extracted

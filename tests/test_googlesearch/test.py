@@ -7,14 +7,31 @@ def test_googlesearch():
 
     # Normal search --------------------------------------------------------------------------
     results = client.search("Python programming", num=5)
+
+    print("Results of normal search:")
     for r in results: print(r)
+
+    # Extract content
+    info = client.extract_content(
+        results[0]["link"], 
+        ignore_tags=["script", "style", "footer", "nav"],
+        required_tags=["title", "h1", "h2", "h3", "h4", "h5", "h6", "p"],
+        only_required_tags=True
+    )
+
+    print("Extracted info:")
+    print(info)
 
     # Image search --------------------------------------------------------------------------
     images = client.search("Cute cats", num=5, search_type="image")
+
+    print("Images:")
     for img in images: print(img)
 
 
     # Advanced search --------------------------------------------------------------------------
+
+    print("Advanced search:")
 
     # Search excluding a site
     results = client.search("Python tutorial", siteSearch="wikipedia.org", siteSearchFilter="e")
