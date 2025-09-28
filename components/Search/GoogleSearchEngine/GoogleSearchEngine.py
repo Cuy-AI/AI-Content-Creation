@@ -15,13 +15,16 @@ class GoogleSearchEngine:
         self.base_url = "https://www.googleapis.com/customsearch/v1"
 
 
-    def search(self, query, num=10, search_type=None):
+    def search(self, query, num=5, search_type=None, **kwargs):
         """
         Run a Google Custom Search query.
         :param query: Search query string
         :param num: Number of results (max 10 per request)
         :param search_type: None for normal search, "image" for image search
-        :return: List of dict results (title, link, snippet, [thumbnail if image])
+        :param kwargs: 
+            Extra API parameters (gl, hl, cr, siteSearch, siteSearchFilter, etc.)
+            https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list
+        :return: List of dict results
         """
         params = {
             "key": self.api_key,
@@ -31,6 +34,9 @@ class GoogleSearchEngine:
         }
 
         if search_type == "image": params["searchType"] = "image"
+
+        # Merge extra parameters
+        params.update(kwargs)
 
         response = requests.get(self.base_url, params=params)
         response.raise_for_status()
