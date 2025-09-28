@@ -28,6 +28,14 @@ def test_googlesearch():
     print("Images:")
     for img in images: print(img)
 
+    # Downloads and saves with original extension
+    saved_path = client.download_image(
+        images[0]["link"],
+        "volume/output/search_engine/cat_image"   # don’t need to pass extension
+    )
+
+    print("Image saved at:", saved_path)
+
 
     # Advanced search --------------------------------------------------------------------------
 

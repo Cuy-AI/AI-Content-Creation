@@ -1,5 +1,6 @@
 import os
 import requests
+import mimetypes
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
@@ -99,3 +100,40 @@ class GoogleSearchEngine:
             if text: extracted.append({"tag": tag, "content": text})
 
         return extracted
+        
+
+    def download_image(self, url, output_path):
+        """
+        Download an image from a URL and save it with its original extension.
+        Creates parent directories if they do not exist.
+        :param url: Image URL
+        :param output_path: Local file path (without extension required)
+        :return: Final saved file path
+        """
+        response = requests.get(url, stream=True, timeout=10)
+        response.raise_for_status()
+
+        # Try to detect extension from HTTP headers
+        content_type = response.headers.get("Content-Type", "")
+        ext = mimetypes.guess_extension(content_type.split(";")[0]) if content_type else None
+
+        # If no extension from headers, try from URL
+        if not ext:
+            ext = os.path.splitext(url.split("?")[0])[1]
+
+        if not ext:
+            raise ValueError("Could not determine image extension")
+
+        # Ensure output_path has the correct extension
+        base, _ = os.path.splitext(output_path)
+        final_path = base + ext
+
+        # Ensure parent directories exist
+        os.makedirs(os.path.dirname(final_path), exist_ok=True)
+
+        # Save the file as-is
+        with open(final_path, "wb") as f:
+            for chunk in response.iter_content(8192):
+                f.write(chunk)
+
+        return final_path
