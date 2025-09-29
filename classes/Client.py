@@ -13,10 +13,16 @@ class Client:
             def make_endpoint_func(name):
                 def endpoint_func(self, **kwargs):
                     try:
+                        
+                        # Set up timeout
+                        if "client_timeout" in kwargs: client_timeout = kwargs["client_timeout"]
+                        elif name == "generate": client_timeout = 120
+                        else: client_timeout = 25
+
                         r = requests.post(
                             f"http://localhost:{self.port}/{name}",
-                            json=kwargs,
-                            timeout=25 if name != "generate" else 120
+                            json={k: v for k, v in kwargs.items() if k != "client_timeout"},
+                            timeout=client_timeout
                         )
                         r.raise_for_status()
                         return r.json()

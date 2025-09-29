@@ -10,7 +10,11 @@ def test_whisper():
 
     whisperer = whisper_container.create_client()
 
-    whisperer.set_model_size(model_size="base")
+    answ = whisperer.set_model_size(
+        model_size="medium", 
+        client_timeout = 90 # Set a custom timeout 
+    )
+    print("Set model size answer:", answ)
 
     # Optional config
     whisperer.set_params(language="en", task="transcribe")
@@ -24,6 +28,8 @@ def test_whisper():
     input_audio = whisper_container.volume_path + "/resources/audios/test/test01.mp3"
     subs2 = whisperer.generate(path=input_audio)
     print("Audio:\n", subs2)
+
+    whisper_container.stop()
 
 
 # [
