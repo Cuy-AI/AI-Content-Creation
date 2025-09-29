@@ -50,7 +50,7 @@ class WhisperAI(BaseAI):
         return self.model_size
 
 
-    def generate(self, path, segment=True):
+    def generate(self, path):
         """
         Generate transcription from an audio or video file.
         Always returns a list of dicts with start, end, text.
@@ -75,20 +75,26 @@ class WhisperAI(BaseAI):
         if temp_audio and os.path.exists(temp_audio):
             os.remove(temp_audio)
 
-        # print(result)
+        # print("Raw result:", result)
 
-        # Convert to requested format
-        if segment:
-            output = []
+        output = []
+        if self.params["word_timestamps"]:
+            for seg in result["segments"]:
+                for w in seg.get("words", []):
+                    output.append({
+                        "start": float(w["start"]),
+                        "end": float(w["end"]),
+                        "text": w["word"].strip()
+                    })
+        else:
             for seg in result["segments"]:
                 output.append({
                     "start": float(seg["start"]),
                     "end": float(seg["end"]),
                     "text": seg["text"].strip()
                 })
-            return output
-        else:
-            return result
+        
+        return output
 
 
 if __name__ == "__main__":

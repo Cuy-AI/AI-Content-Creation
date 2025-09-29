@@ -17,15 +17,16 @@ def test_whisper():
     print("Set model size answer:", answ)
 
     # Optional config
-    whisperer.set_params(language="en", task="transcribe")
+    whisperer.set_params(language="en", task="transcribe", word_timestamps=True)
 
-    # Transcribe a video
+    # Transcribe a video (Words as segments)
     input_video = whisper_container.volume_path + "/resources/videos/test/test01.mp4"
     subs = whisperer.generate(path=input_video)
     print("Video:\n", subs)
 
-    # Transcribe an audio
+    # Transcribe an audio (Sentences as segments)
     input_audio = whisper_container.volume_path + "/resources/audios/test/test01.mp3"
+    whisperer.set_params(word_timestamps=False)
     subs2 = whisperer.generate(path=input_audio)
     print("Audio:\n", subs2)
 
