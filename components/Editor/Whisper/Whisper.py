@@ -97,6 +97,57 @@ class WhisperAI(BaseAI):
         return output
 
 
+    def merge_segments(self, word_segments, words_per_segment = None, max_duration = None):
+        """
+        Merge word-level segments into larger segments.
+
+        Args:
+            word_segments: list of {"start": float, "end": float, "text": str}
+            words_per_segment: if set, group by this many words per segment
+            max_duration: if set, start a new segment after this many seconds
+
+        Returns:
+            List of merged segments with {"start", "end", "text"}
+        """
+        if not word_segments:
+            return []
+
+        merged = []
+        buffer = []
+        start_time = word_segments[0]["start"]
+
+        for w in word_segments:
+            buffer.append(w)
+            duration = w["end"] - start_time
+
+            # Check if we should flush the buffer
+            flush = False
+            if words_per_segment and len(buffer) >= words_per_segment:
+                flush = True
+            if max_duration and duration >= max_duration:
+                flush = True
+
+            if flush:
+                merged.append({
+                    "start": buffer[0]["start"],
+                    "end": buffer[-1]["end"],
+                    "text": " ".join(x["text"] for x in buffer)
+                })
+                buffer = []
+                start_time = w["end"]
+
+        # Flush any leftovers
+        if buffer:
+            merged.append({
+                "start": buffer[0]["start"],
+                "end": buffer[-1]["end"],
+                "text": " ".join(x["text"] for x in buffer)
+            })
+
+        return merged
+
+
+
 if __name__ == "__main__":
     chatterbox_server = Server(ai_class=WhisperAI)
     app = chatterbox_server.app

@@ -1,7 +1,7 @@
 import os
 import json
 from classes.ContainerManager import ContainerManager
-
+from components.Editor.Whisper.Whisper import WhisperAI
 
 def test_whisper():
 
@@ -19,16 +19,24 @@ def test_whisper():
     # Optional config
     whisperer.set_params(language="en", task="transcribe", word_timestamps=True)
 
-    # Transcribe a video (Words as segments)
+    # Transcribe a video (Single word as segment)
     input_video = whisper_container.volume_path + "/resources/videos/test/test01.mp4"
     subs = whisperer.generate(path=input_video)
-    print("Video:\n", subs)
+    print("Video:")
+    print(subs['answer'])
+    
+    
+    # Fix segments (You must use this method with Single word as segment)
+    fixed_subs = whisperer.merge_segments(word_segments=subs['answer'], words_per_segment=4, max_duration=1.5)
+    print("\nFixed subs:")
+    print(fixed_subs)
 
     # Transcribe an audio (Sentences as segments)
     input_audio = whisper_container.volume_path + "/resources/audios/test/test01.mp3"
     whisperer.set_params(word_timestamps=False)
     subs2 = whisperer.generate(path=input_audio)
-    print("Audio:\n", subs2)
+    print("\nAudio:")
+    print(subs2["answer"])
 
     whisper_container.stop()
 
