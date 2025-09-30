@@ -1,7 +1,6 @@
 import os
 import json
 from classes.ContainerManager import ContainerManager
-from components.Editor.Whisper.Whisper import WhisperAI
 
 def test_whisper():
 
