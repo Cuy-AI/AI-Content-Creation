@@ -6,6 +6,9 @@ class Client:
         self.methods_dict = methods_dict
         self.port = port
 
+        self.DEFAULT_TIMEOUT = 25
+        self.DEFAULT_GENERATION_TIMEOUT = 120
+
         created_methods = []
 
         for method_name in methods_dict.keys():
@@ -16,8 +19,8 @@ class Client:
                         
                         # Set up timeout
                         if "client_timeout" in kwargs: client_timeout = kwargs["client_timeout"]
-                        elif name == "generate": client_timeout = 120
-                        else: client_timeout = 25
+                        elif name == "generate": client_timeout = self.DEFAULT_GENERATION_TIMEOUT
+                        else: client_timeout = self.DEFAULT_TIMEOUT
 
                         r = requests.post(
                             f"http://localhost:{self.port}/{name}",
