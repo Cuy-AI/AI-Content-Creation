@@ -44,7 +44,7 @@ class WhisperAI(BaseAI):
         
         self.model_size = model_size
         self.model = whisper.load_model(model_size, device=self.device)
-        return "Model name was set successfully"    
+        return "Model size was loaded successfully"    
     
     def get_model_size(self):
         return self.model_size
@@ -97,7 +97,7 @@ class WhisperAI(BaseAI):
         return output
 
 
-    def merge_segments(self, word_segments, words_per_segment = None, max_duration = None):
+    def merge_segments(self, word_segments, words_per_segment = None, max_duration = None, max_pause=None):
         """
         Merge word-level segments into larger segments.
 
@@ -105,6 +105,7 @@ class WhisperAI(BaseAI):
             word_segments: list of {"start": float, "end": float, "text": str}
             words_per_segment: if set, group by this many words per segment
             max_duration: if set, start a new segment after this many seconds
+            max_pause: if set, start a new segment if speaker makes a pause for this many seconds
 
         Returns:
             List of merged segments with {"start", "end", "text"}
@@ -114,9 +115,15 @@ class WhisperAI(BaseAI):
 
         merged = []
         buffer = []
-        start_time = word_segments[0]["start"]
+        start_time = None
 
-        for w in word_segments:
+        for i in range(len(word_segments)):
+
+            w = word_segments[i]
+
+            if start_time is None: 
+                start_time = w["start"]
+
             buffer.append(w)
             duration = w["end"] - start_time
 
@@ -126,6 +133,8 @@ class WhisperAI(BaseAI):
                 flush = True
             if max_duration and duration >= max_duration:
                 flush = True
+            if max_pause and i+1 < len(word_segments) and (word_segments[i+1]["start"] - w["end"]) > max_pause:
+                flush = True
 
             if flush:
                 merged.append({
@@ -134,7 +143,7 @@ class WhisperAI(BaseAI):
                     "text": " ".join(x["text"] for x in buffer)
                 })
                 buffer = []
-                start_time = w["end"]
+                start_time = None
 
         # Flush any leftovers
         if buffer:

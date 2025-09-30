@@ -26,7 +26,12 @@ def test_whisper():
     
     
     # Fix segments (You must use this method with Single word as segment)
-    fixed_subs = whisperer.merge_segments(word_segments=subs['answer'], words_per_segment=4, max_duration=1.5)
+    fixed_subs = whisperer.merge_segments(
+        word_segments=subs['answer'], 
+        words_per_segment=4, 
+        max_duration=1.5,
+        max_pause=0.45
+    )
     print("\nFixed subs:")
     for sub in fixed_subs['answer']: print(sub)
 
