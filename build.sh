@@ -35,6 +35,10 @@ else
     docker build -t openvoice \
       --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
       -f ./components/TTS/OpenVoice/Dockerfile .
+  elif [ "$1" = "spanishf5" ]; then
+    docker build -t spanishf5 \
+      --build-arg INSTALL_TORCH_CUDA126=${INSTALL_TORCH_CUDA126:-true} \
+      -f ./components/TTS/SpanishF5/Dockerfile .
   elif [ "$1" = "whisper" ]; then
     docker build -t whisper \
       --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \

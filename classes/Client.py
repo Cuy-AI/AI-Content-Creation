@@ -16,7 +16,7 @@ class Client:
                         r = requests.post(
                             f"http://localhost:{self.port}/{name}",
                             json=kwargs,
-                            timeout=25 if name != "generate" else 120
+                            timeout=25 if name != "generate" else 300
                         )
                         r.raise_for_status()
                         return r.json()

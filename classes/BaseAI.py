@@ -66,7 +66,7 @@ class BaseAI:
                 # else:
                 #     raise TypeError(f"Expected type {type(self.params[key])} for parameter '{key}', got {type(value)}")
             else:
-                raise KeyError(f"Unknown parameter '{key}' for model '{self.model_name}'")
+                raise KeyError(f"Unknown parameter '{key}' for model '{getattr(self, 'model_name', 'unknown')}'")
         
         return "All parameters were set successfully"
 
