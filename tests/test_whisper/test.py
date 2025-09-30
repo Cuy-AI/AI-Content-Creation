@@ -22,22 +22,22 @@ def test_whisper():
     input_video = whisper_container.volume_path + "/resources/videos/test/test01.mp4"
     subs = whisperer.generate(path=input_video)
     print("Video:")
-    print(subs['answer'])
+    for sub in subs['answer']: print(sub)
     
     
     # Fix segments (You must use this method with Single word as segment)
     fixed_subs = whisperer.merge_segments(word_segments=subs['answer'], words_per_segment=4, max_duration=1.5)
     print("\nFixed subs:")
-    print(fixed_subs)
+    for sub in fixed_subs['answer']: print(sub)
 
     # Transcribe an audio (Sentences as segments)
     input_audio = whisper_container.volume_path + "/resources/audios/test/test01.mp3"
     whisperer.set_params(word_timestamps=False)
     subs2 = whisperer.generate(path=input_audio)
     print("\nAudio:")
-    print(subs2["answer"])
+    for sub in subs2["answer"]: print(sub)
 
-    whisper_container.stop()
+    # whisper_container.stop()
 
 
 # [
