@@ -44,13 +44,13 @@ class WhisperAI(BaseAI):
         
         self.model_size = model_size
         self.model = whisper.load_model(model_size, device=self.device)
-        return "Model name was set successfully"    
+        return "Model size was loaded successfully"    
     
     def get_model_size(self):
         return self.model_size
 
 
-    def generate(self, path, segment=True):
+    def generate(self, path):
         """
         Generate transcription from an audio or video file.
         Always returns a list of dicts with start, end, text.
@@ -75,20 +75,86 @@ class WhisperAI(BaseAI):
         if temp_audio and os.path.exists(temp_audio):
             os.remove(temp_audio)
 
-        # print(result)
+        # print("Raw result:", result)
 
-        # Convert to requested format
-        if segment:
-            output = []
+        output = []
+        if self.params["word_timestamps"]:
+            for seg in result["segments"]:
+                for w in seg.get("words", []):
+                    output.append({
+                        "start": float(w["start"]),
+                        "end": float(w["end"]),
+                        "text": w["word"].strip()
+                    })
+        else:
             for seg in result["segments"]:
                 output.append({
                     "start": float(seg["start"]),
                     "end": float(seg["end"]),
                     "text": seg["text"].strip()
                 })
-            return output
-        else:
-            return result
+        
+        return output
+
+
+    def merge_segments(self, word_segments, words_per_segment = None, max_duration = None, max_pause=None):
+        """
+        Merge word-level segments into larger segments.
+
+        Args:
+            word_segments: list of {"start": float, "end": float, "text": str}
+            words_per_segment: if set, group by this many words per segment
+            max_duration: if set, start a new segment after this many seconds
+            max_pause: if set, start a new segment if speaker makes a pause for this many seconds
+
+        Returns:
+            List of merged segments with {"start", "end", "text"}
+        """
+        if not word_segments:
+            return []
+
+        merged = []
+        buffer = []
+        start_time = None
+
+        for i in range(len(word_segments)):
+
+            w = word_segments[i]
+
+            if start_time is None: 
+                start_time = w["start"]
+
+            buffer.append(w)
+            duration = w["end"] - start_time
+
+            # Check if we should flush the buffer
+            flush = False
+            if words_per_segment and len(buffer) >= words_per_segment:
+                flush = True
+            if max_duration and duration >= max_duration:
+                flush = True
+            if max_pause and i+1 < len(word_segments) and (word_segments[i+1]["start"] - w["end"]) > max_pause:
+                flush = True
+
+            if flush:
+                merged.append({
+                    "start": buffer[0]["start"],
+                    "end": buffer[-1]["end"],
+                    "text": " ".join(x["text"] for x in buffer)
+                })
+                buffer = []
+                start_time = None
+
+        # Flush any leftovers
+        if buffer:
+            merged.append({
+                "start": buffer[0]["start"],
+                "end": buffer[-1]["end"],
+                "text": " ".join(x["text"] for x in buffer)
+            })
+
+        return merged
+
 
 
 if __name__ == "__main__":
