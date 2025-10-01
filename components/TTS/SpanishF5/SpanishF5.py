@@ -75,45 +75,46 @@ class SpanishF5(BaseAI):
         if not prompt or not prompt.strip():
             raise ValueError("Prompt cannot be empty")
         
-        # Set up output directory and path
-        if save_path:
-            # If save_path looks like a file (has an extension), use it directly
-            if os.path.splitext(save_path)[1]:
-                if os.path.dirname(save_path):
-                    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-                output_path = save_path
-            else:
-                # treat as directory -> auto-generate a filename
-                os.makedirs(save_path, exist_ok=True)
-                output_path = os.path.join(save_path, "output.wav")
+        if not save_path:
+            save_path = "volume/output/spanishf5/default_output/output.wav"
         
-            toml_path = None
-            try:
-                toml_path = self._create_toml_config(prompt, output_path)
-                success, message = self._run_f5_inference(toml_path)
-                
-                if not success:
-                    raise RuntimeError(f"F5-TTS generation failed: {message}")
-                
-                # Check if output file was created
-                if not os.path.exists(output_path):
-                    # Look for generated files in the output directory
-                    output_dir = os.path.dirname(output_path)
-                    generated_files = [f for f in os.listdir(output_dir) if f.endswith('.wav')]
-                    if generated_files:
-                        # Move the first generated file to the expected output path
-                        shutil.move(os.path.join(output_dir, generated_files[0]), output_path)
-                    else:
-                        raise RuntimeError("F5-TTS completed but no output file was generated")
-            finally:
-                if toml_path and os.path.exists(toml_path):
-                    os.unlink(toml_path)
+        # If save_path looks like a file (has an extension), use it directly
+        if os.path.splitext(save_path)[1]:
+            if os.path.dirname(save_path):
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            output_path = save_path
+        else:
+            # treat as directory -> auto-generate a filename
+            os.makedirs(save_path, exist_ok=True)
+            output_path = os.path.join(save_path, "output.wav")
+    
+        toml_path = None
+        try:
+            toml_path = self._create_toml_config(prompt, output_path)
+            success, message = self._run_f5_inference(toml_path)
             
-            return {
-                "prompt": prompt,
-                "save_path": output_path,
-                **self.get_params()
-            }
+            if not success:
+                raise RuntimeError(f"F5-TTS generation failed: {message}")
+            
+            # Check if output file was created
+            if not os.path.exists(output_path):
+                # Look for generated files in the output directory
+                output_dir = os.path.dirname(output_path)
+                generated_files = [f for f in os.listdir(output_dir) if f.endswith('.wav')]
+                if generated_files:
+                    # Move the first generated file to the expected output path
+                    shutil.move(os.path.join(output_dir, generated_files[0]), output_path)
+                else:
+                    raise RuntimeError("F5-TTS completed but no output file was generated")
+        finally:
+            if toml_path and os.path.exists(toml_path):
+                os.unlink(toml_path)
+        
+        return {
+            "prompt": prompt,
+            "save_path": output_path,
+            **self.get_params()
+        }
 
 
 if __name__ == "__main__":
