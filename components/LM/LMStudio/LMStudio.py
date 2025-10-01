@@ -263,7 +263,7 @@ class LMStudio:
                 return False, f"Role: {role} not valid"
         return True, ""
 
-    def generate(self, prompt: str|None = None, messages: list|None = None, save_path: str|None = None, timeout=int|None) -> dict:
+    def generate(self, prompt: str|None = None, messages: list|None = None, save_path: str|None = None, timeout:int|None = None) -> dict:
         """
         Generate a completion with structured JSON output.
         - By default uses chat completions if `messages` provided; otherwise uses text completions with `prompt`.

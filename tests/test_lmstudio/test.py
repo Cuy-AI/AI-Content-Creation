@@ -48,7 +48,7 @@ def test_lmstudio():
         },
     ]
 
-    resp2 = lms.generate(messages = messages, save_path=save_path, timeout=500)
+    resp2 = lms.generate(messages = messages, save_path=save_path)
     print("\nAnswer1:")
     for k,v in resp2.items(): print(f"{k}: {v}")
 
