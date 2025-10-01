@@ -32,18 +32,6 @@ class LMStudio:
         self.generation_timeout = 120
         self.preset = None
 
-        # Default JSON Schema for structured outputs (user can replace via set_schema)
-        self.default_schema = {
-            "name": "standard_response",
-            "schema": {
-                "type": "object",
-                "properties": {
-                    "answer": {"type": "string"},
-                },
-                "required": ["answer"],
-            }
-        }
-
         # Ensure server is running if requested
         if auto_start: self.start_server()
 
@@ -275,7 +263,7 @@ class LMStudio:
                 return False, f"Role: {role} not valid"
         return True, ""
 
-    def generate(self, prompt: str|None = None, messages: list|None = None, save_path: str|None = None, timeout=None) -> dict:
+    def generate(self, prompt: str|None = None, messages: list|None = None, save_path: str|None = None, timeout=int|None) -> dict:
         """
         Generate a completion with structured JSON output.
         - By default uses chat completions if `messages` provided; otherwise uses text completions with `prompt`.
