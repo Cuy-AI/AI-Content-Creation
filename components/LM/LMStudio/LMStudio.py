@@ -4,10 +4,8 @@ import time
 import subprocess
 import requests
 import lmstudio as lms
-from jsonschema import Draft7Validator
-from classes.BaseAI import BaseAI
 
-class LMStudio(BaseAI):
+class LMStudio:
     """
     Full-control helper for LM Studio local server and models.
 
@@ -25,21 +23,17 @@ class LMStudio(BaseAI):
         Python load_new_instance: https://lmstudio.ai/docs/python/manage-models/loading
     """
 
-    def __init__(self, model_id: str|None = None, auto_start: bool = True) -> None:
+    def __init__(self, model_id: str|None = None, preset: str|None = None, auto_start: bool = True) -> None:
         super().__init__()
 
         self.base_url = "http://127.0.0.1:1234"
         self.client = lms.get_default_client()
         self.request_timeout = 45
         self.generation_timeout = 120
-
-        # Load params (BaseAI)
-        # self.params_path = "params.json"
-        self.params_path = "components/LM/LMStudio/params.json"
-        self.set_default_params()
+        self.preset = None
 
         # Default JSON Schema for structured outputs (user can replace via set_schema)
-        self.schema = {
+        self.default_schema = {
             "name": "standard_response",
             "schema": {
                 "type": "object",
@@ -55,10 +49,10 @@ class LMStudio(BaseAI):
 
         # Populate model info
         self.lm_models = {}
-        self.refresh_models()
+        self._refresh_models()
 
         # Check model_id and load the model
-        if model_id: self.load_model(model_id)
+        if model_id: self.load_model(model_id, preset=preset)
         else: self.model = model_id
         
 
@@ -146,7 +140,7 @@ class LMStudio(BaseAI):
     # -----------------------
     # Model discovery
     # -----------------------
-    def refresh_models(self) -> None:
+    def _refresh_models(self) -> None:
         """
         Refresh models data with endpoint: /api/v0/models
         """
@@ -159,7 +153,7 @@ class LMStudio(BaseAI):
         self.lm_models = {}
 
         for model in models_raw.get("data", []):
-            if model.get("type", None) == "llm":
+            if model.get("type", None) in ("llm", "vlm"):
                 model_id = model.get("id", None)
                 if model_id is not None:
                     fixed_dic = model.copy()
@@ -174,11 +168,11 @@ class LMStudio(BaseAI):
     # -----------------------
     # Model loading
     # -----------------------
-
     def get_model(self) -> str:
         return self.model
     
     def set_model(self, model_id:str):
+        self._refresh_models()
         if not self._check_model_id(model_id):
             raise ValueError("The model id is not listed on downloaded models")
         
@@ -188,7 +182,7 @@ class LMStudio(BaseAI):
         self.model_id = model_id
         return "LM model was set successfully"
 
-    def load_model(self, model_id: str, config: dict = {}) -> None:
+    def load_model(self, model_id: str, config: dict = None, preset: str|None = None) -> str:
         """
         Load a model using the LM Studio Python SDK, then refresh state.
         """
@@ -197,36 +191,38 @@ class LMStudio(BaseAI):
             raise ValueError("The model id is not listed on downloaded models")
         
         self.model = model_id
+        self._refresh_models()
 
-        # Check if model is already loaded
-        self.refresh_models()
-        
         if self.model in self.list_loaded_models():
             return f"Model {self.model} was already loaded"
-        
-        # Load model
-        self.client.llm.load_new_instance(self.model, config=config)
 
-        # After loading, refresh our local snapshot
-        self.refresh_models()
+        # Use preset if provided, otherwise config
+        if preset:
+            self.preset = preset
+            self.client.llm.load_new_instance(self.model, preset=preset)
+        else:
+            self.preset = None
+            self.client.llm.load_new_instance(self.model, config=config or {})
 
         # Check if refresh models reflects the changes
         load_timeout = 90
         deadline = time.time() + load_timeout
         while time.time() < deadline:
-            self.refresh_models()
+            self._refresh_models()
             if self.lm_models[self.model].get("state", None) == "loaded":
                 return f"Model {self.model} was loaded successfully"
-            time.sleep(0.5)
+            time.sleep(5)
             
         raise RuntimeError(f"Failed to load {self.model} model")
 
     def eject_model(self, model_id: str) -> None:
 
-        if model_id not in self.list_available_models():
+        self._refresh_models()
+
+        if model_id not in self.list_available_models(refresh=False):
             raise ValueError("The model id is not listed on downloaded models")
 
-        if model_id not in self.list_loaded_models():
+        if model_id not in self.list_loaded_models(refresh=False):
             raise ValueError("The model is not listed on loaded models")
         
         # Unload model
@@ -234,38 +230,37 @@ class LMStudio(BaseAI):
 
         # After unloading, refresh our local snapshot
         self.model_id = None
-        self.refresh_models()
+        self._refresh_models()
 
         # Check if refresh models reflects the changes
         load_timeout = 60
         deadline = time.time() + load_timeout
         while time.time() < deadline:
-            self.refresh_models()
+            self._refresh_models()
             if self.lm_models[self.model].get("state", None) == "not-loaded":
                 return f"Model {self.model} was unloaded successfully"
             time.sleep(0.5)
 
         raise RuntimeError(f"Failed to unload {self.model} model")
         
-        
-    # -----------------------
-    # Structured generation
-    # -----------------------
-    def set_schema(self, schema: dict) -> None:
-        """Replace the JSON Schema used for structured outputs."""
-        try:
-            Draft7Validator.check_schema(schema.copy())
-            self.schema = {
-                "name": "qa_schema",
-                "schema": schema.copy(),
-                "strict": False
-            }
-            return "Json schema was set successfully"
-        except Exception as e:
-             raise ValueError(f"The json schema is not valid: {e}")
 
-    def get_schema(self) -> dict:
-        return self.schema.copy()
+    # -----------------------
+    # Preset handling
+    # -----------------------
+    def set_preset(self, preset_identifier: str) -> str:
+        """
+        Set an active preset to be used for subsequent generations.
+        This does not reload the model — it just changes the config applied at generation time.
+        """
+        if not preset_identifier or not isinstance(preset_identifier, str):
+            raise ValueError("Preset name must be a non-empty string")
+        
+        self.preset = preset_identifier
+        return f"Preset set to '{self.preset}'"
+
+    def get_preset(self) -> str|None:
+        """Return the currently active preset name (or None)."""
+        return self.preset
 
 
     # -----------------------
@@ -280,7 +275,7 @@ class LMStudio(BaseAI):
                 return False, f"Role: {role} not valid"
         return True, ""
 
-    def generate(self, prompt: str|None = None, messages: list|None = None, save_path: str|None = None) -> dict:
+    def generate(self, prompt: str|None = None, messages: list|None = None, save_path: str|None = None, timeout=None) -> dict:
         """
         Generate a completion with structured JSON output.
         - By default uses chat completions if `messages` provided; otherwise uses text completions with `prompt`.
@@ -290,50 +285,37 @@ class LMStudio(BaseAI):
         Returns: parsed JSON response from LM Studio server.
         """
 
-        # Route choice
-        if messages is not None:
-            use_chat = True 
+        if not self.model:
+            raise RuntimeError("No model is loaded. Use load_model() first.")
+
+        if messages:
             validation, msg = self._validate_messages(messages)
             if not validation: raise ValueError(msg)
-        elif prompt is not None:
-            use_chat = False
-        else:
-            raise ValueError("Provide 'messages' (or a 'prompt')")
 
-        # Base payload
-        params = self.params.copy()
-        params["seed"] = self._generate_random()
-
-        # Build request
-        if use_chat:
             url = f"{self.base_url}/v1/chat/completions"
             body = {
                 "model": self.model,
                 "messages": messages,
-                "response_format": {
-                    "type": "json_schema",
-                    "json_schema": self.schema
-                },
-                **{k: v for k, v in params.items() if v is not None},
             }
-        else:
+        elif prompt:
             url = f"{self.base_url}/v1/completions"
             body = {
                 "model": self.model,
                 "prompt": prompt,
-                "response_format": {
-                    "type": "json_schema",
-                    "json_schema": self.schema
-                },
-                **{k: v for k, v in params.items() if v is not None},
             }
-
-        r = requests.post(url, json=body, timeout=self.generation_timeout)
-        r.raise_for_status()
-        if use_chat:
-            text_answ = r.json()["choices"][0]["message"]["content"]
         else:
-            text_answ = r.json()["choices"][0]["text"]
+            raise ValueError("Provide 'messages' or 'prompt'")
+
+        # inject preset if user set one
+        if self.preset:
+            body["preset"] = self.preset
+
+        timeout = timeout if timeout is not None else self.generation_timeout
+        r = requests.post(url, json=body, timeout=timeout)
+        r.raise_for_status()
+
+        if messages: text_answ = r.json()["choices"][0]["message"]["content"]
+        else: text_answ = r.json()["choices"][0]["text"]
 
         try:
             structured_answer = json.loads(text_answ)
@@ -342,9 +324,8 @@ class LMStudio(BaseAI):
 
         final_output = {
             "model": self.model,
-            "input": prompt,
-            "schema": self.schema,
-            "parameters": self.params,
+            "input": messages if messages else prompt,
+            "preset": self.preset,
             "output": structured_answer,
         }
 
@@ -370,10 +351,12 @@ class LMStudio(BaseAI):
     # -----------------------
     # Introspection helpers
     # -----------------------
-    def list_available_models(self) -> list:
+    def list_available_models(self, refresh = True) -> list:
         """Return a list of model IDs from /v1/models."""
+        if refresh: self._refresh_models()
         return list(self.lm_models.keys())
 
-    def list_loaded_models(self) -> list:
+    def list_loaded_models(self, refresh = True) -> list:
         """Return the last known loaded models."""
+        if refresh: self._refresh_models()
         return [model_id for model_id, info in self.lm_models.items() if info["state"] == "loaded"]

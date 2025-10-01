@@ -1,107 +1,28 @@
 {
   "model": "mistralai/mistral-nemo-instruct-2407",
-  "input": null,
-  "schema": {
-    "name": "qa_schema",
-    "schema": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "description": "A catchy YouTube video title under 60 characters"
-        },
-        "caption": {
-          "type": "string",
-          "description": "A short, intriguing description, like a YouTube video caption without spoilers"
-        },
-        "resume": {
-          "type": "string",
-          "description": "A summary of the full story, including spoilers"
-        },
-        "number_of_scenes": {
-          "type": "integer"
-        },
-        "scenes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "character": {
-                "type": "string",
-                "description": "The name of the character that is speaking or narrating during the scene",
-                "enum": [
-                  "David",
-                  "Lucy",
-                  "Narrator"
-                ]
-              },
-              "script": {
-                "type": "string",
-                "description": "The dialogue or narration for the scene"
-              },
-              "image_prompt": {
-                "type": "string",
-                "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
-              }
-            },
-            "required": [
-              "character",
-              "script",
-              "image_prompt"
-            ]
-          }
-        }
-      },
-      "required": [
-        "title",
-        "caption",
-        "resume",
-        "number_of_scenes",
-        "scenes"
-      ]
+  "input": [
+    {
+      "role": "system",
+      "content": "You are a creative social media strategist that generates engaging Reels video topic(s) for a given category and returns structured JSON outputs. The topics you generate must be a concise, high-level concept, not a catchy title, full sentence, or include hashtags. Reel Requirements: Each topic must be suitable for a fast-paced, 30-60 second short-form video. Ensure the concept has a clear potential hook to grab attention and a strong potential call-to-action (CTA) to encourage comments or shares."
     },
-    "strict": false
-  },
-  "parameters": {
-    "temperature": 0.7,
-    "top_p": 1.0,
-    "max_tokens": 2048,
-    "frequency_penalty": 0.0,
-    "presence_penalty": 0.0,
-    "stop": null,
-    "stream": false
-  },
+    {
+      "role": "user",
+      "content": "Suggest 10 unique, engaging Reels video topic(s) for the category: Cloud & Big Tech. Avoid these (already done) video topics: ['How Netflix handles millions of streams', 'How Google search works', 'AWS explained in 60 seconds', 'How YouTube manages billions of videos', 'What is serverless computing?']"
+    }
+  ],
+  "preset": "@local:test03-mistralai-mistral-nemo-instruct-2407",
   "output": {
-    "title": "The Rise and Fall of Blockbuster: How Netflix Changed Entertainment Forever",
-    "caption": "A tale of two titans in the world of entertainment.",
-    "resume": "Join us as we explore the rise and fall of Blockbuster, the once mighty video rental chain, and how its demise paved the way for streaming giant Netflix to revolutionize the way we consume entertainment forever.",
-    "number_of_scenes": 5,
-    "scenes": [
-      {
-        "character": "Narrator",
-        "script": "In the late 1980s and early '90s, there was one name that ruled the world of home entertainment: Blockbuster.",
-        "image_prompt": "A busy Blockbuster store, filled with VHS tapes."
-      },
-      {
-        "character": "David",
-        "script": "I remember as a kid, my parents would take me to Blockbuster every weekend. It was like going to Disneyland for movies.",
-        "image_prompt": "A young David with his family at a Blockbuster store."
-      },
-      {
-        "character": "Lucy",
-        "script": "But as the internet became more accessible in the late '90s, everything started to change. Netflix saw an opportunity and launched their DVD-by-mail service in 1998.",
-        "image_prompt": "A scene from a '90s office with early Netflix employees."
-      },
-      {
-        "character": "Narrator",
-        "script": "Blockbuster, however, was slow to react. They dismissed the idea of mail-order movies and even turned down an offer to buy Netflix for just $50 million in 2000.",
-        "image_prompt": "A Blockbuster manager laughing off the idea of renting movies by mail."
-      },
-      {
-        "character": "David",
-        "script": "I remember when we finally got Netflix, it was a game-changer. No more late fees, no more driving to the store. We could just watch what we wanted, whenever we wanted.",
-        "image_prompt": "David and his family enjoying a movie at home with their first Netflix DVD."
-      }
+    "topics": [
+      "Blindfolded AI Prediction",
+      "Tech Evolution Timeline Dance",
+      "Cloud Myths Debunked in 30 Secs",
+      "Serverless Cooking - No Oven, No Problem!",
+      "The 'Big Tech' Scavenger Hunt Challenge",
+      "5 Cloud Misconceptions: Mythbusters Style",
+      "Day in the Life of a Data Center",
+      "Cloud Transformation: Before & After",
+      "Big Tech's Most Outrageous Fact (Guess & Reveal)",
+      "I Survived a Day Without My Big Tech Devices"
     ]
   }
 }
