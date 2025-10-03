@@ -235,14 +235,11 @@ class LMStudio:
     # -----------------------
     # Preset handling
     # -----------------------
-    def set_preset(self, preset_identifier: str) -> str:
+    def set_preset(self, preset_identifier: str|None = None) -> str:
         """
         Set an active preset to be used for subsequent generations.
         This does not reload the model — it just changes the config applied at generation time.
         """
-        if not preset_identifier or not isinstance(preset_identifier, str):
-            raise ValueError("Preset name must be a non-empty string")
-        
         self.preset = preset_identifier
         return f"Preset set to '{self.preset}'"
 
@@ -263,7 +260,13 @@ class LMStudio:
                 return False, f"Role: {role} not valid"
         return True, ""
 
-    def generate(self, prompt: str|None = None, messages: list|None = None, save_path: str|None = None, timeout:int|None = None) -> dict:
+    def generate(
+            self, prompt: str|None = None, 
+            messages: list|None = None, 
+            parameters: dict = {},
+            save_path: str|None = None, 
+            timeout:int|None = None
+        ) -> dict:
         """
         Generate a completion with structured JSON output.
         - By default uses chat completions if `messages` provided; otherwise uses text completions with `prompt`.
@@ -273,6 +276,7 @@ class LMStudio:
         Returns: parsed JSON response from LM Studio server.
         """
 
+        # Check if a model is loaded
         if not self.model:
             raise RuntimeError("No model is loaded. Use load_model() first.")
 
@@ -284,12 +288,14 @@ class LMStudio:
             body = {
                 "model": self.model,
                 "messages": messages,
+                **{k: v for k, v in parameters.items() if v is not None},
             }
         elif prompt:
             url = f"{self.base_url}/v1/completions"
             body = {
                 "model": self.model,
                 "prompt": prompt,
+                **{k: v for k, v in parameters.items() if v is not None},
             }
         else:
             raise ValueError("Provide 'messages' or 'prompt'")
