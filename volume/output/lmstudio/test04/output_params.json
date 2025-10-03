@@ -1,0 +1,76 @@
+{
+  "model": "mistralai/magistral-small-2509",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    Character of the story: 'David', 'Lucy', 'Narrator'\n    ",
+  "preset": null,
+  "output": {
+    "main_title": "Glowing Code",
+    "description": "A modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code, forcing him to question everything and fight for his life as powerful forces close in.",
+    "scenes": [
+      {
+        "character": "David",
+        "speak": "Why did this old weather app still exist? No one used it anymore.",
+        "image": "David sits at his desk, staring at an outdated weather app on his screen. Rain patters against the window outside."
+      },
+      {
+        "character": "Narrator",
+        "speak": "But David’s curiosity was about to lead him down a path no one ever expected.",
+        "image": "The camera zooms in as David clicks on the app, revealing hidden lines of code. A faint glow emanates from his screen."
+      },
+      {
+        "character": "David",
+        "speak": "This can’t be right. This code doesn’t make sense. It’s not even for a weather app.",
+        "image": "David leans closer, eyes widening as he scrolls through the lines of code. The glow pulses faintly."
+      },
+      {
+        "character": "Narrator",
+        "speak": "Something was buried deep inside. Something that didn’t belong there.",
+        "image": "A close-up of David’s screen shows a encrypted message hidden in the code. The rain outside grows louder."
+      },
+      {
+        "character": "David",
+        "speak": "I need to tell someone. Lucy would know what to do.",
+        "image": "David grabs his phone, fingers shaking as he dials Lucy’s number. His reflection in the screen looks tense."
+      },
+      {
+        "character": "Lucy",
+        "speak": "David? What’s wrong?",
+        "image": "A flashback of David and Lucy working together in a bright office. The scene shifts to present-day Lucy, looking concerned over video call."
+      },
+      {
+        "character": "David",
+        "speak": "I found something… in the old weather app. It’s not just an app. It’s a backdoor into something bigger.",
+        "image": "David leans in close to his screen, whispering as if afraid someone is listening."
+      },
+      {
+        "character": "Narrator",
+        "speak": "But they were being watched. And the watchers weren’t friendly.",
+        "image": "The camera pans out, revealing a shadowy figure outside David’s window. The glow from his screen flickers."
+      },
+      {
+        "character": "David",
+        "speak": "They know I found it. They’re coming for me. I need to leave now!",
+        "image": "David grabs his laptop, shoving files into a bag as the sound of footsteps echoes in the hallway outside."
+      },
+      {
+        "character": "Narrator",
+        "speak": "The hunt was on. And David was the only one who could stop what was coming next.",
+        "image": "A montage of David running through dark streets, his breath visible in the cold air as he glances back over his shoulder."
+      },
+      {
+        "character": "Lucy",
+        "speak": "David! They’re tracking you. I’ve got a safe place, but you have to move fast!",
+        "image": "A quick cut to Lucy at her computer, typing frantically as the sound of sirens wails in the distance."
+      },
+      {
+        "character": "David",
+        "speak": "I’m almost there. Just… stay with me.",
+        "image": "David reaches a dimly lit alleyway, his hands trembling as he types a final message to Lucy on his phone."
+      },
+      {
+        "character": "Narrator",
+        "speak": "The truth was out there. But so were they. And the game had just begun.",
+        "image": "A shadowy figure steps forward from the darkness, their face obscured as David turns to see them. The screen fades to black."
+      }
+    ]
+  }
+}

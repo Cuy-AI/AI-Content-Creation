@@ -1,0 +1,23 @@
+{
+  "model": "mistralai/magistral-small-2509",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    Character of the story: 'David', 'Lucy', 'Narrator'\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating. I will give you the allowed characters on the json schema as an enum).\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "preset": "@local:test02-mistralai-magistral-small-2509",
+  "output": {
+    "title": "",
+    "caption": "",
+    "resume": "",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "",
+        "image_prompt": ""
+      },
+      {
+        "character": "David",
+        "script": "",
+        "image_prompt": ""
+      }
+    ]
+  }
+}

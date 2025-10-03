@@ -1,3 +1,2 @@
 lmstudio
 requests
-jsonschema

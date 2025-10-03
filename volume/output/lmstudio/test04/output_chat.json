@@ -13,16 +13,16 @@
   "preset": "@local:test03-mistralai-mistral-nemo-instruct-2407",
   "output": {
     "topics": [
-      "Blindfolded AI Prediction",
-      "Tech Evolution Timeline Dance",
-      "Cloud Myths Debunked in 30 Secs",
-      "Serverless Cooking - No Oven, No Problem!",
-      "The 'Big Tech' Scavenger Hunt Challenge",
-      "5 Cloud Misconceptions: Mythbusters Style",
-      "Day in the Life of a Data Center",
-      "Cloud Transformation: Before & After",
-      "Big Tech's Most Outrageous Fact (Guess & Reveal)",
-      "I Survived a Day Without My Big Tech Devices"
+      "Cloud Migration: Old vs New",
+      "Big Tech's Data Centers: A Glimpse Inside",
+      "AI Explained in Under a Minute",
+      "The Evolution of Cloud Storage",
+      "IoT Devices: Security in Action",
+      "5G Rollout: Big Tech's Race to the Future",
+      "Quantum Computing: The Next Big Thing?",
+      "Cloud Gaming Showdown: Xbox vs Google Stadia",
+      "Big Tech's Green Pledge: Data Centers Going Green",
+      "Blockchain Explained for Tech Newbies"
     ]
   }
 }

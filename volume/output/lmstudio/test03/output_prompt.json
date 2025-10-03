@@ -1,86 +1,72 @@
 {
-  "model": "mistralai/mistral-nemo-instruct-2407",
+  "model": "mistralai/magistral-small-2509",
   "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    Character of the story: 'David', 'Lucy', 'Narrator'\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating. I will give you the allowed characters on the json schema as an enum).\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
-  "schema": {
-    "name": "qa_schema",
-    "schema": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string",
-          "description": "A catchy YouTube video title under 60 characters"
-        },
-        "caption": {
-          "type": "string",
-          "description": "A short, intriguing description, like a YouTube video caption without spoilers"
-        },
-        "resume": {
-          "type": "string",
-          "description": "A summary of the full story, including spoilers"
-        },
-        "number_of_scenes": {
-          "type": "integer"
-        },
-        "scenes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "character": {
-                "type": "string",
-                "description": "The name of the character that is speaking or narrating during the scene",
-                "enum": [
-                  "David",
-                  "Lucy",
-                  "Narrator"
-                ]
-              },
-              "script": {
-                "type": "string",
-                "description": "The dialogue or narration for the scene"
-              },
-              "image_prompt": {
-                "type": "string",
-                "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
-              }
-            },
-            "required": [
-              "character",
-              "script",
-              "image_prompt"
-            ]
-          }
-        }
-      },
-      "required": [
-        "title",
-        "caption",
-        "resume",
-        "number_of_scenes",
-        "scenes"
-      ]
-    },
-    "strict": false
-  },
-  "parameters": {
-    "temperature": 0.7,
-    "top_p": 1.0,
-    "max_tokens": 2048,
-    "frequency_penalty": 0.0,
-    "presence_penalty": 0.0,
-    "stop": null,
-    "stream": false
-  },
+  "preset": "@local:test02-mistralai-magistral-small-2509",
   "output": {
-    "title": "The Hidden Code",
-    "caption": "A young coder uncovers a global conspiracy buried in an old app's code. Can he expose it before it's too late?",
-    "resume": "David, a brilliant but struggling coder, stumbles upon encrypted messages in an outdated app. As he deciphers them, he realizes they're predicting worldwide disasters. With Lucy's help, they race against time to warn the world and stop the conspiracy.",
+    "title": "The Code That Knew Too Much",
+    "caption": "A young coder stumbles upon a hidden message in an old app—one that could change the world. But who can he trust?",
+    "resume": "David, an aspiring programmer, uncovers a cryptic code snippet in an outdated app. As he digs deeper, he realizes it's part of a global conspiracy orchestrated by a powerful tech conglomerate. He teams up with Lucy, a journalist investigating the same company, to expose the truth before they get silenced. But as they uncover more, the stakes rise—someone is watching them.",
     "number_of_scenes": 12,
     "scenes": [
       {
         "character": "Narrator",
-        "script": "In a world where technology is everywhere...",
-        "image_prompt": "A vast cityscape at night, filled with neon lights and towering skyscrapers, reflecting on the dark surface of a river."
+        "script": "In a world where every click leaves a trace, one code could expose the truth.",
+        "image_prompt": "A dark, futuristic cityscape at night. Neon lights reflect off rain-slicked streets. The glow of screens and data streams in the background."
+      },
+      {
+        "character": "David",
+        "script": "This can't be right... Why would an old weather app have this kind of encryption?",
+        "image_prompt": "A young man, David, sits at a cluttered desk with multiple monitors. One screen displays lines of code, highlighted in red. His face is illuminated by the eerie blue light."
+      },
+      {
+        "character": "David",
+        "script": "It's like a backdoor... but who built it?",
+        "image_prompt": "Close-up of David’s hands typing frantically on a keyboard. The screen shows a complex code structure, with arrows and question marks floating in the air as if being highlighted by an invisible cursor."
+      },
+      {
+        "character": "Lucy",
+        "script": "You found something? That app was supposed to be obsolete.",
+        "image_prompt": "A woman, Lucy, stands in David’s doorway. She holds a tablet displaying news about the tech conglomerate. Her expression is serious, her eyes sharp with curiosity."
+      },
+      {
+        "character": "David",
+        "script": "This isn’t just an app—it’s a key. And I think it unlocks something big.",
+        "image_prompt": "David and Lucy stand side by side at the desk. David points to the screen where the code is now arranged in a 3D grid, glowing ominously."
+      },
+      {
+        "character": "Lucy",
+        "script": "If this is what I think it is... We need to move fast before they find out.",
+        "image_prompt": "Lucy’s face is tense. She glances over her shoulder as if expecting someone to be listening. The camera captures the tension in her shoulders and the urgency in her eyes."
+      },
+      {
+        "character": "Narrator",
+        "script": "The deeper they go, the more dangerous it becomes.",
+        "image_prompt": "A dark, shadowy figure watches from a distance, their face obscured by the glow of multiple screens. The background is filled with servers and data streams."
+      },
+      {
+        "character": "David",
+        "script": "Wait—this isn’t just surveillance. They’re controlling people’s lives through this.",
+        "image_prompt": "David leans back in his chair, eyes wide as he scrolls through a list of names and personal data. The screen flickers with red alerts."
+      },
+      {
+        "character": "Lucy",
+        "script": "We need proof—something the public can see.",
+        "image_prompt": "Lucy paces back and forth, her mind racing. She stops at David’s side, pointing at a specific line of code on the screen that pulses with energy."
+      },
+      {
+        "character": "David",
+        "script": "I’ll extract it, but we have to be quick. They’re already tracking us.",
+        "image_prompt": "The screen splits into multiple windows—one showing real-time surveillance feeds of David and Lucy’s locations. The other displays the code being pulled apart, piece by piece."
+      },
+      {
+        "character": "Narrator",
+        "script": "The truth is out there—but at what cost?",
+        "image_prompt": "A dramatic shot of the city from above. Streams of data flow like rivers between buildings. A shadowy figure presses a button, and a wave of digital corruption spreads across the screen."
+      },
+      {
+        "character": "David",
+        "script": "We have to go live now—before they shut us down.",
+        "image_prompt": "David’s hands hover over the keyboard as Lucy watches, her face a mix of fear and determination. The screen flickers with a countdown timer, red numbers ticking away."
       }
     ]
   }
