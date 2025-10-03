@@ -14,3 +14,6 @@ resources_compilation/
 *.webm
 *.mpeg
 *.mpg
+
+# Python virtual environment
+venv/

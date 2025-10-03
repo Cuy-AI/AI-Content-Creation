@@ -6,12 +6,14 @@ from tests.test_whisper.test import test_whisper
 from tests.test_imageeditor.test import test_image_editor
 from tests.test_videoeditor.test import test_video_editor
 from tests.test_googlesearch.test import test_googlesearch
+from tests.test_spanishf5.test import test_spanishf5
 
 # test_lmstudio()
 # test_openrouter()
 # test_chatterbox()
 # test_openvoice()
-test_whisper()
+# test_whisper()
 # test_image_editor()
 # test_video_editor()
 # test_googlesearch()
+test_spanishf5()
