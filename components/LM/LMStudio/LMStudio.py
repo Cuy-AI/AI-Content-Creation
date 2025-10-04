@@ -31,17 +31,18 @@ class LMStudio:
         self.request_timeout = 45
         self.generation_timeout = 120
         self.preset = None
+        self.lm_models = {}
+        self.model_id = model_id
 
         # Ensure server is running if requested
-        if auto_start: self.start_server()
+        if auto_start: 
+            self.start_server()
 
-        # Populate model info
-        self.lm_models = {}
-        self._refresh_models()
+            # Populate model info
+            self._refresh_models()
 
-        # Check model_id and load the model
-        if model_id: self.load_model(model_id, preset=preset)
-        else: self.model = model_id
+            # Check model_id and load the model
+            if model_id: self.load_model(model_id, preset=preset)
         
 
     # -----------------------
@@ -175,11 +176,12 @@ class LMStudio:
         Load a model using the LM Studio Python SDK, then refresh state.
         """
 
+        self._refresh_models()
+
         if not self._check_model_id(model_id):
             raise ValueError("The model id is not listed on downloaded models")
         
         self.model = model_id
-        self._refresh_models()
 
         if self.model in self.list_loaded_models():
             return f"Model {self.model} was already loaded"
