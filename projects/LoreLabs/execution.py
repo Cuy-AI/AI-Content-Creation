@@ -206,7 +206,7 @@ def research_topics(category:str, topic: str, stop: bool = False):
     with open(save_path, "r", encoding="utf-8") as f:
         downloaded_htmls = json.load(f)
 
-    print(f'[INFO] Htmls were saved successfully')
+    print(f'[INFO] Htmls were loaded/saved successfully')
 
 
     # Sub step 5 - Parse downloaded htmls ---------------------
@@ -218,19 +218,19 @@ def research_topics(category:str, topic: str, stop: bool = False):
     with open(save_path, "r", encoding="utf-8") as f:
         parsed_htmls = json.load(f)
 
-    print(f'[INFO] Htmls were parsed successfully')
+    print(f'[INFO] Html parsed content was loaded/saved successfully')
 
 
     # Sub step 6 - Summarize information from the website ---------------------
     save_path = output_folder + '6 - summarize.json'
     if save_path not in saved:
         print('[INFO] Summarizing information...')
-        researcher.summarize(query=query['query'], topic=topic, parsed_htmls=parsed_htmls, timeout=240, save_path=save_path)
+        researcher.summarize(category=category, topic=topic, query=query['query'], parsed_htmls=parsed_htmls, timeout=240, save_path=save_path)
     
     with open(save_path, "r", encoding="utf-8") as f:
         summary = json.load(f)
 
-    print(f'[INFO] Successfully summarized HTML content')
+    print(f'[INFO] Summaries were saved successfully')
 
 
     # Stop researcher

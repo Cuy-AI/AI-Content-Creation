@@ -183,7 +183,7 @@ class ResearcherLMS:
         return resp
 
 
-    def summarize(self, query, topic, parsed_htmls, timeout=180, save_path = None):
+    def summarize(self, category, topic, query, parsed_htmls, timeout=180, save_path = None):
 
         if not self.active: raise RuntimeError('Server has not been start and model has not been loaded')
 
@@ -235,6 +235,10 @@ class ResearcherLMS:
 
         resp = self.lms.generate(messages = messages, parameters=params, timeout=timeout)
         resp = resp['output']
+
+        # Insert topic & category to the final response
+        resp['topic'] = topic
+        resp['category'] = category
 
         if save_path:
             with open(save_path, "w", encoding="utf-8") as f:
