@@ -1,0 +1,14 @@
+{
+  "selected_results": [
+    {
+      "title": "IPS. vs. IDS vs. Firewall: What Are the Differences? - Palo Alto ...",
+      "link": "https://www.paloaltonetworks.com/cyberpedia/firewall-vs-ids-vs-ips",
+      "snippet": "What is the difference between firewall and IDS? ... A firewall controls access to a network by blocking or permitting traffic based on security rules, while anxa0..."
+    },
+    {
+      "title": "What is the Difference Between a Firewall and IPS?",
+      "link": "https://www.stamus-networks.com/blog/what-is-the-difference-between-a-firewall-and-ids",
+      "snippet": "The main difference between a firewall and IDS is that a firewall is simply a control mechanism, while an intrusion detection system actually detects andxa0..."
+    }
+  ]
+}

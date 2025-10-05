@@ -1,0 +1,24 @@
+{
+  "web_search": [
+    {
+      "title": "Monolithic vs Microservices - Difference Between Software ...",
+      "link": "https://aws.amazon.com/compare/the-difference-between-monolithic-and-microservices-architecture/",
+      "snippet": "A monolithic application runs on a single server, but microservices applications benefit more from the cloud environment. While it's possible to run ..."
+    },
+    {
+      "title": "Monolithic vs. Microservices Architecture - GeeksforGeeks",
+      "link": "https://www.geeksforgeeks.org/software-engineering/monolithic-vs-microservices-architecture/",
+      "snippet": "Aug 7, 2025 ... What is a Microservices Architecture? · Each service is responsible for a single functionality or feature of the application and can be developed ..."
+    },
+    {
+      "title": "Microservices vs. monolithic architecture | Atlassian",
+      "link": "https://www.atlassian.com/microservices/microservices-architecture/microservices-vs-monolith",
+      "snippet": "Advantages of a monolithic architecture · Easy deployment – One executable file or directory makes deployment easier. · Development – When an application is built ..."
+    },
+    {
+      "title": "Monolithic vs Microservices: What's the Difference? | Kong Inc.",
+      "link": "https://konghq.com/blog/learning-center/monolith-vs-microservices",
+      "snippet": "Mar 9, 2024 ... ... development impact the choice between monolithic and microservices architectures? ... monolithic or microservices architecture for my application?"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "web_search": [
+    {
+      "title": "Explain it like I'm 5? : r/QuantumComputing",
+      "link": "https://www.reddit.com/r/QuantumComputing/comments/yjnvwh/explain_it_like_im_5/",
+      "snippet": "Nov 1, 2022 ... A quantum computer is a device that can do quantum computation. This is where you get the physics part. You need to be able to turn and flip and ..."
+    },
+    {
+      "title": "What Is Quantum Computing? | IBM",
+      "link": "https://www.ibm.com/think/topics/quantum-computing",
+      "snippet": "Quantum algorithms work by manipulating information in a way inaccessible to classical computers, which can provide dramatic speed-ups for certain problems— ..."
+    },
+    {
+      "title": "How Does a Quantum Computer Work? | Scientific American",
+      "link": "https://www.scientificamerican.com/video/how-does-a-quantum-computer-work/",
+      "snippet": "Jul 7, 2021 ... Quantum computers do this by substituting the binary “bits” of classical computing with something called “qubits.” Qubits operate according to ..."
+    },
+    {
+      "title": "How Do Quantum Computers Work? : ScienceAlert",
+      "link": "https://www.sciencealert.com/quantum-computers",
+      "snippet": "Quantum computers perform calculations based on the probability of an object's state before it is measured - instead of just 1s or 0s."
+    }
+  ]
+}
