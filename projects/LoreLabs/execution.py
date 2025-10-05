@@ -4,6 +4,7 @@ import inspect
 
 from projects.classes.TopicManagerOR import TopicManagerOR
 from projects.classes.ResearcherLMS import ResearcherLMS
+from projects.classes.ScriptGenerator import ScriptGenerator
 
 # GLOBALS ---------------------------------------------------------------------------------------
 project_name = 'LoreLabs'
@@ -14,6 +15,7 @@ execution_id = None
 workflow_path = None
 
 researcher = None
+scriptGenerator = None
 
 # UTILS -----------------------------------------------------------------------------------------
 def int2id(id: int, digits:int = 4) -> str:
@@ -234,13 +236,69 @@ def research_topics(category:str, topic: str, stop: bool = False):
 
 
     # Stop researcher
-    if stop: 
+    if stop and researcher is not None: 
         researcher.stop()
         researcher = None
 
     # Return summary
     return summary
 
+
+
+def generate_script(summary: dict, stop: bool = False):
+
+    global scriptGenerator
+
+    topic = summary['topic']
+    category = summary['category']
+    print(f"\n[STEP] Generating Script for: {category} - {topic}...")
+
+    # Replace or remove characters that are invalid in file paths
+    invalid_chars = r'\/:*"<> '
+    fixed_cat = ''.join(c if c not in invalid_chars else '_' for c in category.lower()).replace("?", "").replace("'", "")
+    
+    # Set up output directory
+    function_name = inspect.currentframe().f_code.co_name # Get function name
+    output_folder = workflow_path + function_name + "/"
+    output_path = output_folder + fixed_cat + '.json'
+
+    # Check if already saved output
+    if os.path.exists(output_folder): # If output folder exist, check what is inside
+        saved = check_saved_output(output_folder, extensions=['.json'])
+    else: # If not, create it and execute step
+        os.makedirs(output_folder, exist_ok=True)
+        saved = []
+
+
+    # Start the script generator class
+    if scriptGenerator is None:
+        scriptGenerator = ScriptGenerator()
+        scriptGenerator.start()
+
+
+    if output_path not in saved: # No saved output
+        
+        print('[INFO] Generating script...')
+
+        # Generate script
+        script = scriptGenerator.generate_script(summary=summary, save_path=output_path)
+        
+    else: # Saved output found
+
+        # load saved topics.json file
+        with open(output_path, "r", encoding="utf-8") as f:
+            script = json.load(f)
+
+        # Print loaded
+        print("[INFO] Script was loaded successfully")
+        
+
+    # Stop ScriptGenerator
+    if stop: 
+        scriptGenerator.stop()
+        scriptGenerator = None
+
+    return script
 
 
 def execution():
@@ -262,4 +320,14 @@ def execution():
             stop=(i == num_topics - 1)
         ) 
         for i, (category, topic) in enumerate(categories_topics)
+    ]
+
+    # Step 3: Generate video script (step is being executed multiple times for research result)
+    num_summaries = len(research)
+    scripts = [
+        generate_script(
+            summary, 
+            stop=(i == num_summaries - 1)
+        ) 
+        for i, summary in enumerate(research)
     ]
