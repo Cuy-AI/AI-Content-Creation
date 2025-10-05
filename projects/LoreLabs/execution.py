@@ -13,6 +13,7 @@ base_path = f'volume/output/{project_name}/{workflow_name}/'
 execution_id = None
 workflow_path = None
 
+researcher = None
 
 # UTILS -----------------------------------------------------------------------------------------
 def int2id(id: int, digits:int = 4) -> str:
@@ -21,12 +22,15 @@ def int2id(id: int, digits:int = 4) -> str:
         raise ValueError(f"id '{id}' has more than {digits} digits")
     return id_str.zfill(digits)
 
-def check_saved_output(folder_path: str, extensions: None | list[str] = None) -> list[str]:
+def check_saved_output(folder_path: str, extensions: None | list[str] = None, full_path:bool = True) -> list[str]:
 
     files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
 
     if extensions is not None:
         files = [f for f in files if any(f.endswith(ext) for ext in extensions)]
+
+    if full_path: 
+        files = [folder_path + f for f in files]
 
     return files
 
@@ -117,7 +121,7 @@ def load_topics(branch:str = 'cs'):
         saved = saved[0]
 
         # load saved topics.json file
-        with open(output_folder + saved, "r", encoding="utf-8") as f:
+        with open(saved, "r", encoding="utf-8") as f:
             topics_json = json.load(f)
 
         # Print loaded
@@ -128,10 +132,134 @@ def load_topics(branch:str = 'cs'):
 
 
 
+def research_topics(category:str, topic: str, stop: bool = False):
+
+    global researcher
+
+    print(f"\n[STEP] Researching: {category} - {topic}...")
+
+    # Replace or remove characters that are invalid in file paths
+    invalid_chars = r'\/:*"<> '
+    fixed_cat = ''.join(c if c not in invalid_chars else '_' for c in category.lower()).replace("?", "").replace("'", "")
+    
+    # Set up output directory
+    function_name = inspect.currentframe().f_code.co_name # Get function name
+    output_folder = workflow_path + function_name + f"/{fixed_cat}/"
+
+    # Check if already saved output
+    if os.path.exists(output_folder): # If output folder exist, check what is inside
+        saved = check_saved_output(output_folder, extensions=['.json'])
+    else: # If not, create it and execute step
+        os.makedirs(output_folder, exist_ok=True)
+        saved = []
+
+    # Start the researcher class
+    if researcher is None:
+        researcher = ResearcherLMS(model_id='mistralai/magistral-small-2509') # This model is better
+        # researcher = ResearcherLMS(model_id='mistralai/mistral-nemo-instruct-2407')
+        researcher.start()
+
+    # Sub step 1 - Create google search query ---------------------
+    save_path = output_folder + '1 - query.json'
+    if save_path not in saved:
+        print('[INFO] Generating query...')
+        researcher.get_query(category=category, topic=topic, save_path=save_path)    
+    
+    with open(save_path, "r", encoding="utf-8") as f:
+        query = json.load(f)
+
+    print(f'[INFO] Query: {query['query']}')
+
+
+    # Sub step 2 - Perform search and collect url's ---------------------
+    save_path = output_folder + '2 - web_results.json'
+    if save_path not in saved:
+        print('[INFO] Searching query...')
+        researcher.search(query=query, save_path=save_path)
+    
+    with open(save_path, "r", encoding="utf-8") as f:
+        web_results = json.load(f)
+
+    print(f'[INFO] Web results loaded/saved successfully')
+    # for ele in web_results['web_search']: print(f"[INFO] {ele}")
+
+
+    # Sub step 3 - Selecting the urls to search ---------------------
+    save_path = output_folder + '3 - search_selection.json'
+    if save_path not in saved:
+        print('[INFO] Selecting web...')
+        researcher.select_web(query=query['query'], web_results=web_results, save_path=save_path)
+    
+    with open(save_path, "r", encoding="utf-8") as f:
+        selected_results = json.load(f)
+
+    print(f'[INFO] Selected results loaded/saved successfully')
+    # for ele in selected_results['selected_results']: print(f"[INFO] {ele['link']}")
+
+
+    # Sub step 4 - Download html of selected websites ---------------------
+    save_path = output_folder + '4 - htmls.json'
+    if save_path not in saved:
+        print("[INFO] Downlaoding htmls...")
+        researcher.download_htmls(selected_results=selected_results, save_path=save_path)
+
+    with open(save_path, "r", encoding="utf-8") as f:
+        downloaded_htmls = json.load(f)
+
+    print(f'[INFO] Htmls were saved successfully')
+
+
+    # Sub step 5 - Parse downloaded htmls ---------------------
+    save_path = output_folder + '5 - parsed_htmls.json'
+    if save_path not in saved:
+        print('[INFO] Parsing htmls...')
+        researcher.parse_htmls(downloaded_htmls=downloaded_htmls, save_path=save_path)
+    
+    with open(save_path, "r", encoding="utf-8") as f:
+        parsed_htmls = json.load(f)
+
+    print(f'[INFO] Htmls were parsed successfully')
+
+
+    # Sub step 6 - Summarize information from the website ---------------------
+    save_path = output_folder + '6 - summarize.json'
+    if save_path not in saved:
+        print('[INFO] Summarizing information...')
+        researcher.summarize(query=query['query'], topic=topic, parsed_htmls=parsed_htmls, timeout=240, save_path=save_path)
+    
+    with open(save_path, "r", encoding="utf-8") as f:
+        summary = json.load(f)
+
+    print(f'[INFO] Successfully summarized HTML content')
+
+
+    # Stop researcher
+    if stop: 
+        researcher.stop()
+        researcher = None
+
+    # Return summary
+    return summary
+
+
+
 def execution():
     print("\n\n\t\t\t *** STARTING THE EXECUTION ***")
 
-    # Set up environment
+    # Step 0: Set up environment
     set_up_environment(0)
+
+    # Step 1: Load topics
     topics = load_topics()
 
+    # Step 2: Research (step is being executed multiple times for each topic)
+    categories_topics = list(topics.items())
+    num_topics = len(categories_topics)
+    research = [
+        research_topics(
+            category, 
+            topic, 
+            stop=(i == num_topics - 1)
+        ) 
+        for i, (category, topic) in enumerate(categories_topics)
+    ]
