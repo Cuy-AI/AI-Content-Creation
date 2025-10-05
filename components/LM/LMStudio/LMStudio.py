@@ -56,7 +56,7 @@ class LMStudio:
         try:
             # Attempt quick probe first
             if self._is_server_up():
-                print("Server is already up")
+                # print("Server is already up")
                 return "Server is already up"
 
             proc = subprocess.run(
@@ -72,7 +72,7 @@ class LMStudio:
             deadline = time.time() + start_timeout
             while time.time() < deadline:
                 if self._is_server_up(): 
-                    print("Server started successfully")
+                    # print("Server started successfully")
                     return "Server started successfully"
                 time.sleep(0.5)
 
@@ -107,7 +107,7 @@ class LMStudio:
             deadline = time.time() + stop_timeout
             while time.time() < deadline:
                 if not self._is_server_up(): 
-                    print("Server stopped successfully")
+                    # print("Server stopped successfully")
                     return "Server stopped successfully"
                 time.sleep(0.5)
             raise RuntimeError(
