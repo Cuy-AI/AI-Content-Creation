@@ -1,0 +1,78 @@
+{
+  "title": "Rick Explains Neural Networks Like a Boss!",
+  "caption": "Ever wondered how neural networks learn? Rick and Morty break it down! #AIExplained",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, listen up, Morty. You ever wonder how a neural network learns from data?",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "neural network diagram"
+    },
+    {
+      "character": "Morty",
+      "script": "Uh, isn't it just some magic, Rick? Like, you wave a wand and suddenly it knows things?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "magic wand"
+    },
+    {
+      "character": "Rick",
+      "script": "No, Morty! It's not magic. It's weights and biases, baby! The network starts as an empty canvas.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "empty canvas"
+    },
+    {
+      "character": "Morty",
+      "script": "Weights? Biases? What are those?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "confused emoji"
+    },
+    {
+      "character": "Rick",
+      "script": "Weights control how much the input features matter. Biases shift decision thresholds. Think of it like adjusting knobs on your TV, Morty.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "tv knobs"
+    },
+    {
+      "character": "Morty",
+      "script": "Oh! Like when I try to get the picture right, but it's all blurry?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "blurry tv screen"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! Now, the network makes guesses. If it's wrong, we use backpropagation to adjust those knobs.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "backpropagation diagram"
+    },
+    {
+      "character": "Morty",
+      "script": "Backwhat now? Sounds like some kind of alien disease!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "alien disease"
+    },
+    {
+      "character": "Rick",
+      "script": "It's not a disease, Morty! It's how the network learns. We calculate an error and adjust weights to minimize it.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "calculator"
+    },
+    {
+      "character": "Morty",
+      "script": "So, like when I practice my math homework over and over until I get it right?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "math homework"
+    },
+    {
+      "character": "Rick",
+      "script": "Precisely, Morty! And we do this for multiple epochs—rounds of training—until the network generalizes well.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "training rounds"
+    },
+    {
+      "character": "Rick",
+      "script": "And that's how neural networks learn, Morty. Now go impress your teacher!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "teacher emoji"
+    }
+  ]
+}

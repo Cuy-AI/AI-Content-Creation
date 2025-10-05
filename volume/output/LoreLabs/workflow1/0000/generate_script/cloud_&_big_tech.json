@@ -1,0 +1,84 @@
+{
+  "title": "Rick & Morty Explain Cloud Databases!",
+  "caption": "Why cloud databases are the future—#CloudComputing #TechForBeginners",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, Morty! Let’s talk about cloud databases. You know how we jump between dimensions? Cloud databases let you switch between data sources just as easily!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "cloud computing cartoon"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so it’s like having a database on the internet? Like, where my Pootis Pals game saves data?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "cloud database diagram"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! And here’s the kicker—no more managing physical servers like some caveman. The cloud provider handles all that crap for you!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "cloud server data center"
+    },
+    {
+      "character": "Morty",
+      "script": "So, if my app gets popular overnight, the database can scale up without me freaking out?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "scaling cloud data"
+    },
+    {
+      "character": "Rick",
+      "script": "Bingo! And if it flops, you scale back down—no wasted resources. Pay only for what you use, Morty. Genius!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "cloud cost management"
+    },
+    {
+      "character": "Morty",
+      "script": "What about security? Like, is it safe or could some alien hack into my database?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "cloud data encryption"
+    },
+    {
+      "character": "Rick",
+      "script": "Relax! Encryption and centralized policies keep your data locked tighter than a Meeseeks box. Plus, backups are automated—so you’re covered if things go kablooey.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "cloud backup solutions"
+    },
+    {
+      "character": "Morty",
+      "script": "But what about downtime? Like, when the Wi-Fi in my basement cuts out?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "cloud reliability features"
+    },
+    {
+      "character": "Rick",
+      "script": "Cloud providers have high availability and disaster recovery—so your data stays online even if the whole neighborhood loses power, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "cloud reliability features"
+    },
+    {
+      "character": "Morty",
+      "script": "So it’s like having a database that never dies? Like me after eating those space tacos?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "cloud uptime metrics"
+    },
+    {
+      "character": "Rick",
+      "script": "Precisely! And the best part? You can use it for anything—relational or non-relational databases. Need a MySQL for your mom’s cookies business? Done!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "cloud database options"
+    },
+    {
+      "character": "Morty",
+      "script": "Wow, so cloud databases are the answer to all my problems!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "happy customer using cloud database"
+    },
+    {
+      "character": "Rick",
+      "script": "Almost! Just don’t let the vendor lock you in like a Plumbus patent. But overall, it’s a pretty sweet deal—now go build something, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "cloud database vendor comparison"
+    }
+  ]
+}

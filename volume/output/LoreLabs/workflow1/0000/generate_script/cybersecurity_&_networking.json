@@ -1,0 +1,84 @@
+{
+  "title": "Rick & Morty Explain Firewalls vs IDS in 60 Seconds!",
+  "caption": "Ever wondered how firewalls and intrusion detection systems work? #CybersecurityWithRickAndMorty",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright Morty, let’s talk about cybersecurity. Imagine the internet is a crazy interdimensional portal.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "internet as a crazy interdimensional portal cartoon"
+    },
+    {
+      "character": "Morty",
+      "script": "Oh geez, Rick. Like, what if some alien gets in and starts messing with our Wi-Fi?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "alien hacker cartoon"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! That’s where firewalls come in. They’re like bouncers at the club, checking IDs and letting only the cool kids in.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "bouncer checking ID cartoon"
+    },
+    {
+      "character": "Morty",
+      "script": "So firewalls block bad traffic based on rules? Like, say, blocking that sketchy website I always accidentally visit?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "blocked website cartoon"
+    },
+    {
+      "character": "Rick",
+      "script": "Bingo! Now, Intrusion Detection Systems (IDS) are like the security cameras watching everyone once they’re inside. They spot shady behavior but can’t kick anyone out.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "security camera watching people cartoon"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so IDS just warns us? Like when I accidentally eat my own boogers and Mom yells?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "mom yelling at kid cartoon"
+    },
+    {
+      "character": "Rick",
+      "script": "Precisely! And then there’s IPS—Intrusion Prevention Systems. They’re like the bouncers who can actually throw out the weirdos trying to crash the party.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "bouncer throwing someone out cartoon"
+    },
+    {
+      "character": "Morty",
+      "script": "So, firewall = bouncer, IDS = cameras, IPS = the guys who actually toss people? Got it.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "security guards throwing someone out cartoon"
+    },
+    {
+      "character": "Rick",
+      "script": "Now, in real life, firewalls sit at the edge of your network. IDS is often behind it to spot sneaky threats that slip through.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "diagram firewall and IDS placement"
+    },
+    {
+      "character": "Morty",
+      "script": "So if my school Wi-Fi had these, it would stop me from accidentally downloading viruses when I click on ‘free memes’?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "free meme cartoon"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! And modern systems often combine these for ultimate protection. Think of it like the Plumbus factory—it’s all about layers, Morty.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "plumbus factory cartoon"
+    },
+    {
+      "character": "Morty",
+      "script": "Whoa… So you’re saying the internet is like that Plumbus place?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "confused morty cartoon"
+    },
+    {
+      "character": "Rick",
+      "script": "Yep. Keep your firewall strong, Morty. Or else you’ll be the next Mr. Poopybutthole of cybersecurity.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "mr poopybutthole cartoon"
+    }
+  ]
+}

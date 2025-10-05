@@ -1,0 +1,90 @@
+{
+  "title": "Rick Explains Quantum Computers to Morty",
+  "caption": "Quantum computing, explained by Rick! #ScienceWithRick #QuantumComputing",
+  "scenes": [
+    {
+      "character": "Morty",
+      "script": "Uh, Rick? What’s the deal with quantum computers? Are they like... regular computers on steroids?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "confused morty face"
+    },
+    {
+      "character": "Rick",
+      "script": "No, Morty! Classical computers are like your dumb brain—only one thought at a time. Quantum computers? They’re like my brain: superposition!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "quantum superposition diagram"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so they can be 0 and 1 at the same time? That’s weird. Can I get a real-world example?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": "quantum superposition analogy"
+    },
+    {
+      "character": "Rick",
+      "script": "Sure, Morty! Think of a coin spinning in the air. It’s both heads and tails until it lands. Qubits are like that, but way more annoying.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "spinning coin analogy"
+    },
+    {
+      "character": "Morty",
+      "script": "Okay... so how does this help? Can they, like, crack passwords or something?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "quantum computing applications"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! They can factor big numbers fast, which means breaking encryption—like your mom’s Facebook password, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "quantum decryption example"
+    },
+    {
+      "character": "Morty",
+      "script": "Great, so now they’re hacking my socials? What else?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": "quantum hacking analogy"
+    },
+    {
+      "character": "Rick",
+      "script": "Oh, Morty. They can model molecules for new drugs—like finding cures that your stupid brain couldn’t imagine!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "quantum drug discovery"
+    },
+    {
+      "character": "Morty",
+      "script": "Okay, so why aren’t they everywhere? Sounds like they’re the future.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "quantum computer challenges"
+    },
+    {
+      "character": "Rick",
+      "script": "Because qubits are like your love life, Morty—unstable and error-prone! They need crazy cold temps to work.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "quantum computer cooling system"
+    },
+    {
+      "character": "Morty",
+      "script": "So what’s the point? We can’t even use them now!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": "quantum computer limitations"
+    },
+    {
+      "character": "Rick",
+      "script": "They’re still in development, Morty. But when they get good—bam! Quantum advantage. Like me, only better at math.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "quantum advantage concept"
+    },
+    {
+      "character": "Morty",
+      "script": "So basically, you’re saying quantum computers are like the Rick of computers—super powerful but a pain in the ass?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "rick and morty meme"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly, Morty! Now go study some quantum physics so you can impress a girl for once.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "quantum physics textbook"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "title": "Rick & Morty Explain: React vs Angular",
+  "caption": "React or Angular? Rick and Morty break it down! #WebDev #Coding",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, Morty. You wanna know the difference between React and Angular? Think of them like two different inter-dimensional travel portals.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "react vs angular comparison diagram"
+    },
+    {
+      "character": "Morty",
+      "script": "Uh, sure, Rick. But why? I just want to make a cool website that doesn’t break like your portal did last time.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "broken website meme"
+    },
+    {
+      "character": "Rick",
+      "script": "React, created by Facebook, is all about building user interfaces. It's like the portal gun for your UI—fast and flexible.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "react logo"
+    },
+    {
+      "character": "Morty",
+      "script": "So it’s good for when I need to update my Morty’s-Not-Here.com page quickly?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "website updating animation"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! React uses a virtual DOM and one-way data flow, so it’s like your portal gun—shoots fast and doesn’t mess up the dimensions.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "virtual dom diagram"
+    },
+    {
+      "character": "Morty",
+      "script": "What about Angular? Is it like your other portal that’s more complicated but works for big stuff?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "angular logo"
+    },
+    {
+      "character": "Rick",
+      "script": "Bingo! Angular, by Google, is a full framework. It has two-way data binding and enforces MVC architecture. It’s like the big, structured portal for enterprises—robust but takes longer to set up.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "mvc architecture diagram"
+    },
+    {
+      "character": "Morty",
+      "script": "So Angular is good for like, a big company’s website? And React is better for something quick and dynamic?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "enterprise software vs spc diagram"
+    },
+    {
+      "character": "Rick",
+      "script": "Precisely! Like how I build a portal for quick escapes versus the big, stable one for the Citadel. And both are used by giants like Netflix and Samsung!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "netflix and samsung logos"
+    },
+    {
+      "character": "Morty",
+      "script": "But why do people seem to prefer React then? Is it because it’s easier?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "react popularity chart"
+    },
+    {
+      "character": "Rick",
+      "script": "Partly! React is simpler and has more flexibility. But Angular, with its TypeScript support, is better for long-term maintainability—like the difference between a getaway car and a family minivan.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "typescript logo"
+    },
+    {
+      "character": "Morty",
+      "script": "So, if I want to build something fast and cool like my portal gun app, React is the way to go?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "portal gun app mockup"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! Now stop wasting time and start coding, Morty. And remember—if you mess up, just hit F12 and blame the framework!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "funny coding meme"
+    }
+  ]
+}

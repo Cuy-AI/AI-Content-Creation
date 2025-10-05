@@ -1,0 +1,84 @@
+{
+  "title": "Rick Explains Binary Search: 'It’s Like a Drunk Morty, But Faster!'",
+  "caption": "Binary search made easy with Rick & Morty! #ProgrammingHumor #Algorithms",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Morty, you ever search for something in a sorted list? Like, say, the best burrito recipe?",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "sorted list of items"
+    },
+    {
+      "character": "Morty",
+      "script": "Uh, yeah, Rick! But it takes forever if I check one by one.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "person checking items one by one"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly, Morty! Binary search is like halving the problem each time. Start at both ends and check the middle.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "diagram of binary search steps"
+    },
+    {
+      "character": "Morty",
+      "script": "So, if I’m looking for 'al pastor,' I just pick the middle option and compare?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "al pastor burrito"
+    },
+    {
+      "character": "Rick",
+      "script": "Bingo! If it’s not there, you toss the half where it can’t be and repeat. Like cutting out bad episodes of 'Morty’s World'!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "cutting something in half"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, but how do you code this? Do you just guess the middle index?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "code snippet for binary search"
+    },
+    {
+      "character": "Rick",
+      "script": "Close! You start with L=-1, R=size of array. Then m = l + (r - l)/2. Avoid overflow like I avoid your grandpa’s lectures.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "overflow error in code"
+    },
+    {
+      "character": "Morty",
+      "script": "But what if the array is empty? Or the element isn’t there?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "empty list"
+    },
+    {
+      "character": "Rick",
+      "script": "Edge cases, Morty! Check when L+1 == R. If not found, L will be -1 or R will be out of bounds.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "edge case handling in code"
+    },
+    {
+      "character": "Morty",
+      "script": "But what about finding the lower bound, like the first instance of 'al pastor'?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "lower bound example"
+    },
+    {
+      "character": "Rick",
+      "script": "Just adjust your bounds! When you find it, move left to include all earlier occurrences.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "code for lower bound binary search"
+    },
+    {
+      "character": "Morty",
+      "script": "So, binary search is like a more organized version of my room?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "organized vs messy room"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! Now go find that burrito, Morty. And remember: O(log n) time means it’s faster than me saying 'I told you so!'",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "fast search visual"
+    }
+  ]
+}
