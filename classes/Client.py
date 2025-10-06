@@ -38,4 +38,4 @@ class Client:
             setattr(self, method_name, MethodType(func, self))
             created_methods.append(method_name)
 
-        print(f"📡 Client initialized with methods: {created_methods}")
+        # print(f"📡 Client initialized with methods: {created_methods}")
