@@ -1,78 +1,98 @@
 {
-  "title": "Rick Explains: Monolithic vs Microservices – What’s the Damn Difference?",
-  "caption": "Ever wonder why some apps break when you update them? #SoftwareDevelopment",
+  "title": "Rick & Morty Explain: Monoliths vs Microservices!",
+  "caption": "Why your app might be a 'Pickle Rick' or a 'Mr. Poopybutthole'! #SoftwareArchitecture",
   "scenes": [
     {
       "character": "Rick",
-      "script": "Alright, Morty. Picture this—one big, ugly block of code that does everything! That’s a monolithic app.",
+      "script": "Alright, Morty, let's talk about software architecture. Imagine you're building a sandwich. A monolithic app is like one giant sandwich, with all the ingredients stuck together.",
       "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "monolithic software architecture diagram"
+      "web_image": "sandwich with all ingredients mixed together"
     },
     {
       "character": "Morty",
-      "script": "Uh, Rick… so like, if one part breaks, the whole thing breaks? That sounds awful!",
+      "script": "Wait, so if I want to change the cheese, I have to rebuild the whole sandwich? That sounds like a bad time.",
       "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "broken application diagram"
+      "web_image": "person struggling to rebuild a sandwich"
     },
     {
       "character": "Rick",
-      "script": "Exactly! Like your mom’s old minivan—one flat tire and the whole thing’s useless.",
+      "script": "Exactly! Monolithic apps are simple at first, but changing one part can be a nightmare. It's like trying to modify a car while it's driving down the road.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with raised eyebrow questioning ideas.png",
+      "web_image": "mechanic working on a moving car"
+    },
+    {
+      "character": "Morty",
+      "script": "So what's the alternative? A bunch of tiny sandwiches that communicate through portals?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": "small sandwiches on a table"
+    },
+    {
+      "character": "Rick",
+      "script": "Close enough, Morty. Microservices break the app into small, independent services. Each does one thing, like a cheese service, a meat service, and so on.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": "separate containers for different sandwich ingredients"
+    },
+    {
+      "character": "Morty",
+      "script": "So if I want to change the cheese, I just build a new cheese service and plug it in? That sounds like a much better time.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": "person easily swapping out ingredients"
+    },
+    {
+      "character": "Rick",
+      "script": "You got it, Morty. Each service can be developed, deployed, and scaled independently. It's like having a team of tiny chefs, each making one part of the sandwich.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": "small chefs preparing different parts of a dish"
+    },
+    {
+      "character": "Morty",
+      "script": "But wait, how do these services talk to each other? Do they use the portal gun?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty evil with a serious looking and a portal gun.png",
+      "web_image": "communication between separate systems"
+    },
+    {
+      "character": "Rick",
+      "script": "No, Morty. They communicate via APIs—like little messengers that go back and forth. It's like having a waitstaff in a restaurant, taking orders to the kitchen.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "waiter taking an order"
+    },
+    {
+      "character": "Morty",
+      "script": "So microservices are better? Why would anyone use monolithic then?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": "confused person comparing two options"
+    },
+    {
+      "character": "Rick",
+      "script": "Monolithic is simpler for small projects. Imagine you're just making a sandwich for yourself, not a restaurant full of customers.",
       "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "old minivan with a flat tire"
+      "web_image": "person making a simple sandwich"
     },
     {
       "character": "Morty",
-      "script": "But what if we split things up? Like, you know, tiny independent services that talk to each other?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "microservices software architecture diagram"
+      "script": "Okay, so which one is better for a big project? Like... the Citadel?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": "large complex system"
     },
     {
       "character": "Rick",
-      "script": "Bingo! That’s microservices—each service does one thing and talks via APIs.",
+      "script": "Microservices! They scale better, you can update services independently. Just like the Citadel—one part breaks down, but the rest keeps running!",
       "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "APIs communication between services diagram"
+      "web_image": "complex system with modular components"
     },
     {
       "character": "Morty",
-      "script": "So, like, if one fails, the others keep working? That’s awesome!",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "microservices architecture diagram with a broken piece"
+      "script": "So if I want to build something big and not go crazy, microservices are the way to go. Got it!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": "person looking relieved"
     },
     {
       "character": "Rick",
-      "script": "Exactly! It’s like a pizza delivery service—one driver crashes, but the rest keep delivering pizzas.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "pizza delivery drivers on bikes"
-    },
-    {
-      "character": "Morty",
-      "script": "But why not just start with microservices then?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "confused face emoji"
-    },
-    {
-      "character": "Rick",
-      "script": "Good question, Morty! Monolithic is easier at first—like building a treehouse for one friend.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "kids building a treehouse"
-    },
-    {
-      "character": "Rick",
-      "script": "But when more friends show up, you need a mansion—microservices! It’s more work upfront but way better long-term.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "luxury mansion"
-    },
-    {
-      "character": "Morty",
-      "script": "So transitioning from monolithic to microservices is like… remodeling the treehouse into a mansion?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "renovation of a treehouse"
-    },
-    {
-      "character": "Rick",
-      "script": "Yeah! And just like remodeling, you need good tools and planning. But the payoff is worth it.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "tools for remodeling"
+      "script": "Exactly! And remember, Morty—if your app is a mess, just say 'Wubba Lubba Dub Dub' and transition to microservices!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "person shouting Wubba Lubba Dub Dub"
     }
-  ]
+  ],
+  "topic": "What is the difference between monolithic and microservices architecture?",
+  "category": "Software Development"
 }

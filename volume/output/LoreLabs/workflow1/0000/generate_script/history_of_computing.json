@@ -1,90 +1,92 @@
 {
-  "title": "Rick & Morty Explain: First Programming Language! #TechHistory",
-  "caption": "Ever wonder who coded first? Rick & Morty break it down! 💻🚀 #Programming",
+  "title": "Rick & Morty: The First Programming Language? Wubba Lubba Dub Dub!",
+  "caption": "Who created the first programming language? 🤔 #HistoryOfComputing",
   "scenes": [
     {
       "character": "Rick",
-      "script": "Alright, Morty. Let's talk about the first programming language. You know, back when computers were bigger than your brain.",
+      "script": "Alright, Morty. Today we're diving into the ancient history of programming. The first one was Ada Lovelace in the 1840s.",
       "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "Charles Babbage Analytical Engine illustration"
-    },
-    {
-      "character": "Morty",
-      "script": "Wait, so like, who was the first coder? Was it some ancient alien dude or something?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
       "web_image": "Ada Lovelace portrait"
     },
     {
-      "character": "Rick",
-      "script": "Close, Morty. It was actually Ada Lovelace in the 1840s! She created the first algorithm for Babbage’s Analytical Engine. Think of it like a super old-school recipe for computers.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "Ada Lovelace and Charles Babbage"
-    },
-    {
       "character": "Morty",
-      "script": "Like, so she was the OG coder? That’s actually kind of cool.",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
-      "web_image": "Ada Lovelace with her notes"
-    },
-    {
-      "character": "Rick",
-      "script": "Exactly! Now, the first language that could store codes and automate tasks was Plankalkul by Konrad Zuse in the 1940s. Imagine a robot doing your chores—Plankalkul was like that for engineers!",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "Konrad Zuse and his computer"
-    },
-    {
-      "character": "Morty",
-      "script": "So, it was like, the first programming language for actual computers? Like, not just ideas?",
+      "script": "Ada Lovelace? Like, the math lady? But she didn't have a computer!",
       "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "Plankalkul code example"
+      "web_image": "Charles Babbage's Analytical Engine illustration"
     },
     {
       "character": "Rick",
-      "script": "Bingo! Then came Assembly Language in 1949, which made coding a little less like banging rocks together. It simplified instructions so computers could do more stuff.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "Assembly language code"
+      "script": "Exactly! She wrote the first algorithm for Charles Babbage’s Analytical Engine. It was like a recipe, Morty. A recipe for math!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "Cookbook with a recipe"
     },
     {
       "character": "Morty",
-      "script": "Like, how? Was it easier or something?",
+      "script": "So she was the OG programmer? Cool! But who made the first real programming language?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": "Konrad Zuse portrait"
+    },
+    {
+      "character": "Rick",
+      "script": "That would be Konrad Zuse in the 1940s with Plankalkul. It could store codes and automate tasks—like a robot butler, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": "Industrial robot performing repetitive task"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so computers were already doing chores back then? Weird.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": "Vacuum cleaner illustration"
+    },
+    {
+      "character": "Rick",
+      "script": "Then came Assembly Language in 1949, which simplified computer instructions. Think of it like a cheat sheet for computers.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": "Cheat sheet for coding"
+    },
+    {
+      "character": "Morty",
+      "script": "Ahh, so instead of typing '010110', you could say 'add 2+3'? Neat!",
       "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
-      "web_image": "Comparing old and new programming"
+      "web_image": "Binary code example"
     },
     {
       "character": "Rick",
-      "script": "Yeah! Think of it like going from Morse code to text messages. Assembly was way more readable, Morty.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "Morse code vs modern text"
+      "script": "Exactly! Then came Autocode in 1952, the first language that could be translated into machine code. Like a translator for computers!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with raised eyebrow questioning ideas.png",
+      "web_image": "Language translation example"
     },
     {
       "character": "Morty",
-      "script": "So, what’s next? Did they just keep making it easier?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "History of programming languages timeline"
+      "script": "So it’s like if you told me to do something in English, and I understood it without needing a dictionary?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": "Dictionary illustration"
     },
     {
       "character": "Rick",
-      "script": "Exactly! In 1952, Autocode came along—it could be translated into machine code. Think of it like a translator for computers. And then Fortran and LISP in the ‘50s set the stage for modern languages.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "Autocode vs Fortran"
+      "script": "Right! And these early languages paved the way for Fortran, ALGOL, and LISP. Like training wheels before a real bike!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": "Child learning to ride a bike with training wheels"
     },
     {
       "character": "Morty",
-      "script": "So, Ada Lovelace’s work was like the foundation? That’s kind of cool. Hey, is there a language named after her?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
-      "web_image": "Ada programming language logo"
+      "script": "And now we have Python, JavaScript, and all that jazz? Crazy how it all started with some math lady and her robot butler idea!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty evil with a serious looking and a portal gun.png",
+      "web_image": "Modern programming languages list"
     },
     {
       "character": "Rick",
-      "script": "Yes, Morty! The ADA language is named after her. And that’s the story of how coding evolved from brainpower to real machines.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "ADA programming logo"
+      "script": "Yep, and today we honor Ada Lovelace’s legacy with the ADA language. Now get back to learning, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "ADA programming language logo"
     },
     {
-      "character": "Rick",
-      "script": "So, Morty, remember: if you ever need to code something, just think of Ada—because even in space, the first programmer still rules.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "Ada Lovelace and futuristic coding"
+      "character": "Morty",
+      "script": "Uh, Rick? Can you just give me the answer already?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty super angry biting his lips and frowning.png",
+      "web_image": "Frustrated student at a desk"
     }
-  ]
+  ],
+  "topic": "What was the first programming language?",
+  "category": "History of Computing"
 }

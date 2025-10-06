@@ -1,84 +1,110 @@
 {
-  "title": "Rick Explains Binary Search: 'It’s Like a Drunk Morty, But Faster!'",
-  "caption": "Binary search made easy with Rick & Morty! #ProgrammingHumor #Algorithms",
+  "title": "Rick Explains Binary Search Like a Boss #CompetitiveProgramming",
+  "caption": "Ever wonder how to search faster than linear? Rick breaks down binary search in 60 seconds! 🚀 #Algorithms",
   "scenes": [
     {
       "character": "Rick",
-      "script": "Morty, you ever search for something in a sorted list? Like, say, the best burrito recipe?",
+      "script": "Alright, Morty, let me tell you about the coolest way to find stuff in a sorted list—binary search!",
       "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "sorted list of items"
+      "web_image": "a person looking at a sorted bookshelf"
     },
     {
       "character": "Morty",
-      "script": "Uh, yeah, Rick! But it takes forever if I check one by one.",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "person checking items one by one"
+      "script": "Uh, Rick? Why not just look at each item one by one like a normal person?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": "a person searching through an unsorted pile of papers"
     },
     {
       "character": "Rick",
-      "script": "Exactly, Morty! Binary search is like halving the problem each time. Start at both ends and check the middle.",
+      "script": "Because that’s for losers, Morty! Binary search halves the list every time. Start with two pointers, L and R.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "two arrows pointing at a sorted array"
+    },
+    {
+      "character": "Morty",
+      "script": "Okay, but how does that actually work? It sounds complicated.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": "a flowchart diagram of a binary search process"
+    },
+    {
+      "character": "Rick",
+      "script": "Simple! Find the middle element, compare it to what you’re looking for. If your target’s lower, go left; if higher, go right.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": "a split decision diagram with left and right arrows"
+    },
+    {
+      "character": "Morty",
+      "script": "Hmm, like when you’re trying to find a book on a shelf? You start in the middle and then narrow it down?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "a person opening a book in the middle of a bookshelf"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! And since you’re halving the list each time, it’s O(log n) — way faster than linear search.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": "a graph showing logarithmic growth"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so how do you handle the pointers? Like, where do they start?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": "two arrows at opposite ends of an array"
+    },
+    {
+      "character": "Rick",
+      "script": "Set L to -1 and R to the size of the array. Easy peasy, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with raised eyebrow questioning ideas.png",
+      "web_image": "a diagram showing initial bounds for binary search"
+    },
+    {
+      "character": "Morty",
+      "script": "Got it! But what about integer overflow? That sounds scary.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty super angry biting his lips and frowning.png",
+      "web_image": "a calculator showing an overflow error"
+    },
+    {
+      "character": "Rick",
+      "script": "Smart Morty! Use m = l + (r - l) / 2 instead of (l + r) / 2. No more overflow!",
       "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "diagram of binary search steps"
+      "web_image": "a code snippet demonstrating safe midpoint calculation"
     },
     {
       "character": "Morty",
-      "script": "So, if I’m looking for 'al pastor,' I just pick the middle option and compare?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "al pastor burrito"
+      "script": "Okay, but what if the target isn’t in the array? Or there are duplicates?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": "an array with missing or duplicate elements"
     },
     {
       "character": "Rick",
-      "script": "Bingo! If it’s not there, you toss the half where it can’t be and repeat. Like cutting out bad episodes of 'Morty’s World'!",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "cutting something in half"
+      "script": "Then you either return -1 or adjust the bounds. Edge cases, Morty—deal with them!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "a flowchart showing edge case handling"
     },
     {
       "character": "Morty",
-      "script": "Wait, but how do you code this? Do you just guess the middle index?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "code snippet for binary search"
+      "script": "So binary search isn’t just for arrays? What else can it do?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty evil with a serious looking and a portal gun.png",
+      "web_image": "a graph of a monotonic function"
     },
     {
       "character": "Rick",
-      "script": "Close! You start with L=-1, R=size of array. Then m = l + (r - l)/2. Avoid overflow like I avoid your grandpa’s lectures.",
+      "script": "It’s like your portal gun, Morty! Works on any sorted or monotonic thing—finding roots, bounds, you name it.",
       "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "overflow error in code"
+      "web_image": "a person using a tool to measure and find boundaries"
     },
     {
       "character": "Morty",
-      "script": "But what if the array is empty? Or the element isn’t there?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "empty list"
+      "script": "Wow! So binary search is basically life’s cheat code?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": "a cheat code screen from a video game"
     },
     {
       "character": "Rick",
-      "script": "Edge cases, Morty! Check when L+1 == R. If not found, L will be -1 or R will be out of bounds.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "edge case handling in code"
-    },
-    {
-      "character": "Morty",
-      "script": "But what about finding the lower bound, like the first instance of 'al pastor'?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "lower bound example"
-    },
-    {
-      "character": "Rick",
-      "script": "Just adjust your bounds! When you find it, move left to include all earlier occurrences.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "code for lower bound binary search"
-    },
-    {
-      "character": "Morty",
-      "script": "So, binary search is like a more organized version of my room?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "organized vs messy room"
-    },
-    {
-      "character": "Rick",
-      "script": "Exactly! Now go find that burrito, Morty. And remember: O(log n) time means it’s faster than me saying 'I told you so!'",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "fast search visual"
+      "script": "Exactly, Morty! Now go practice before I make you use linear search forever!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": "a person practicing coding on a computer"
     }
-  ]
+  ],
+  "topic": "How do you implement a binary search algorithm?",
+  "category": "Competitive Programming"
 }

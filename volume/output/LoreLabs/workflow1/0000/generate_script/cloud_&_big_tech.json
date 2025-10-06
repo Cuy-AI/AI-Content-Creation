@@ -1,84 +1,110 @@
 {
-  "title": "Rick & Morty Explain Cloud Databases!",
-  "caption": "Why cloud databases are the future—#CloudComputing #TechForBeginners",
+  "title": "Rick Explains: Why Cloud Databases Are Lit! 🌥️💾",
+  "caption": "Ever wondered why cloud databases rule? Rick & Morty break it down! #CloudComputing #TechTalk",
   "scenes": [
     {
       "character": "Rick",
-      "script": "Alright, Morty! Let’s talk about cloud databases. You know how we jump between dimensions? Cloud databases let you switch between data sources just as easily!",
+      "script": "Alright, Morty, listen up. Today we're talking about cloud databases—basically, the future of data storage.",
       "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
-      "web_image": "cloud computing cartoon"
-    },
-    {
-      "character": "Morty",
-      "script": "Wait, so it’s like having a database on the internet? Like, where my Pootis Pals game saves data?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
       "web_image": "cloud database diagram"
     },
     {
+      "character": "Morty",
+      "script": "Uh, Rick? Why not just keep our data in a shoebox like always?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": "shoebox full of papers"
+    },
+    {
       "character": "Rick",
-      "script": "Exactly! And here’s the kicker—no more managing physical servers like some caveman. The cloud provider handles all that crap for you!",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "cloud server data center"
+      "script": "Because, Morty, cloud databases scale! Need more space? Boom! The cloud provides it instantly.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": "graph showing exponential growth"
     },
     {
       "character": "Morty",
-      "script": "So, if my app gets popular overnight, the database can scale up without me freaking out?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "scaling cloud data"
+      "script": "Cool! Like when my video game character levels up and gets bigger muscles?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": "video game character leveling up"
     },
     {
       "character": "Rick",
-      "script": "Bingo! And if it flops, you scale back down—no wasted resources. Pay only for what you use, Morty. Genius!",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "cloud cost management"
+      "script": "Exactly! And it's cost-efficient. Pay only for what you use—no overpaying for unused hardware.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": "pay-as-you-go pricing model"
     },
     {
       "character": "Morty",
-      "script": "What about security? Like, is it safe or could some alien hack into my database?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "cloud data encryption"
+      "script": "So, it's like buying snacks only when we're hungry, not a whole fridge full?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": "small bag of snacks vs. a refrigerator"
     },
     {
       "character": "Rick",
-      "script": "Relax! Encryption and centralized policies keep your data locked tighter than a Meeseeks box. Plus, backups are automated—so you’re covered if things go kablooey.",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "cloud backup solutions"
+      "script": "Precisely! Plus, cloud providers handle maintenance—no more fixing broken servers, Morty.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "IT technician fixing server"
     },
     {
       "character": "Morty",
-      "script": "But what about downtime? Like, when the Wi-Fi in my basement cuts out?",
+      "script": "No more fixing? That's almost as good as no homework!",
       "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "cloud reliability features"
+      "web_image": "stack of textbooks being thrown away"
     },
     {
       "character": "Rick",
-      "script": "Cloud providers have high availability and disaster recovery—so your data stays online even if the whole neighborhood loses power, Morty!",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "cloud reliability features"
+      "script": "And it’s agile! Deploy or decommission databases in minutes. Businesses can adapt quickly, like Netflix adding more shows.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "Netflix streaming service logo"
     },
     {
       "character": "Morty",
-      "script": "So it’s like having a database that never dies? Like me after eating those space tacos?",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "cloud uptime metrics"
+      "script": "Wait, so if I want to watch ‘Squid Game’ and it’s not there…",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": "Netflix error page"
     },
     {
       "character": "Rick",
-      "script": "Precisely! And the best part? You can use it for anything—relational or non-relational databases. Need a MySQL for your mom’s cookies business? Done!",
+      "script": "...You’d be out of luck, Morty. But Netflix uses cloud databases to scale quickly—so you should have it instantly.",
       "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "cloud database options"
+      "web_image": "Netflix streaming on a TV"
     },
     {
       "character": "Morty",
-      "script": "Wow, so cloud databases are the answer to all my problems!",
-      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
-      "web_image": "happy customer using cloud database"
+      "script": "Oh! So, cloud databases help companies be ready for anything? Like my backup portal gun?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty evil with a serious looking and a portal gun.png",
+      "web_image": "portal gun from the movie"
     },
     {
       "character": "Rick",
-      "script": "Almost! Just don’t let the vendor lock you in like a Plumbus patent. But overall, it’s a pretty sweet deal—now go build something, Morty!",
-      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
-      "web_image": "cloud database vendor comparison"
+      "script": "Exactly! They also offer security, reliability, and options for different data types—relational or non-relational. It’s all good.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with raised eyebrow questioning ideas.png",
+      "web_image": "database security features"
+    },
+    {
+      "character": "Morty",
+      "script": "But what about the risks? Like, what if the cloud provider goes rogue?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty super angry biting his lips and frowning.png",
+      "web_image": "angry customer at a service counter"
+    },
+    {
+      "character": "Rick",
+      "script": "Well, Morty, some risks exist—like vendor lock-in or downtime. But the benefits usually outweigh them.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": "risk assessment chart"
+    },
+    {
+      "character": "Morty",
+      "script": "So, if I want to start my own inter-dimensional data storage business…",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": "interdimensional portal illustration"
+    },
+    {
+      "character": "Rick",
+      "script": "You should probably stick with cloud databases, Morty. Trust me—this is one dimension where the cloud is king.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "king on a throne"
     }
-  ]
+  ],
+  "topic": "What are the benefits of using a cloud-based database?",
+  "category": "Cloud & Big Tech"
 }
