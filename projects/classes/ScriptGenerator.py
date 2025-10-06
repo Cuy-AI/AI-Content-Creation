@@ -28,6 +28,12 @@ class ScriptGenerator:
         # For now we are only using rick and morty. Future: select randomly?
         characters = ('Rick', 'Morty')
 
+        # Parameters
+        title_max_length = 60
+        scene_number_range = (10, 12)
+        sentences_per_scene_range = (2, 5)
+        web_images_number_range = (2, 4)
+
         # Collect images for characters
         images = []
         images_folder = 'volume/resources/LoreLabs/images/'
@@ -76,7 +82,7 @@ class ScriptGenerator:
                             "enum": fixed_images
                         },
                         "web_image": {
-                            "type": "string",
+                            "type": ["string", "null"],
                             "description": "A concise Google Images search query describing what visual concept should appear during this scene. Avoid character or fictional references. Prefer real, existing concepts or visuals related to the topic being explained."
                         }
                         },
@@ -104,24 +110,32 @@ class ScriptGenerator:
 You are a creative scriptwriter for short-form educational videos featuring famous characters {characters}. 
 You must strictly output JSON matching the following schema:
 
+**Schema:**
 {{
-    "title": "string — a catchy YouTube reel video title under 60 characters",
+    "title": "string — a catchy YouTube reel video title under {title_max_length} characters",
     "caption": "string — a short, intriguing caption including at least one hashtag",
     "scenes": [
         {{
         "character": "{characters} — the speaker of the scene",
         "script": "What the character says in this scene",
-        "character_image": "One of the predefined character images that best fits the emotion or action. Vary this image across scenes to match the tone (e.g., excited, confused, explaining). **Try to use all the images of each character throughout all the scenes.**"
+        "character_image": "One of the predefined character images that best fits the emotion or action. Vary this image across scenes to match the tone (e.g., excited, confused, explaining). **Try to use all the images of each character throughout all the scenes.**",
         "web_image": "A concise Google Images search query for an image that visually represents what is being talked about in this scene. Must realistically be found in Google Images. Do not reference {characters}, scenes, or fictional visuals. Should describe a real visual representation of the topic being discussed."
         }}
     ]
 }}
 
-Your predefined character images will be: {fixed_images}
-Make the script natural, dynamic, and humorous in the style of {characters}, but still educational and accurate.
-Each scene should have 2-5 sentences maximum, alternating between {characters} for an engaging dialogue.
-Include brief, insightful explanations or relatable real-world examples. 
-Keep humor, but ensure each key concept is explained clearly enough.
+**Instructions:**
+- Make the script natural, dynamic, and humorous in the style of {characters}, but still educational and accurate.
+- Your predefined character images will be: {fixed_images}
+- Include brief, insightful explanations or relatable real-world examples. 
+- Keep humor, but ensure each key concept is explained clearly enough.
+- Ensure that every key from the schema is filled properly.
+
+**Size Limits:**
+It's very important to respect the following limits. Neither more nor less should be generated.
+- Generate between {scene_number_range[0]} and {scene_number_range[1]} scenes total to keep the dialogue tight and engaging.
+- There must be {web_images_number_range[0]} to {web_images_number_range[1]} scenes that include a non-null web_image value (the scenes with the most important information). All other scenes can have web_image set to null.
+- Each scene should have {sentences_per_scene_range[0]} to {sentences_per_scene_range[1]} sentences maximum, alternating between {characters} for an engaging dialogue.
                 """.strip()
             },
             {
@@ -135,10 +149,8 @@ Category: {summary['category']}
 Summary: {summary['summary']}
 
 Focus on clearly explaining the concept while keeping it fun and conversational. 
-End with a short, clever closing line. 
-Ensure that every key from the schema is filled properly.
 Try including one or two real-world examples where appropriate. (Optionally)
-Generate between 10 and 14 scenes total to keep the dialogue tight and engaging.
+End with a short, clever closing line. 
                 """.strip()
             },
         ]
