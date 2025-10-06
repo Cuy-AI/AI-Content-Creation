@@ -6,6 +6,7 @@ from projects.classes.TopicManagerOR import TopicManagerOR
 from projects.classes.ResearcherLMS import ResearcherLMS
 from projects.classes.ScriptGenerator import ScriptGenerator
 from projects.classes.VoiceGenerator import VoiceGenerator
+from projects.classes.ImageDownloader import ImageDownloader
 
 # GLOBALS ---------------------------------------------------------------------------------------
 project_name = 'LoreLabs'
@@ -18,6 +19,7 @@ workflow_path = None
 researcher = None
 scriptGenerator = None
 voiceGenerator = None
+imageDownloader = None
 
 
 # UTILS -----------------------------------------------------------------------------------------
@@ -379,6 +381,83 @@ def generate_voices(script: dict, stop: bool = False):
 
 
 
+def search_images(script:dict):
+
+    global imageDownloader
+    
+    topic = script['topic']
+    category = script['category']
+    print(f"\n[STEP] Searching and downloading images: {category} - {topic}...")
+
+    # Replace or remove characters that are invalid in file paths
+    invalid_chars = r'\/:*"<> '
+    fixed_cat = ''.join(c if c not in invalid_chars else '_' for c in category.lower()).replace("?", "").replace("'", "")
+
+    # Set up output directory
+    function_name = inspect.currentframe().f_code.co_name # Get function name
+    output_folder = workflow_path + function_name + f"/{fixed_cat}/"
+
+    # Check if already saved output
+    if os.path.exists(output_folder): # If output folder exist, check what is inside
+        saved = check_saved_output(
+            output_folder, 
+            extensions=['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg', '.jfif', '.pjpeg', '.pjp', '.ico', '.heic', '.heif']
+        )
+    else: # If not, create it and execute step
+        os.makedirs(output_folder, exist_ok=True)
+        saved = []
+
+    
+    if imageDownloader is None:
+        imageDownloader = ImageDownloader()
+
+    
+    # Sub step 1 - Search images ---------------------
+    save_path = output_folder + '1 - images_urls.json'
+    if save_path not in saved:
+        print('[INFO] Searching images...')
+        imageDownloader.search_images(script=script, save_path=save_path)    
+    
+    with open(save_path, "r", encoding="utf-8") as f:
+        images_urls = json.load(f)
+
+    print(f'[INFO] Images urls saved sucessfully.')
+
+
+    # Sub step 2 - Download images ---------------------
+    save_folder = output_folder + '2 - download_images/'
+    if os.path.exists(save_folder):
+        saved_meta = check_saved_output(output_folder, extensions=['.json'])
+        if len(saved_meta) == 1:
+
+            # Check if all images are downloaded
+            with open(saved_meta[0], "r", encoding="utf-8") as f:
+                downloaded_images = json.load(f)
+
+            saved_output_check = True
+            for path in downloaded_images.values():
+                if not os.path.exists(path):
+                    saved_output_check = False
+                    break
+            
+            if saved_output_check:
+                print('[INFO] Images were loaded successfully')
+                return downloaded_images
+
+
+    print('[INFO] Downloading images...')
+
+    meta_path = save_folder + 'metadata.json'
+    imageDownloader.download_images(images_urls=images_urls, save_folder=save_folder)
+    
+    with open(meta_path, "r", encoding="utf-8") as f:
+        downloaded_images = json.load(f)
+
+    print(f'[INFO] Images were downloaded successfully')
+    
+    return downloaded_images
+
+
 def execution():
     print("\n\n\t\t\t *** STARTING THE EXECUTION ***")
 
@@ -421,3 +500,8 @@ def execution():
         for i, script in enumerate(scripts)
     ]
 
+    # Step 5: Search for images (step is being executed multiple times, one per script)
+    images = [
+        search_images(script) 
+        for i, script in enumerate(scripts)
+    ]
