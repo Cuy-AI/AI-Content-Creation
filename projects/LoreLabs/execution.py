@@ -399,10 +399,7 @@ def search_images(script:dict):
 
     # Check if already saved output
     if os.path.exists(output_folder): # If output folder exist, check what is inside
-        saved = check_saved_output(
-            output_folder, 
-            extensions=['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp', '.svg', '.jfif', '.pjpeg', '.pjp', '.ico', '.heic', '.heif']
-        )
+        saved = check_saved_output( output_folder, extensions=['.json'] )
     else: # If not, create it and execute step
         os.makedirs(output_folder, exist_ok=True)
         saved = []
@@ -427,7 +424,7 @@ def search_images(script:dict):
     # Sub step 2 - Download images ---------------------
     save_folder = output_folder + '2 - download_images/'
     if os.path.exists(save_folder):
-        saved_meta = check_saved_output(output_folder, extensions=['.json'])
+        saved_meta = check_saved_output(save_folder, extensions=['.json'])
         if len(saved_meta) == 1:
 
             # Check if all images are downloaded
@@ -456,6 +453,11 @@ def search_images(script:dict):
     print(f'[INFO] Images were downloaded successfully')
     
     return downloaded_images
+
+
+
+def build_video(script:dict, images:dict, voices:dict):
+    pass
 
 
 def execution():
@@ -504,4 +506,14 @@ def execution():
     images = [
         search_images(script) 
         for i, script in enumerate(scripts)
+    ]
+
+    # Step 5: Search for images (step is being executed multiple times, one per script)
+    video = [
+        build_video(
+            script_dict,
+            image_dict,
+            voices_dict,
+        ) 
+        for script_dict, image_dict, voices_dict in zip(scripts, images, voices)
     ]
