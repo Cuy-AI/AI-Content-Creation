@@ -38,6 +38,8 @@ class ScriptGenerator:
                     file_path = character_folder + file
                     if os.path.isfile(file_path): images.append(file_path)
 
+        fixed_images = [os.path.basename(img) for img in images]
+
         schema = {
             "type": "object",
             "properties": {
@@ -65,12 +67,17 @@ class ScriptGenerator:
                         },
                         "character_image": {
                             "type": "string",
-                            "description": "One of the predefined character images that best fits the emotion or action. Vary this image across scenes to match the tone (e.g., excited, confused, explaining). Don't reuse the same image for every scene.",
-                            "enum": [os.path.basename(img) for img in images]
+                            "description": (
+                                "A predefined character image that best fits the emotion or action being expressed in this scene. "
+                                "Select images that visually match how the character would look while saying their line "
+                                "(e.g., angry, happy, surprised, explaining, confused). "
+                                "Vary this image naturally across scenes — avoid repeating the same one consecutively or too often."
+                            ),
+                            "enum": fixed_images
                         },
                         "web_image": {
                             "type": "string",
-                            "description": "A query for searching on internet an image about what is being talked about during the scene"
+                            "description": "A concise Google Images search query describing what visual concept should appear during this scene. Avoid character or fictional references. Prefer real, existing concepts or visuals related to the topic being explained."
                         }
                         },
                         "required": [
@@ -104,16 +111,17 @@ You must strictly output JSON matching the following schema:
         {{
         "character": "{characters} — the speaker of the scene",
         "script": "What the character says in this scene",
-        "character_image": "One of the predefined character images that best fits the emotion or action. Vary this image across scenes to match the tone (e.g., excited, confused, explaining). Don't reuse the same image for every scene.",
-        "web_image": "A concise Google Images search query for an image that visually represents what is being talked about in this scene"
+        "character_image": "One of the predefined character images that best fits the emotion or action. Vary this image across scenes to match the tone (e.g., excited, confused, explaining). **Try to use all the images of each character throughout all the scenes.**"
+        "web_image": "A concise Google Images search query for an image that visually represents what is being talked about in this scene. Must realistically be found in Google Images. Do not reference {characters}, scenes, or fictional visuals. Should describe a real visual representation of the topic being discussed."
         }}
     ]
 }}
 
+Your predefined character images will be: {fixed_images}
 Make the script natural, dynamic, and humorous in the style of {characters}, but still educational and accurate.
 Each scene should have 2-5 sentences maximum, alternating between {characters} for an engaging dialogue.
 Include brief, insightful explanations or relatable real-world examples. 
-Keep humor, but ensure each key concept is explained clearly enough for a beginner to understand.
+Keep humor, but ensure each key concept is explained clearly enough.
                 """.strip()
             },
             {
@@ -148,7 +156,7 @@ Generate between 10 and 14 scenes total to keep the dialogue tight and engaging.
         # print("Schema:")
         # print(schema)
 
-        resp = self.lms.generate(messages = messages, parameters=params, timeout=180)
+        resp = self.lms.generate(messages = messages, parameters=params, timeout=240)
         resp = resp['output']
 
         # Rebuild images
@@ -161,6 +169,10 @@ Generate between 10 and 14 scenes total to keep the dialogue tight and engaging.
                     changed = True
                     break
             if not changed: print(f"[ERROR] Image {img_filename} not found on images folder")
+
+        # Insert topic & category to the final response
+        resp['topic'] = summary['topic']
+        resp['category'] = summary['category']
 
         if save_path:
             with open(save_path, "w", encoding="utf-8") as f:
