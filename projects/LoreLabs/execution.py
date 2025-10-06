@@ -5,6 +5,7 @@ import inspect
 from projects.classes.TopicManagerOR import TopicManagerOR
 from projects.classes.ResearcherLMS import ResearcherLMS
 from projects.classes.ScriptGenerator import ScriptGenerator
+from projects.classes.VoiceGenerator import VoiceGenerator
 
 # GLOBALS ---------------------------------------------------------------------------------------
 project_name = 'LoreLabs'
@@ -16,6 +17,8 @@ workflow_path = None
 
 researcher = None
 scriptGenerator = None
+voiceGenerator = None
+
 
 # UTILS -----------------------------------------------------------------------------------------
 def int2id(id: int, digits:int = 4) -> str:
@@ -155,16 +158,17 @@ def research_topics(category:str, topic: str, stop: bool = False):
         os.makedirs(output_folder, exist_ok=True)
         saved = []
 
-    # Start the researcher class
-    if researcher is None:
-        researcher = ResearcherLMS(model_id='mistralai/magistral-small-2509') # This model is better
-        # researcher = ResearcherLMS(model_id='mistralai/mistral-nemo-instruct-2407')
-        researcher.start()
 
     # Sub step 1 - Create google search query ---------------------
     save_path = output_folder + '1 - query.json'
     if save_path not in saved:
         print('[INFO] Generating query...')
+
+        # Start the researcher class
+        if researcher is None:
+            researcher = ResearcherLMS(model_id='mistralai/magistral-small-2509')
+            researcher.start()
+
         researcher.get_query(category=category, topic=topic, save_path=save_path)    
     
     with open(save_path, "r", encoding="utf-8") as f:
@@ -190,6 +194,12 @@ def research_topics(category:str, topic: str, stop: bool = False):
     save_path = output_folder + '3 - search_selection.json'
     if save_path not in saved:
         print('[INFO] Selecting web...')
+
+        # Start the researcher class
+        if researcher is None:
+            researcher = ResearcherLMS(model_id='mistralai/magistral-small-2509')
+            researcher.start()
+
         researcher.select_web(query=query['query'], web_results=web_results, save_path=save_path)
     
     with open(save_path, "r", encoding="utf-8") as f:
@@ -227,6 +237,12 @@ def research_topics(category:str, topic: str, stop: bool = False):
     save_path = output_folder + '6 - summarize.json'
     if save_path not in saved:
         print('[INFO] Summarizing information...')
+
+        # Start the researcher class
+        if researcher is None:
+            researcher = ResearcherLMS(model_id='mistralai/magistral-small-2509')
+            researcher.start()
+
         researcher.summarize(category=category, topic=topic, query=query['query'], parsed_htmls=parsed_htmls, timeout=240, save_path=save_path)
     
     with open(save_path, "r", encoding="utf-8") as f:
@@ -270,15 +286,14 @@ def generate_script(summary: dict, stop: bool = False):
         saved = []
 
 
-    # Start the script generator class
-    if scriptGenerator is None:
-        scriptGenerator = ScriptGenerator()
-        scriptGenerator.start()
-
-
     if output_path not in saved: # No saved output
         
         print('[INFO] Generating script...')
+
+        # Start the script generator class
+        if scriptGenerator is None:
+            scriptGenerator = ScriptGenerator()
+            scriptGenerator.start()
 
         # Generate script
         script = scriptGenerator.generate_script(summary=summary, save_path=output_path)
@@ -294,11 +309,74 @@ def generate_script(summary: dict, stop: bool = False):
         
 
     # Stop ScriptGenerator
-    if stop: 
+    if stop and scriptGenerator is not None: 
         scriptGenerator.stop()
         scriptGenerator = None
 
     return script
+
+
+
+def generate_voices(script: dict, stop: bool = False):
+    
+    global voiceGenerator
+
+    topic = script['topic']
+    category = script['category']
+    print(f"\n[STEP] Generating audios: {category} - {topic}...")
+
+    # Replace or remove characters that are invalid in file paths
+    invalid_chars = r'\/:*"<> '
+    fixed_cat = ''.join(c if c not in invalid_chars else '_' for c in category.lower()).replace("?", "").replace("'", "")
+    
+    # Set up output directory
+    function_name = inspect.currentframe().f_code.co_name # Get function name
+    output_folder = workflow_path + function_name + f"/{fixed_cat}/"
+
+    # Check if already saved output
+    if os.path.exists(output_folder): # If output folder exist, check what is inside
+        saved = check_saved_output(output_folder, extensions=['.json'])
+    else: # If not, create it and execute step
+        os.makedirs(output_folder, exist_ok=True)
+        saved = []
+
+    
+    # Check if there is 1 json file on saved. Save that file path into a var
+    if len(saved) == 1:
+        with open(saved[0], "r", encoding="utf-8") as f:
+            audios_paths = json.load(f)
+
+        saved_output_check = True
+        for audio_path in audios_paths['scenes']:
+            if not os.path.exists(audio_path): 
+                print(f'[WARN] Audio {audio_path} was not found.')
+                print(f'[WARN] Regenerating all audios for this step.')
+                saved_output_check = False
+                break
+
+        if saved_output_check:
+            print('[INFO] Audios and metadata were loaded sucessfully')
+            return audios_paths
+
+
+    print('[INFO] Generating audios...')
+
+    if voiceGenerator is None:
+        voiceGenerator = VoiceGenerator()
+        voiceGenerator.start()
+
+    audios_paths = voiceGenerator.generate_voice(
+        topic=topic, 
+        category=category, 
+        scenes=script['scenes'], 
+        save_folder=output_folder
+    )
+
+    if stop and voiceGenerator is not None:
+        voiceGenerator.stop()
+
+    return audios_paths
+
 
 
 def execution():
@@ -310,7 +388,7 @@ def execution():
     # Step 1: Load topics
     topics = load_topics()
 
-    # Step 2: Research (step is being executed multiple times for each topic)
+    # Step 2: Research (step is being executed multiple times, one per topic)
     categories_topics = list(topics.items())
     num_topics = len(categories_topics)
     research = [
@@ -322,7 +400,7 @@ def execution():
         for i, (category, topic) in enumerate(categories_topics)
     ]
 
-    # Step 3: Generate video script (step is being executed multiple times for research result)
+    # Step 3: Generate video script (step is being executed multiple times, one per research result)
     num_summaries = len(research)
     scripts = [
         generate_script(
@@ -331,3 +409,15 @@ def execution():
         ) 
         for i, summary in enumerate(research)
     ]
+
+
+    # Step 4: Generate voices (step is being executed multiple times, one per script)
+    num_scripts = len(scripts)
+    voices = [
+        generate_voices(
+            script, 
+            stop=(i == num_scripts - 1)
+        ) 
+        for i, script in enumerate(scripts)
+    ]
+
