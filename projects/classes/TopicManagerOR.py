@@ -144,5 +144,12 @@ class TopicManagerOR:
             if len(available_topics) == 0: return None # Failed to generate new topics
             next_topics[category] = available_topics[0]
 
+        # Mark selected topics as used and save updated JSON
+        for category, topic in next_topics.items():
+            topics_json[category][topic] = True
+
+        with open(topics_path, "w", encoding="utf-8") as f:
+            json.dump(topics_json, f, indent=2, ensure_ascii=False)
+
         # Return the next topics
         return next_topics
