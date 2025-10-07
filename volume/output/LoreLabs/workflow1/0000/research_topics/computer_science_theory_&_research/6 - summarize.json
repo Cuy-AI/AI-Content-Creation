@@ -1,5 +1,0 @@
-{
-  "summary": "Quantum computers leverage the principles of quantum mechanics to solve problems beyond the reach of classical computers. Instead of binary bits, they use qubits, which can exist in superposition—simultaneously being 0 and 1—and entangle with each other, exponentially increasing computational power. Quantum algorithms manipulate these states to find solutions more efficiently. For example, modeling molecular behavior or factoring large numbers becomes feasible due to quantum properties like interference and decoherence management. Current designs require ultra-cold temperatures to maintain qubit stability, with error correction crucial for reliability. While still developing, quantum computers aim to achieve 'quantum advantage' for specific tasks, such as drug discovery or cryptography, by harnessing unique quantum phenomena that classical machines cannot replicate.",
-  "topic": "Can you explain how quantum computers work?",
-  "category": "Computer Science Theory & Research"
-}

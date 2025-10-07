@@ -1,0 +1,104 @@
+{
+  "title": "Rick & Morty Explain Quantum Computing",
+  "caption": "Ever wondered how quantum computers work? 🤔 #ScienceWithRickAndMorty",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, Morty, let's talk about quantum computers. You know classical computers use bits, right? 0 or 1.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Yeah, like when you tell me to either be a genius or an idiot. No in-between, grandpa!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty super angry biting his lips and frowning.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! But quantum computers use qubits, which can be 0, 1, or both at the same time. It's like being a genius AND an idiot simultaneously.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Whoa! Like when I'm trying to decide if I should listen to you or not? That's confusing, Rick!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Precisely! And these qubits can be entangled, meaning the state of one affects another instantly, no matter the distance. It's like you and Summer finally agreeing on something.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "That's... kinda messed up, Rick. But cool!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Now, quantum gates manipulate qubits to perform calculations through interference. Imagine a wave crashing against the correct answer and wiping out the wrong ones.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So, it's like when you crash into Mr. Poopybutthole's car but only remember to apologize for the right things?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! But when we measure, the quantum state collapses into a binary result. It's like flushing all your problems down the toilet—suddenly they're gone!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with raised eyebrow questioning ideas.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "But how do we know if it worked? Like when you invent something and then blow up a planet for no reason?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "We use statistics, Morty! Quantum computers give us probabilities, so we run the calculations many times and see what pops up most often. It's like asking Summer the same question 100 times until she gives you a useful answer!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "That makes sense, Rick. But what about all those challenges like decoherence and error correction?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty evil with a serious looking and a portal gun.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Decoherence is when qubits lose their quantum state, like you losing focus on my brilliant ideas. Companies like IBM and Google are working to fix this—it's a work in progress!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So, quantum computers won't replace classical ones, right?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Nah, Morty. They'll just do specific things better—like finding new drugs or cracking codes. It's like having a specialized tool for every job, even if it’s a bit wonky.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "So remember, quantum computers are the future—just don't expect them to do your math homework for you!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": null
+    }
+  ],
+  "topic": "Can you explain how quantum computers work?",
+  "category": "Computer Science Theory & Research"
+}

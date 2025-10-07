@@ -1,0 +1,24 @@
+{
+  "web_search": [
+    {
+      "title": "Angular vs React : r/angular",
+      "link": "https://www.reddit.com/r/angular/comments/1b4a3gk/angular_vs_react/",
+      "snippet": "Mar 2, 2024 ... A big difference not yet mentioned is that React is a UI library and Angular is an application framework. Things like routing, testing, build ..."
+    },
+    {
+      "title": "React vs Angular: Which One is Best for Your Next Front-end Project?",
+      "link": "https://radixweb.com/blog/react-vs-angular",
+      "snippet": "Aug 21, 2025 ... ReactJS is a lightweight library that helps you build UI components with a virtual DOM and JSX syntax, whereas Angularis a comprehensive ..."
+    },
+    {
+      "title": "React vs Angular: What are the key differences and how do you ...",
+      "link": "https://www.reddit.com/r/angular/comments/1m89c8j/react_vs_angular_what_are_the_key_differences_and/",
+      "snippet": "Jul 24, 2025 ... 29 votes, 28 comments. I'm about to start building a web project and I'm trying to decide between React and Angular for the frontend."
+    },
+    {
+      "title": "Difference Between React.js and Angular.js - GeeksforGeeks",
+      "link": "https://www.geeksforgeeks.org/reactjs/difference-between-react-js-and-angular-js/",
+      "snippet": "Jul 12, 2025 ... React.js and Angular.js are two of the most popular choices. Both are used in front-end development, but they differ significantly in terms of architecture, ..."
+    }
+  ]
+}

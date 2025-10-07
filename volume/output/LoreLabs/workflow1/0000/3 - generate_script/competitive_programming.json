@@ -1,0 +1,86 @@
+{
+  "title": "Rick Explains Binary Search in 60 Seconds!",
+  "caption": "Why binary search is the ultimate hack for fast searching! 🔍 #ProgrammingTips",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, Morty! You ever get tired of searching through a list like a dumb human?",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Uh, sure Rick. What's the big deal? Just check each one!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! Like searching for a sandwich in a fridge full of gross alien food. Binary search cuts this in half every time!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "sandwich in a fridge"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, how? You just look at the middle and decide?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Bingo! Start with two pointers, L and R. Middle element M is (L+R)/2. If target's lower, search left; else right.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So it's like finding the right temperature for a bath by adjusting hot and cold taps?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! Keep halving until you hit zero. Time complexity? O(log n), Morty. Faster than your brain!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "But what if the array is empty or the target isn’t there? Wait, no! It’s infinite, Rick!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty super angry biting his lips and frowning.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Easy. Set L=-1, R=n. Avoids boundary errors like a pro. And for overflow? Use l + (r - l) / 2.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So binary search isn’t just for arrays, right? It can find max/min or even solve equations?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "You’re catching on! Monotonic functions, real numbers—it’s all about the same logic. Just tweak the predicate.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "But what if I mess up? Like off-by-one errors or integer overflows?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Pfft! Test edge cases, use safe formulas. Now go code something useful for once.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": null
+    }
+  ],
+  "topic": "How do you implement a binary search algorithm?",
+  "category": "Competitive Programming"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "Rick Explains: Monolithic vs Microservices",
+  "caption": "Why your app's architecture matters! #SoftwareDev",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright Morty, listen up. You know how you used to play with one big Lego set? That’s a monolithic app—everything stuck together like glue.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Uh, yeah. But what’s wrong with that, Rick? It was fun, right?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "It is—until you need to change one piece. Suddenly, you gotta rebuild the whole damn thing! It’s a pain, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Oh wow… that does sound annoying.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Now imagine breaking your Lego set into smaller kits—each one independent. That’s microservices! Change one kit without touching the others.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": "small lego sets"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so like when I have separate games for my phone? Each app does its own thing?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! Microservices communicate via APIs—like tiny messengers passing notes. Way more flexible, Morty.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "api communication diagram"
+    },
+    {
+      "character": "Morty",
+      "script": "But what if one app crashes? Does it take down the whole phone?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Nope! Fault isolation—just like one game crashing doesn’t affect your others. That’s why Netflix uses microservices, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Whoa… that’s actually kinda cool.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "But it’s not all sunshine, Morty. Microservices need more planning—like organizing a science fair instead of just showing one project.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with raised eyebrow questioning ideas.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So which is better, Rick?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty evil with a serious looking and a portal gun.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Monolithic for small apps—like a toaster. Microservices for big systems—like, uh, the whole kitchen! And transitioning? Wubba lubba dub dub, Morty!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    }
+  ],
+  "topic": "What is the difference between monolithic and microservices architecture?",
+  "category": "Software Development"
+}

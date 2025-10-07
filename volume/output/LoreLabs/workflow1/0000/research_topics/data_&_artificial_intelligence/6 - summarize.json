@@ -1,5 +1,0 @@
-{
-  "summary": "A neural network is a machine learning model that learns pattern-recognizing weights and biases from data by mapping inputs to outputs through layered structures. It learns through a process involving forward propagation, where input features are processed into higher-level cues, and backpropagation, which adjusts these parameters to minimize error using a loss function. The network's ability to learn is powered by the interplay of weights (controlling feature influence) and biases (shifting decision thresholds). Training involves multiple epochs of comparing predictions to true labels, adjusting parameters via gradient descent to reach optimal values that generalize well to unseen data. Modern architectures like transformers and CNNs build on these principles with specialized structures for different domains. Despite challenges like overfitting, neural networks excel in capturing complex, nonlinear patterns, underpinning advancements in computer vision, NLP, speech recognition, and generative AI.",
-  "topic": "How does a neural network learn from data?",
-  "category": "Data & Artificial Intelligence"
-}

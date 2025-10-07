@@ -1,0 +1,80 @@
+{
+  "title": "Rick & Morty vs React & Angular: Epic Framework Showdown!",
+  "caption": "React vs Angular? Let Rick & Morty break it down for you! #WebDev",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, Morty, let's dive into this React vs Angular mess. It's like comparing a Swiss Army knife to a single, really sharp knife.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Uh, Rick? What do you mean?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Well, React is like that single sharp knife—it's just for the view layer. Facebook made it, and it's great for dynamic UIs with this thing called a virtual DOM.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Oh, so it's like when I built that website where the buttons change color? That was React!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": "javascript library for dynamic user interfaces"
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! And it's super scalable. But if you want a full meal, Angular is the Swiss Army knife. Google made it, and it's got two-way data binding, dependency injection—the works!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so Angular is like when I used that tool where everything connects automatically?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": "enterprise-level web development framework"
+    },
+    {
+      "character": "Rick",
+      "script": "Yes! And it uses TypeScript, which is like JavaScript on steroids. React? Just JSX—JavaScript and HTML-like syntax.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So if I need a simple website, use React. If it's for the big leagues, Angular?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Bingo! And remember, Morty: React needs extra libraries for state management and routing. Angular’s got it all built-in.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "comparison of React and Angular features"
+    },
+    {
+      "character": "Morty",
+      "script": "Got it! So, like choosing between a car or a bike?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! A bike for speed and simplicity—React. A car for the whole package—Angular.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Alright, Rick. I think I got it this time.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    }
+  ],
+  "topic": "What is the difference between React and Angular?",
+  "category": "Frameworks & Tools"
+}

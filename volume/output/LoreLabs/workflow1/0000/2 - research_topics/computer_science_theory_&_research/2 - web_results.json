@@ -1,0 +1,24 @@
+{
+  "web_search": [
+    {
+      "title": "Explain it like I'm 5? : r/QuantumComputing",
+      "link": "https://www.reddit.com/r/QuantumComputing/comments/yjnvwh/explain_it_like_im_5/",
+      "snippet": "Nov 1, 2022 ... Quantum computation is the mathematical formalism whereby computation is carried out using unitary operations on vectors is a Hilbert space ( ..."
+    },
+    {
+      "title": "What Is Quantum Computing? | IBM",
+      "link": "https://www.ibm.com/think/topics/quantum-computing",
+      "snippet": "A computation on a quantum computer works by preparing a superposition of computational states. A quantum circuit, prepared by the user, uses operations to ..."
+    },
+    {
+      "title": "How Does a Quantum Computer Work? Simple Explanation | SpinQ",
+      "link": "https://www.spinquanta.com/news-detail/how-does-a-quantum-computer-work",
+      "snippet": "Mar 9, 2025 ... Quantum computers rely on quantum gates to perform operations on qubits, similar to how classical computers use logical gates (AND, OR, NOT) to ..."
+    },
+    {
+      "title": "How Do Quantum Computers Work? : ScienceAlert",
+      "link": "https://www.sciencealert.com/quantum-computers",
+      "snippet": "Quantum computers perform calculations based on the probability of an object's state before it is measured - instead of just 1s or 0s."
+    }
+  ]
+}
