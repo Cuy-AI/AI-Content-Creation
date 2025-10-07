@@ -15,7 +15,7 @@ class VoiceGenerator:
         self.chatterbox_container.start()
         self.chatterbox_client = self.chatterbox_container.create_client()
         self.chatterbox_client.set_params(
-            temperature=0.7,
+            temperature=0.75,
             exaggeration=0.5,
             cfg_weight=0.5,
         )
