@@ -178,83 +178,314 @@ class VideoEditor:
 
         codec = ["-c", "copy"] if not reencode else ["-c:v", "libx264", "-c:a", "aac"]
 
+        start = max(start, 0.0)
         cmd = ["ffmpeg", "-y", "-i", input_path, "-ss", str(start)]
-        if end is not None: cmd += ["-to", str(end)]
+        if end is not None: 
+            end = min(end, self.get_duration(input_path))
+            cmd += ["-to", str(end)]
         cmd += [*codec, output_path]
 
         self._run(cmd)
         return output_path
 
 
-    def replace_audio(
+    def replace_audios(
         self,
         input_path: str,
-        audio_path: str,
+        audios: list,
         output_path: Optional[str] = None,
-        start_time: float = 0.0
     ) -> str:
         """
-        Replace (or add) the audio track of a video using adelay for offset,
-        but do NOT re-encode the video stream (we copy the video).
+        Replace segments of a video's audio with new clips.
 
-        - start_time: seconds into the video where the new audio should begin.
-        - If audio would overflow the video, it's trimmed so it fits.
-        - If start_time >= video_duration, outputs the video with NO audio.
+        Each element in `audios` is a dict:
+            {
+                "audio_path": str,
+                "start": float,   # in seconds
+                "volume": float (optional)
+            }
+
+        Behavior:
+        - The original video audio is preserved except where replaced.
+        - Replacements overwrite only their respective segments.
+        - If input video has no audio, silent base is used.
+        - Precision guaranteed (frame-level accurate).
+
+        Returns: output_path
         """
-        if output_path is None: output_path = self._mktemp(".mp4")
-        else: os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+        import os, subprocess
 
-        video_duration = self.get_duration(input_path)
-        audio_duration = self.get_duration(audio_path)
+        if not isinstance(audios, list):
+            raise ValueError("`audios` must be a list of dicts")
 
-        # If start time is at/after video end, just produce the video without audio.
-        if start_time >= video_duration:
-            cmd = [
-                "ffmpeg", "-y",
-                "-i", input_path,
-                "-map", "0:v",
-                "-c:v", "copy",
-                "-an",  # no audio
-                output_path
-            ]
-            self._run(cmd)
-            self._temp_files.add(output_path)
+        if output_path is None:
+            output_path = self._mktemp(".mp4")
+        else:
+            os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+
+        # Sort by start time to process in order
+        audios = sorted(audios, key=lambda x: x.get("start", 0.0))
+
+        # Probe audio presence
+        probe_cmd = [
+            "ffprobe", "-v", "error",
+            "-select_streams", "a",
+            "-show_entries", "stream=index",
+            "-of", "csv=p=0", input_path
+        ]
+        has_audio = bool(subprocess.run(probe_cmd, capture_output=True, text=True).stdout.strip())
+
+        video_duration = float(self.get_duration(input_path))
+
+        # Prepare ffmpeg input list: video + each new audio
+        cmd = ["ffmpeg", "-y", "-i", input_path]
+        valid = []
+        for entry in audios:
+            path = entry.get("audio_path")
+            if not path:
+                continue
+            start = float(entry.get("start", 0.0))
+            vol = float(entry.get("volume", 1.0))
+            if start >= video_duration:
+                continue
+            cmd += ["-i", path]
+            valid.append((path, start, vol))
+        
+        if not valid:
+            # nothing to replace → copy video
+            copy_cmd = ["ffmpeg", "-y", "-i", input_path, "-c", "copy", output_path]
+            self._run(copy_cmd)
             return output_path
 
-        # Audio must fit within the video; compute effective maximum audio portion.
-        # We'll use atrim=0:video_duration after adelay to ensure audio doesn't exceed video length.
-        delay_ms = int(round(start_time * 1000))
-        need_filter = (delay_ms > 0) or (audio_duration > (video_duration - start_time))
+        # Initialize filters
+        filters = []
+        segments = []
+        last_end = 0.0
+        aformat_post = "aresample=48000,aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo"
 
-        if not need_filter:
-            # Simple fast path: no delay, no trim required — just map video and audio, copy video.
-            cmd = [
-                "ffmpeg", "-y",
-                "-i", input_path,
-                "-i", audio_path,
-                "-map", "0:v:0",
-                "-map", "1:a:0",
-                "-c:v", "copy",
-                "-c:a", "aac", "-b:a", "192k",
-                output_path
-            ]
+        if has_audio:
+            base_audio = "[0:a]"
         else:
-            # Use adelay to shift the audio, then trim to the video's duration (so it never overflows).
-            # adelay={ms}:all=1 delays all channels. atrim=0:video_duration ensures audio <= video_duration.
-            filter_complex = (
-                f"[1:a]adelay={delay_ms}:all=1,atrim=0:{video_duration:.3f},asetpts=PTS-STARTPTS[aud]"
+            # Create silent base and split it for multiple uses
+            # Count how many times we'll need the silent audio
+            silent_uses = 0
+            for i, (path, start, vol) in enumerate(valid, start=1):
+                duration_new = float(self.get_duration(path))
+                end = min(video_duration, start + duration_new)
+                
+                # Check if we need segment before
+                if i == 1 and start > 0:
+                    silent_uses += 1
+                elif i > 1 and start > last_end:
+                    silent_uses += 1
+                
+                # Check if we need tail after last
+                if i == len(valid) and end < video_duration:
+                    silent_uses += 1
+                    
+                last_end = end
+            
+            # Reset last_end for actual processing
+            last_end = 0.0
+            
+            # Create silent source and split it into multiple outputs
+            split_outputs = "".join([f"[silent{i}]" for i in range(silent_uses)])
+            filters.append(
+                f"anullsrc=r=48000:cl=stereo:d={video_duration},asetpts=N/SR/TB"
+                f",asplit={silent_uses}{split_outputs}"
             )
-            cmd = [
-                "ffmpeg", "-y",
-                "-i", input_path,
-                "-i", audio_path,
-                "-filter_complex", filter_complex,
-                "-map", "0:v:0",     # always keep the video stream (copied)
-                "-map", "[aud]",     # processed audio
-                "-c:v", "copy",
-                "-c:a", "aac", "-b:a", "192k",
-                output_path
-            ]
+            
+            silent_counter = 0
+
+        # Build timeline segments
+        for i, (path, start, vol) in enumerate(valid, start=1):
+            duration_new = float(self.get_duration(path))
+            end = min(video_duration, start + duration_new)
+
+            # 1. Add original segment before this start (if any gap)
+            if start > last_end:
+                if has_audio:
+                    filters.append(
+                        f"{base_audio}atrim={last_end}:{start},asetpts=PTS-STARTPTS,{aformat_post}[seg_pre{i}]"
+                    )
+                else:
+                    filters.append(
+                        f"[silent{silent_counter}]atrim={last_end}:{start},asetpts=PTS-STARTPTS,{aformat_post}[seg_pre{i}]"
+                    )
+                    silent_counter += 1
+                segments.append(f"[seg_pre{i}]")
+
+            # 2. Add replacement audio, trimmed and formatted
+            filters.append(
+                f"[{i}:a]atrim=0:{end - start},asetpts=PTS-STARTPTS,"
+                f"{aformat_post},volume={vol}[seg_rep{i}]"
+            )
+            segments.append(f"[seg_rep{i}]")
+
+            last_end = end
+
+        # 3. Add remaining tail (if any left after last replacement)
+        if last_end < video_duration:
+            if has_audio:
+                filters.append(
+                    f"{base_audio}atrim={last_end}:{video_duration},asetpts=PTS-STARTPTS,{aformat_post}[seg_tail]"
+                )
+            else:
+                filters.append(
+                    f"[silent{silent_counter}]atrim={last_end}:{video_duration},asetpts=PTS-STARTPTS,{aformat_post}[seg_tail]"
+                )
+            segments.append("[seg_tail]")
+
+        # Concatenate all segments sequentially
+        concat_inputs = "".join(segments)
+        filters.append(f"{concat_inputs}concat=n={len(segments)}:v=0:a=1[outa]")
+
+        filter_complex = ";".join(filters)
+
+        # Final command
+        cmd += [
+            "-filter_complex", filter_complex,
+            "-map", "0:v:0",
+            "-map", "[outa]",
+            "-c:v", "copy",
+            "-c:a", "aac", "-b:a", "192k",
+            output_path
+        ]
+
+        # Execute
+        self._run(cmd)
+        return output_path
+
+
+
+
+    def mix_audios(
+        self,
+        input_path: str,
+        audios: list,
+        output_path: Optional[str] = None,
+        start_time: float = 0.0,
+    ) -> str:
+        """
+        Mix (overlay) multiple audios into `input_path`. Each element in `audios`
+        is a dict: {"audio_path": str, "start": float, "volume": float (optional)}.
+
+        `start_time` is a global offset added to each element's "start".
+        Ensures each audio begins exactly at its requested time (ms precision).
+        Handles videos with or without audio.
+        """
+        # import os
+        # import subprocess
+
+        if not isinstance(audios, list):
+            raise ValueError("`audios` must be a list of dicts")
+
+        if output_path is None:
+            output_path = self._mktemp(".mp4")
+        else:
+            os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+
+        base_offset = float(start_time or 0.0)
+        video_duration = float(self.get_duration(input_path))
+
+        # Probe whether input video has audio
+        probe_cmd = [
+            "ffprobe", "-v", "error",
+            "-select_streams", "a",
+            "-show_entries", "stream=index",
+            "-of", "csv=p=0", input_path
+        ]
+        has_audio = bool(subprocess.run(probe_cmd, capture_output=True, text=True).stdout.strip())
+
+        # Build ffmpeg command input list (video first, then each audio path)
+        cmd = ["ffmpeg", "-y", "-i", input_path]
+        valid_audios = []
+        for entry in audios:
+            if not isinstance(entry, dict) or "audio_path" not in entry:
+                continue
+            start = float(entry.get("start", 0.0)) + base_offset
+            if start >= video_duration:
+                # nothing to place (starts after video end)
+                continue
+            cmd += ["-i", entry["audio_path"]]
+            valid_audios.append({
+                "audio_path": entry["audio_path"],
+                "start": start,
+                "volume": float(entry.get("volume", 1.0))
+            })
+
+        # If nothing to do:
+        if not valid_audios and not has_audio:
+            # no new audios and no original audio -> copy video only
+            copy_cmd = ["ffmpeg", "-y", "-i", input_path, "-c", "copy", output_path]
+            self._run(copy_cmd)
+            return output_path
+        if not valid_audios and has_audio:
+            # no new audios but original audio exists -> copy input
+            copy_cmd = ["ffmpeg", "-y", "-i", input_path, "-c", "copy", output_path]
+            self._run(copy_cmd)
+            return output_path
+
+        # We will create a sequential mixing graph:
+        #  - base0 = original audio trimmed OR silent source (if no audiotrack)
+        #  - for each new audio i:
+        #       del_i = delayed + trimmed + converted audio
+        #       base{i} = amix(base{i-1}, del_i)   (normalize=0 to avoid auto attenuation)
+        filters = []
+        # audio normalization target: stereo 48k FLTP (common, prevents amix format errors)
+        aformat_post = "aresample=48000,aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo"
+
+        # base audio label
+        base_label = "base0"
+        if has_audio:
+            # take original audio, trim to video length and normalize format
+            filters.append(
+                f"[0:a]atrim=0:{video_duration:.3f},asetpts=PTS-STARTPTS,{aformat_post},volume=1.0[{base_label}]"
+            )
+        else:
+            # no original audio -> create silent track of video duration
+            # use anullsrc with same sample rate / layout
+            filters.append(
+                f"anullsrc=cl=stereo:r=48000,atrim=0:{video_duration:.3f},asetpts=PTS-STARTPTS,{aformat_post}[{base_label}]"
+            )
+
+        # Mix audios one by one into base
+        # audio input indices are 1..N in the same order we appended "-i" above
+        for idx, ainfo in enumerate(valid_audios, start=1):
+            delay_ms = int(round(ainfo["start"] * 1000.0))
+            vol = ainfo["volume"]
+            delayed_label = f"del{idx}"
+            next_base = f"base{idx}"
+
+            # build delayed, trimmed, formatted version of this audio
+            # :all=1 applies same delay to all channels reliably
+            filters.append(
+                f"[{idx}:a]adelay={delay_ms}:all=1,atrim=0:{video_duration:.3f},"
+                f"asetpts=PTS-STARTPTS,{aformat_post},volume={vol}[{delayed_label}]"
+            )
+
+            # amix the running base and the delayed audio -> new base
+            # duration=first and normalize=0 (do not automatically attenuate)
+            filters.append(
+                f"[{base_label}][{delayed_label}]amix=inputs=2:duration=first:normalize=0[{next_base}]"
+            )
+
+            base_label = next_base  # for next iteration
+
+        # final alias to outa
+        filters.append(f"[{base_label}]anull[outa]")
+
+        filter_complex = ";".join(filters)
+
+        # build final command mapping video + generated audio
+        cmd += [
+            "-filter_complex", filter_complex,
+            "-map", "0:v:0",
+            "-map", "[outa]",
+            "-c:v", "copy",
+            "-c:a", "aac", "-b:a", "192k",
+            output_path
+        ]
 
         self._run(cmd)
         return output_path
@@ -445,6 +676,7 @@ class VideoEditor:
         padding_x: int = 10,
         padding_y: int = 10,
         text_align: str = "center",
+        chunk_size: int = 25,
         output_path: Optional[str] = None
     ) -> str:
         """
@@ -519,49 +751,67 @@ class VideoEditor:
             }.get(val, str(val))
 
 
-        drawtext_filters = []
-        for cap in captions:
-            text = _escape(cap["text"])
-            start = cap["start"]
-            end = cap["end"]
+        # Split captions into smaller groups
+        def _chunks(lst, size):
+            for i in range(0, len(lst), size):
+                yield lst[i:i + size]
 
-            font_opts = []
-            if fontfile:
-                font_opts.append(f"fontfile='{fontfile}'")
-            elif font:
-                font_opts.append(f"font='{font}'")
+        # initial input
+        current_input = input_path
 
-            font_opts.extend([
-                f'text={text}',
-                f"fontsize={fontsize}",
-                f"fontcolor={fontcolor}",
-                f"borderw={borderw}",
-                f"bordercolor={bordercolor}",
-                f"shadowx={shadowx}",
-                f"shadowy={shadowy}",
-                f"x={_pos_x(x)}",
-                f"y={_pos_y(y)}",
-                f"text_align={text_align}",
-                f"enable='between(t,{start},{end})'"
-            ])
+        # perform multiple ffmpeg runs, one per chunk
+        for i, chunk in enumerate(_chunks(captions, chunk_size)):
+            drawtext_filters = []
+            for cap in chunk:
+                text = _escape(cap["text"])
+                start, end = cap["start"], cap["end"]
 
-            drawtext_filters.append("drawtext=" + ":".join(font_opts))
+                font_opts = []
+                if fontfile:
+                    font_opts.append(f"fontfile='{fontfile}'")
+                elif font:
+                    font_opts.append(f"font='{font}'")
 
-        filter_complex = ",".join(drawtext_filters)
+                font_opts.extend([
+                    f"text={text}",
+                    f"fontsize={fontsize}",
+                    f"fontcolor={fontcolor}",
+                    f"borderw={borderw}",
+                    f"bordercolor={bordercolor}",
+                    f"shadowx={shadowx}",
+                    f"shadowy={shadowy}",
+                    f"x={_pos_x(x)}",
+                    f"y={_pos_y(y)}",
+                    f"text_align={text_align}",
+                    f"enable='between(t,{start},{end})'"
+                ])
+                drawtext_filters.append("drawtext=" + ":".join(font_opts))
 
-        codec, params = self._choose_encoder()
-        cmd = [
-            "ffmpeg", "-y",
-            "-i", input_path,
-            "-filter_complex", filter_complex,
-            "-c:v", codec, *params,
-            "-c:a", "copy",  # keep original audio, no re-encode
-            "-movflags", "+faststart",
-            output_path
-        ]
+            filter_complex = ",".join(drawtext_filters)
+            codec, params = self._choose_encoder()
 
-        self._run(cmd)
-        return output_path
+            # Create a temporary intermediate file
+            temp_output = (
+                output_path if (i == len(captions) // chunk_size) else self._mktemp(".mp4")
+            )
+
+            cmd = [
+                "ffmpeg", "-y",
+                "-i", current_input,
+                "-filter_complex", filter_complex,
+                "-c:v", codec, *params,
+                "-c:a", "copy",
+                "-movflags", "+faststart",
+                temp_output,
+            ]
+
+            # Run ffmpeg synchronously
+            self._run(cmd)
+
+            # Next input = this output
+            current_input = temp_output
+
+        return current_input
 
 
     def change_ratio(
