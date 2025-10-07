@@ -13,7 +13,7 @@ class ImageDownloader:
             query = scene['web_image']
             if query is None: continue
 
-            answer = self.client.search(query, num=1, search_type="image")
+            answer = self.client.search(f'{query} -filetype:svg -filetype:gif', num=1, search_type="image")
             resp[idx] = answer[0]["link"]
 
         if save_path:
