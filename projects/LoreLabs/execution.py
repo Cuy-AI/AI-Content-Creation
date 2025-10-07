@@ -1,12 +1,14 @@
 import os
 import json
 import inspect
+import time
 
 from projects.classes.TopicManagerOR import TopicManagerOR
 from projects.classes.ResearcherLMS import ResearcherLMS
 from projects.classes.ScriptGenerator import ScriptGenerator
 from projects.classes.VoiceGenerator import VoiceGenerator
 from projects.classes.ImageDownloader import ImageDownloader
+from projects.classes.VideoBuilder import VideoBuilder
 
 # GLOBALS ---------------------------------------------------------------------------------------
 project_name = 'LoreLabs'
@@ -20,6 +22,7 @@ researcher = None
 scriptGenerator = None
 voiceGenerator = None
 imageDownloader = None
+videoBuilder = None
 
 
 # UTILS -----------------------------------------------------------------------------------------
@@ -84,7 +87,7 @@ def load_topics(branch:str = 'cs'):
 
     # Set up output directory
     function_name = inspect.currentframe().f_code.co_name # Get function name
-    output_folder = workflow_path + function_name + '/'
+    output_folder = workflow_path + '1 - ' + function_name + '/'
 
     # Check if already saved output
     if os.path.exists(output_folder): # If output folder exist, check what is inside
@@ -151,7 +154,7 @@ def research_topics(category:str, topic: str, stop: bool = False):
     
     # Set up output directory
     function_name = inspect.currentframe().f_code.co_name # Get function name
-    output_folder = workflow_path + function_name + f"/{fixed_cat}/"
+    output_folder = workflow_path + '2 - ' + function_name + f"/{fixed_cat}/"
 
     # Check if already saved output
     if os.path.exists(output_folder): # If output folder exist, check what is inside
@@ -277,7 +280,7 @@ def generate_script(summary: dict, stop: bool = False):
     
     # Set up output directory
     function_name = inspect.currentframe().f_code.co_name # Get function name
-    output_folder = workflow_path + function_name + "/"
+    output_folder = workflow_path + '3 - ' + function_name + "/"
     output_path = output_folder + fixed_cat + '.json'
 
     # Check if already saved output
@@ -333,7 +336,7 @@ def generate_voices(script: dict, stop: bool = False):
     
     # Set up output directory
     function_name = inspect.currentframe().f_code.co_name # Get function name
-    output_folder = workflow_path + function_name + f"/{fixed_cat}/"
+    output_folder = workflow_path + '4 - ' + function_name + f"/{fixed_cat}/"
 
     # Check if already saved output
     if os.path.exists(output_folder): # If output folder exist, check what is inside
@@ -395,7 +398,7 @@ def search_images(script:dict):
 
     # Set up output directory
     function_name = inspect.currentframe().f_code.co_name # Get function name
-    output_folder = workflow_path + function_name + f"/{fixed_cat}/"
+    output_folder = workflow_path + '5 - ' + function_name + f"/{fixed_cat}/"
 
     # Check if already saved output
     if os.path.exists(output_folder): # If output folder exist, check what is inside
@@ -440,6 +443,8 @@ def search_images(script:dict):
             if saved_output_check:
                 print('[INFO] Images were loaded successfully')
                 return downloaded_images
+    else:
+        os.makedirs(save_folder, exist_ok=True)
 
 
     print('[INFO] Downloading images...')
@@ -456,64 +461,138 @@ def search_images(script:dict):
 
 
 
-def build_video(script:dict, images:dict, voices:dict):
-    pass
+def build_video(script:dict, images:dict, voices:dict, stop: bool = False):
+    global videoBuilder
+
+    topic = script['topic']
+    category = script['category']
+    print(f"\n[STEP] Building video: {category} - {topic}...")
+
+    # Replace or remove characters that are invalid in file paths
+    invalid_chars = r'\/:*"<> '
+    fixed_cat = ''.join(c if c not in invalid_chars else '_' for c in category.lower()).replace("?", "").replace("'", "")
+    
+    # Set up output directory
+    function_name = inspect.currentframe().f_code.co_name # Get function name
+    output_folder = workflow_path + '6 - ' + function_name + "/"
+    output_path = output_folder + fixed_cat + '.mp4'
+
+    # Check if already saved output
+    if os.path.exists(output_folder): # If output folder exist, check what is inside
+        saved = check_saved_output( output_folder, extensions=['.mp4'] )
+    else: # If not, create it and execute step
+        os.makedirs(output_folder, exist_ok=True)
+        saved = []
+
+    
+    if output_path not in saved: # No saved output
+        
+        print('[INFO] Building Video...')
+
+        # Start the script generator class
+        if videoBuilder is None:
+            videoBuilder = VideoBuilder()
+            videoBuilder.start_whisper()
+
+        # Generate script
+        video = videoBuilder.build_full_video(
+            script=script, 
+            images=images, 
+            audios=voices, 
+            save_path=output_path
+        ) # returns only a path
+        
+    else: # Saved output found
+        
+        print('[INFO] The video has already been built')
+        video = output_path
+
+    # Stop videoBuilder
+    if stop and videoBuilder is not None: 
+        videoBuilder.stop_whisper()
+        videoBuilder = None
+
+    return video
+
 
 
 def execution():
     print("\n\n\t\t\t *** STARTING THE EXECUTION ***")
 
+
+    global_start = time.time()
+
     # Step 0: Set up environment
+    start = global_start
     set_up_environment(0)
+    print(f"[DONE] Set up environment in {time.time() - start:.2f}s")
 
     # Step 1: Load topics
+    start = time.time()
     topics = load_topics()
+    print(f"[DONE] Load topics in {time.time() - start:.2f}s")
 
     # Step 2: Research (step is being executed multiple times, one per topic)
     categories_topics = list(topics.items())
     num_topics = len(categories_topics)
-    research = [
-        research_topics(
+    research = []
+    for i, (category, topic) in enumerate(categories_topics):
+        start = time.time()
+        summary = research_topics(
             category, 
             topic, 
             stop=(i == num_topics - 1)
-        ) 
-        for i, (category, topic) in enumerate(categories_topics)
-    ]
+        )
+        print(f"[DONE] Research {category} - {topic} in {time.time() - start:.2f}s")
+        research.append(summary)
 
     # Step 3: Generate video script (step is being executed multiple times, one per research result)
     num_summaries = len(research)
-    scripts = [
-        generate_script(
+    scripts = []
+    for i, summary in enumerate(research):
+        start = time.time()
+        script = generate_script(
             summary, 
             stop=(i == num_summaries - 1)
-        ) 
-        for i, summary in enumerate(research)
-    ]
-
+        )
+        print(f"[DONE] Generate script for {script['category']} - {script['topic']} in {time.time() - start:.2f}s")
+        scripts.append(script)
 
     # Step 4: Generate voices (step is being executed multiple times, one per script)
     num_scripts = len(scripts)
-    voices = [
-        generate_voices(
+    voices = []
+    for i, script in enumerate(scripts):
+        start = time.time()
+        voice = generate_voices(
             script, 
             stop=(i == num_scripts - 1)
-        ) 
-        for i, script in enumerate(scripts)
-    ]
+        )
+        print(f"[DONE] Generate voices for {script['category']} - {script['topic']} in {time.time() - start:.2f}s")
+        voices.append(voice)
 
     # Step 5: Search for images (step is being executed multiple times, one per script)
-    images = [
-        search_images(script) 
-        for i, script in enumerate(scripts)
-    ]
+    images = []
+    for i, script in enumerate(scripts):
+        start = time.time()
+        image = search_images(script)
+        print(f"[DONE] Search images for {script['category']} - {script['topic']} in {time.time() - start:.2f}s")
+        images.append(image)
 
-    # Step 5: Search for images (step is being executed multiple times, one per script)
-    video = [
-        build_video(
-            script_dict,
-            image_dict,
-            voices_dict,
-        ) 
-        for script_dict, image_dict, voices_dict in zip(scripts, images, voices)
-    ]
+    # Step 6: Build videos (step is being executed multiple times, one per script/image/voice)
+    num_scripts = len(scripts)
+    videos = []
+    for count, script_dict, image_dict, voices_dict in zip(range(num_scripts), scripts, images, voices):
+        start = time.time()
+        video = build_video(
+            script=script_dict,
+            voices=voices_dict,
+            images=image_dict,
+            stop=(count == num_scripts - 1)
+        )
+        print(f"[DONE] Build video for {script_dict['category']} - {script_dict['topic']} in {time.time() - start:.2f}s")
+        videos.append(video)
+
+    
+    print(f"\n[DONE] Complete workflow finished after {time.time() - global_start:.2f}s")
+
+    print("\n\n\t\t\t *** FINISHING EXECUTION ***\n")
