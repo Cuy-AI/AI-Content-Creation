@@ -3,12 +3,12 @@ import json
 import inspect
 import time
 
-from projects.classes.TopicManagerOR import TopicManagerOR
-from projects.classes.ResearcherLMS import ResearcherLMS
-from projects.classes.ScriptGenerator import ScriptGenerator
-from projects.classes.VoiceGenerator import VoiceGenerator
-from projects.classes.ImageDownloader import ImageDownloader
-from projects.classes.VideoBuilder import VideoBuilder
+from projects.LoreLabs.Workflow1.classes.TopicManagerOR import TopicManagerOR
+from projects.LoreLabs.Workflow1.classes.ResearcherLMS import ResearcherLMS
+from projects.LoreLabs.Workflow1.classes.ScriptGenerator import ScriptGenerator
+from projects.LoreLabs.Workflow1.classes.VoiceGenerator import VoiceGenerator
+from projects.LoreLabs.Workflow1.classes.ImageDownloader import ImageDownloader
+from projects.LoreLabs.Workflow1.classes.VideoBuilder import VideoBuilder
 
 # GLOBALS ---------------------------------------------------------------------------------------
 project_name = 'LoreLabs'
@@ -516,7 +516,7 @@ def build_video(script:dict, images:dict, voices:dict, stop: bool = False):
 
 
 
-def execution():
+def workflow1():
     print("\n\n\t\t\t *** STARTING THE EXECUTION ***")
 
 
