@@ -2,6 +2,8 @@ import os
 import time
 import shutil
 import random
+import time
+from math import ceil
 from classes.ContainerManager import ContainerManager
 from components.Editor.VideoEditor.VideoEditor import VideoEditor
 from components.Editor.ImageEditor.ImageEditor import ImageEditor
@@ -63,18 +65,54 @@ class VideoBuilder:
 
             accumulated_time += duration
 
-        # Cut background video 
-        background_duration = self.veditor.get_duration(background_video)
-        fixed_background_duration = background_duration - accumulated_time - 1
-        select_start = random.random() * fixed_background_duration
-
 
         print('[INFO] Cutting video...')
+        start_time = time.time()
 
-        # Fast cut or accurate cut?.. Both?
-        offset = 15
-        video = self.veditor.cut(background_video, start=select_start-offset, end=select_start + accumulated_time + offset, reencode=False) 
-        video = self.veditor.cut(background_video, start=select_start, end=select_start + accumulated_time, reencode=True) 
+        # Cut background video 
+        background_duration = self.veditor.get_duration(background_video)
+        
+        '''
+        Fast cut:  
+        It takes less than a second
+        Error of +- 3 seconds
+        But some forums suggest the error can even be +- 10 seconds
+        '''
+        # fixed_background_duration = background_duration - accumulated_time - 1
+        # select_start = random.random() * fixed_background_duration
+        # select_end = select_start + accumulated_time
+        # video = self.veditor.cut(background_video, start=select_start, end=select_end, reencode=False) 
+
+        '''
+        Accurate cut:  
+        It takes like 3 MINUTES
+        No error
+        Its recommended to round start and end by 2 digits: less precision takes less time
+        '''
+        # fixed_background_duration = background_duration - accumulated_time - 1
+        # select_start = round(random.random() * fixed_background_duration, 2)
+        # select_end = round(select_start + accumulated_time, 2)
+        # video = self.veditor.cut(background_video, start=select_start, end=select_end, reencode=True) 
+
+        '''
+        Hybrid cut: Cut fast then precise
+        Takes aprox 1:30 MINUTES
+        If the error of fast cut it's bigger than offset, the the video will not have the required time
+        '''
+        offset = 30
+        fixed_background_duration = background_duration - accumulated_time - 1 - offset
+        select_start = random.random() * fixed_background_duration
+        select_end = select_start + accumulated_time + offset
+
+        video = self.veditor.cut(background_video, start=select_start, end=select_end, reencode=False) # fast
+        new_duration = self.veditor.get_duration(video)
+        if accumulated_time > new_duration:
+            print(f'[ERROR] required duration failed with both cuts: {accumulated_time} - {new_duration}')
+
+        video = self.veditor.cut(background_video, start=0, end=round(accumulated_time+0.01,2), reencode=True) # precise
+
+
+        print(f"[INFO] Cutting the video took: {time.time() - start_time:.2f}")
 
         print('[INFO] Changing ratio')
 
