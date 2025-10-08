@@ -69,7 +69,7 @@ class VideoEditor:
             return "h264_nvenc", ["-preset", "fast", "-rc", "vbr_hq", "-cq", "19"]
         else:
             # CPU x264
-            return "libx264", ["-preset", "fast", "-crf", "23", "-threads", str(max(1, os.cpu_count() or 1))]
+            return "libx264", ["-preset", "ultrafast", "-crf", "18", "-threads", str(max(1, os.cpu_count() or 1))]
 
 
     # -------------------
@@ -144,6 +144,25 @@ class VideoEditor:
         g = gcd(w, h)
         return f"{w//g}:{h//g}"
 
+    def get_keyframes(self, input_path):
+        """Return keyframe timestamps (seconds) quickly using packet metadata."""
+        cmd = [
+            "ffprobe", "-v", "error",
+            "-select_streams", "v:0",
+            "-show_entries", "packet=pts_time,flags",
+            "-of", "json",
+            input_path
+        ]
+        result = subprocess.check_output(cmd)
+        data = json.loads(result)
+        keyframes = []
+        for pkt in data.get("packets", []):
+            if "K" in pkt.get("flags", "") and "pts_time" in pkt:
+                keyframes.append(float(pkt["pts_time"]))
+        return keyframes
+
+    
+
     # -------------------
     # Core operations
     # -------------------
@@ -176,14 +195,50 @@ class VideoEditor:
         if output_path is None: output_path = self._mktemp(".mp4")
         else: os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
 
-        codec = ["-c", "copy"] if not reencode else ["-c:v", "libx264", "-c:a", "aac"]
+        start = max(float(start), 0.0)
+        duration = self.get_duration(input_path)
+        if end is not None: end = min(float(end), duration)
+        else: end = duration
 
-        start = max(start, 0.0)
-        cmd = ["ffmpeg", "-y", "-i", input_path, "-ss", str(start)]
-        if end is not None: 
-            end = min(end, self.get_duration(input_path))
-            cmd += ["-to", str(end)]
-        cmd += [*codec, output_path]
+        # ----------------------------------------
+        # Helper for nearest keyframe
+        def nearest_keyframe_before(keyframes, time):
+            return max([k for k in keyframes if k <= time], default=0.0)
+
+        # ----------------------------------------
+        if not reencode:
+            # Fast cut (keyframe-based, imprecise)
+            cmd = [
+                "ffmpeg", "-y",
+                "-ss", str(start),
+                "-to", str(end),
+                "-i", input_path,
+                "-c", "copy",
+                output_path
+            ]
+        else:
+            # Precise cut using keyframe awareness
+            keyframes = self.get_keyframes(input_path)
+            fast_seek = nearest_keyframe_before(keyframes, start)
+
+            precise_start = start - fast_seek
+            precise_end = end - fast_seek
+
+            vcodec, vparams = self._choose_encoder()
+
+            cmd = [
+                "ffmpeg", "-y",
+                "-ss", str(fast_seek),
+                "-i", input_path,
+                "-ss", str(precise_start),
+                "-to", str(precise_end),
+                "-c:v", vcodec,
+                *vparams,                     # dynamic encoder parameters
+                "-c:a", "aac",
+                "-avoid_negative_ts", "1",
+                "-fflags", "+genpts",
+                output_path
+            ]
 
         self._run(cmd)
         return output_path
