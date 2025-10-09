@@ -1,0 +1,80 @@
+{
+  "title": "Rick Explains Neural Networks (Because You Asked!)",
+  "caption": "Why does your phone recognize your face? #NeuralNetworks #AI",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, Morty, imagine the brain is like a Rube Goldberg machine. But for learning.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Uh, okay? So... what's the machine part?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "The neural network! It's layers of nodes, like tiny workers passing data. Each node does a little math.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining without caring.png",
+      "web_image": "diagram of neural network layers"
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so it's like when I tried to learn guitar? But with math?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! You feed it data—like labeled pictures of cats. It starts guessing wrong, but that's okay.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Why is that okay? That sounds like me in math class!",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Because it uses backpropagation! It checks its mistakes, adjusts the weights—like tightening a screw.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "diagram of backpropagation in neural networks"
+    },
+    {
+      "character": "Morty",
+      "script": "So it learns by being wrong? That sounds like my love life.",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Yep! And that's why your phone recognizes you. It sees patterns, even if it’s just a blob of pixels.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so if I feed it my bad jokes, will it learn to be funnier?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Not likely, Morty. Neural networks are good at math, not comedy. But hey, if it could, I’d be out of a job.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with an angry look.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So now you’re just jealous of a machine?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty evil with a serious looking and a portal gun.png",
+      "web_image": null
+    }
+  ],
+  "topic": "How does a neural network learn from data?",
+  "category": "Data & Artificial Intelligence"
+}

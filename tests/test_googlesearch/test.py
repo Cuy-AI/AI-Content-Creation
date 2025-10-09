@@ -11,13 +11,9 @@ def test_googlesearch():
     print("Results of normal search:")
     for r in results: print(r)
 
-    # Extract content
-    info = client.extract_content(
-        results[0]["link"], 
-        ignore_tags=["script", "style", "footer", "nav"],
-        required_tags=["title", "h1", "h2", "h3", "h4", "h5", "h6", "p"],
-        only_required_tags=True
-    )
+    # Extract content: download the page HTML first, then extract from HTML
+    html = client.download_html(results[0]["link"])
+    info = client.extract_content(html)
 
     print("Extracted info:")
     print(info)
@@ -55,4 +51,4 @@ def test_googlesearch():
 
     # Image search with safe mode on
     images = client.search("cats", search_type="image", safe="active")
-    for r in results: print(r)
+    for img in images: print(img)

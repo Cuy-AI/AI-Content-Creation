@@ -1,0 +1,24 @@
+{
+  "web_search": [
+    {
+      "title": "Machine learning, explained | MIT Sloan",
+      "link": "https://mitsloan.mit.edu/ideas-made-to-matter/machine-learning-explained",
+      "snippet": "Apr 21, 2021 ... For example, an algorithm would be trained with ... Neural networks are a commonly used, specific class of machine learning algorithms."
+    },
+    {
+      "title": "What Is a Neural Network? | IBM",
+      "link": "https://www.ibm.com/think/topics/neural-networks",
+      "snippet": "A neural network is a machine learning model that stacks simple \"neurons\" in layers and learns pattern-recognizing weights and biases from data to map ..."
+    },
+    {
+      "title": "Neural network (machine learning) - Wikipedia",
+      "link": "https://en.wikipedia.org/wiki/Neural_network_(machine_learning)",
+      "snippet": "In machine learning, a neural network is a computational model inspired by the structure and functions of biological neural networks. An artificial neural ..."
+    },
+    {
+      "title": "AI vs. Machine Learning vs. Deep Learning vs. Neural Networks | IBM",
+      "link": "https://www.ibm.com/think/topics/ai-vs-machine-learning-vs-deep-learning-vs-neural-networks",
+      "snippet": "For example, companies like Amazon use machine learning to recommend products to ... to construct learning algorithms to manage your data. Data management is ..."
+    }
+  ]
+}

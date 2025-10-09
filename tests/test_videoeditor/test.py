@@ -137,13 +137,39 @@ def test_video_editor():
 
     # 3. Add audio
     print("\n3. Adding audio to the video...")
-    start = 2 # Seconds
+
     audio = "volume/resources/audios/test/test01.mp3"
+
+    # 3.1 Replace audio segments (overwrite portions of the original audio)
+    print("\n3.1 Replacing audio segments (replace_audios)...")
     t0 = time.time()
-    video = veditor.replace_audio(video, audio_path=audio, start_time=start)
+    # replace_audios expects a list of dicts: {"audio_path": str, "start": float, "volume": float}
+    video = veditor.replace_audios(
+        video,
+        audios=[
+            {"audio_path": audio, "start": 2.0, "volume": 1.0}
+        ],
+        # output_path=None will create a temp file and return its path
+    )
     t1 = time.time()
-    print("Video with audio at:", video)
-    print(f"Audio took {t1 - t0:.2f} seconds")
+    print("Video after replace_audios at:", video)
+    print(f"replace_audios took {t1 - t0:.2f} seconds")
+
+    # 3.2 Mix (overlay) an audio on top of the existing audio
+    print("\n3.2 Mixing audio tracks (mix_audios)...")
+    t0 = time.time()
+    # mix_audios overlays audio(s) at precise start times without removing existing audio
+    video_merged_audio = veditor.mix_audios(
+        video,
+        audios=[
+            {"audio_path": audio, "start": 5.0, "volume": 0.8}
+        ],
+        start_time=0.0,
+        output_path=os.path.join(final_output_path, "mixed_audio.mp4")
+    )
+    t1 = time.time()
+    print("Video after mix_audios at:", video_merged_audio)
+    print(f"mix_audios took {t1 - t0:.2f} seconds")
 
 
     # 4. Join two videos
@@ -210,7 +236,7 @@ def test_video_editor():
     whisperer = whisper_container.create_client()
 
     # Set up the model
-    whisperer.set_model_size(model_size="medium")
+    whisperer.set_model_size(model_size="medium", client_timeout = 240)
     whisperer.set_params(language="en", task="transcribe")
 
     # Transcribe a video

@@ -1,0 +1,86 @@
+{
+  "title": "Rick & Morty Explain Cloud Databases! #TechTalk",
+  "caption": "Why cloud databases? Rick breaks it down—with Morty’s help! #CloudComputing",
+  "scenes": [
+    {
+      "character": "Rick",
+      "script": "Alright, Morty. You ever wonder why businesses are ditching their old databases like last season's sci-fi novels?",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Uh... because they’re expensive, Rick? And sometimes the hard drives crash harder than my dreams of becoming a hero?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty sad looking up and thinking.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! Cloud-based databases solve that. No more physical servers—just virtual storage. Costs drop like a bomb in a bad movie!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick happy with cool sunglasses.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Wait, so it’s like storing all our data on, uh... the intergalactic internet? But safer?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty looking to another side without caring.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Yes! And it scales—like a good meme. Need more space? Boom, just expand. Less demand? Shrink back down.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "So it’s like when I eat a whole pizza by myself, but then the next day I’m not stuck with 10 pounds of leftover cheese?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty happy asking with both hands.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Precisely! Plus, security’s beefed up. Cloud providers handle updates, backups—even disaster recovery. It’s like having a army of bots protecting your data!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": "cloud database security features"
+    },
+    {
+      "character": "Morty",
+      "script": "Okay, but what if the cloud provider goes kaput? Then we’re screwed right?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Good point, Morty. That’s why smart folks use solutions like Apache Cassandra or Astra DB—built for reliability and performance.",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick explaining with both hands.png",
+      "web_image": "apache cassandra logo"
+    },
+    {
+      "character": "Morty",
+      "script": "So, basically, cloud databases are the smartest way to store data now? Like, Netflix would use this?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty flexing his abs.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Exactly! It’s how Netflix streams your favorite shows without crashing. Modern apps rely on it for speed, efficiency—even flexibility!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick winking in approval.png",
+      "web_image": null
+    },
+    {
+      "character": "Morty",
+      "script": "Cool! So now I can brag to Summer about how much smarter I am? Because of you, Rick?",
+      "character_image": "volume/resources/LoreLabs/images/morty/morty with a dumb looking without understanding.png",
+      "web_image": null
+    },
+    {
+      "character": "Rick",
+      "script": "Sure thing, Morty. Just remember—cloud databases are like my inventions: powerful but best when you don’t mess them up!",
+      "character_image": "volume/resources/LoreLabs/images/rick/rick with raised eyebrow questioning ideas.png",
+      "web_image": null
+    }
+  ],
+  "topic": "What are the benefits of using a cloud-based database?",
+  "category": "Cloud & Big Tech"
+}

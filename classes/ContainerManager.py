@@ -41,19 +41,19 @@ class ContainerManager:
         Ensure a single instance of the container is running.
         If already running, reuse it. Otherwise, start a new one.
         """
-        print(f"Checking for existing container {self.image}...")
+        # print(f"Checking for existing container {self.image}...")
 
         existing = self._find_running_container()
         if existing:
             if existing.status == "running":
-                print(f"⚡ Container {self.name} is already running, reusing it")
+                # print(f"⚡ Container {self.name} is already running, reusing it")
                 self.container = existing
                 return
             else:
-                print(f"🗑 Removing old stopped container {self.name}")
+                # print(f"🗑 Removing old stopped container {self.name}")
                 existing.remove()
 
-        print(f"Starting new container {self.image} as {self.name}...")
+        # print(f"Starting new container {self.image} as {self.name}...")
 
         # Set up host volume directory:
         full_host_volume = os.path.join(
@@ -84,27 +84,28 @@ class ContainerManager:
         )
 
         # Wait until health is ok
-        print(f"Checking container {self.image} until is OK...")
+        # print(f"Checking container {self.image} until is OK...")
         for _ in range(50):
             if self.is_healthy():
-                print(f"✅ {self.image} container ready")
+                # print(f"✅ {self.image} container ready")
                 return
             time.sleep(5)
 
         raise RuntimeError(f"❌ {self.image} container failed to start")
 
     def stop(self):
-        print(f"Stopping container {self.image}...")
+        # print(f"Stopping container {self.image}...")
         if self.container:
             self.container.stop()
             self.container.remove()
             self.container = None
-            print(f"✅ {self.image} stopped successfully")
+            # print(f"✅ {self.image} stopped successfully")
         else:
-            print(f"ℹ️ No container for {self.image} was running")
+            # print(f"ℹ️ No container for {self.image} was running")
+            pass
 
     def restart(self):
-        print(f"Restarting container {self.image}...")
+        # print(f"Restarting container {self.image}...")
         self.stop()
         self.start()
 
