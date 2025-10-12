@@ -1,5 +1,7 @@
 import os
 import json
+import datetime
+from random import choice
 from components.LM.LMStudio.LMStudio import LMStudio
 
 '''
@@ -218,6 +220,101 @@ def test_lmstudio():
     print("Saved result:\n", json_output)
 
     # 12) Eject the model from ram when you’re done
+    answ = lms.eject_model(model_id)
+    print(answ)
+
+
+    # MCP TEST (Web search) --------------------------------------------------------------
+
+    # Load a specific model (with optional load-time config)
+    model_id = "qwen/qwen3-4b-2507"
+
+    # Long context because web searches have to analyze lot of content
+    answ = lms.load_model(model_id, config={"contextLength": 20000})
+    print("Load model:", answ)
+
+    # Set preset parameters
+    answ = lms.set_preset(preset_identifier=None)
+
+    # Set volume path
+    save_path = "volume/output/lmstudio/test04/output_mcp.json"
+
+    # Define the conversation
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant that can access external tools to answer accurately."
+        },
+        {
+            "role": "user",
+            "content": """
+            Can you tell me what time it is right now,
+            and also what the weather is like in New York?
+            """
+        },
+    ]
+
+    # Define MCP-style tools
+    mcp_tools = [
+        {
+            "type": "function",
+            "function": {
+                "name": "get_datetime",
+                "description": "Get the current date and time",
+                "parameters": {
+                    "type": "object",
+                    "properties": {},
+                    "required": []
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "get_weather",
+                "description": "Get fake weather information for a given city",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "city": {
+                            "type": "string",
+                            "description": "City name"
+                        }
+                    },
+                    "required": ["city"]
+                }
+            }
+        }
+    ]
+
+    def get_datetime(**kwargs):
+        """Returns the current date and time."""
+        now = datetime.datetime.now().isoformat()
+        return {"datetime": now}
+
+    def get_weather(**kwargs):
+        """Returns fake weather data for a given city."""
+        city = kwargs.get("city", "Unknown")
+        conditions = ["sunny", "rainy", "cloudy", "stormy", "foggy"]
+        return {
+            "city": city,
+            "temperature": choice(range(15, 35)),
+            "condition": choice(conditions)
+        }
+
+
+    # Register tool handlers inside LM Studio class
+    lms.set_mcp_tool(get_datetime)
+    lms.set_mcp_tool(get_weather)
+
+    # Generate (tools active)
+    # WARNING: You can only use tools with messages. It doesn't work with prompt
+    resp = lms.generate(messages=messages, mcp_tools=mcp_tools, save_path=save_path, timeout=300)
+
+    print("\nFinal Answer (after executing tools):")
+    for k, v in resp.items(): print(f"{k}: {v}")
+
+    # Eject the model from ram when you’re done
     answ = lms.eject_model(model_id)
     print(answ)
 
