@@ -1,0 +1,52 @@
+{
+  "model": "qwen/qwen3-4b-2507",
+  "input": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant that can access external tools to answer accurately."
+    },
+    {
+      "role": "user",
+      "content": "\n            Can you tell me what time it is right now,\n            and also what the weather is like in New York?\n            "
+    },
+    {
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "340942187",
+          "function": {
+            "name": "get_datetime",
+            "arguments": "{}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "get_datetime",
+      "content": "{\"datetime\": \"2025-10-12T08:46:51.520563\"}"
+    },
+    {
+      "role": "assistant",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "601891674",
+          "function": {
+            "name": "get_weather",
+            "arguments": "{\"city\":\"New York\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "get_weather",
+      "content": "{\"city\": \"New York\", \"temperature\": 28, \"condition\": \"sunny\"}"
+    }
+  ],
+  "preset": null,
+  "output": "The current time is October 12, 2025, at 08:46 AM.\n\nIn New York, the weather is sunny with a temperature of 28°C.",
+  "tool_calls": []
+}

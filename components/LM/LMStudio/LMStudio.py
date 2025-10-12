@@ -31,8 +31,9 @@ class LMStudio:
         self.request_timeout = 45
         self.generation_timeout = 120
         self.preset = None
+        self.model = model_id
         self.lm_models = {}
-        self.model_id = model_id
+        self._mcp_tools = {}
 
         # Ensure server is running if requested
         if auto_start: 
@@ -168,7 +169,7 @@ class LMStudio:
         if model_id not in self.list_loaded_models():
             raise ValueError("The model is not listed on loaded models")
         
-        self.model_id = model_id
+        self.model = model_id
         return "LM model was set successfully"
 
     def load_model(self, model_id: str, config: dict = None, preset: str|None = None) -> str:
@@ -219,7 +220,6 @@ class LMStudio:
         self.client.llm.unload(self.model)
 
         # After unloading, refresh our local snapshot
-        self.model_id = None
         self._refresh_models()
 
         # Check if refresh models reflects the changes
@@ -228,7 +228,9 @@ class LMStudio:
         while time.time() < deadline:
             self._refresh_models()
             if self.lm_models[self.model].get("state", None) == "not-loaded":
-                return f"Model {self.model} was unloaded successfully"
+                msg = f"Model {self.model} was unloaded successfully"
+                self.model = None
+                return msg
             time.sleep(0.5)
 
         raise RuntimeError(f"Failed to unload {self.model} model")
@@ -249,23 +251,40 @@ class LMStudio:
         """Return the currently active preset name (or None)."""
         return self.preset
 
+    
+    # -----------------------
+    # MCP TOOL MANAGEMENT
+    # -----------------------
+    def set_mcp_tool(self, tool_funcs):
+        """Register one or multiple MCP tool implementations."""
+        if not isinstance(tool_funcs, list):
+            tool_funcs = [tool_funcs]
+        for fn in tool_funcs:
+            if not callable(fn):
+                raise TypeError(f"Tool {fn} is not callable")
+            self._mcp_tools[fn.__name__] = fn
+
+    def erase_mcp_tool(self, tool_funcs):
+        """Unregister one or multiple MCP tools."""
+        if not isinstance(tool_funcs, list):
+            tool_funcs = [tool_funcs]
+        for fn in tool_funcs:
+            name = fn if isinstance(fn, str) else fn.__name__
+            self._mcp_tools.pop(name, None)
+
+    def clear_mcp_tools(self):
+        """Remove all registered MCP tools."""
+        self._mcp_tools.clear()
+
 
     # -----------------------
     # Generation
     # -----------------------
-    def _validate_messages(self, messages: dict) -> bool:
-        for msg in messages:
-            if "role" not in msg.keys() or "content" not in msg.keys() or len(msg.keys()) > 2:
-                return False, "Messages param was not structured correctly with 'role' and 'content'"
-            role = msg.get("role")
-            if role not in ("system", "user", "assistant", "tool", "function"):
-                return False, f"Role: {role} not valid"
-        return True, ""
-
     def generate(
             self, prompt: str|None = None, 
             messages: list|None = None, 
             parameters: dict = {},
+            mcp_tools: list|None = None,
             save_path: str|None = None, 
             timeout:int|None = None
         ) -> dict:
@@ -278,53 +297,104 @@ class LMStudio:
         Returns: parsed JSON response from LM Studio server.
         """
 
-        # Check if a model is loaded
+        # ─── Sanity checks ───────────────────────────────
         if not self.model:
             raise RuntimeError("No model is loaded. Use load_model() first.")
 
-        if messages:
-            validation, msg = self._validate_messages(messages)
-            if not validation: raise ValueError(msg)
+        if not messages and not prompt:
+            raise ValueError("Provide 'messages' or 'prompt'")
 
+
+        # ─── Build request body ───────────────────────────
+        if messages:
             url = f"{self.base_url}/v1/chat/completions"
             body = {
                 "model": self.model,
                 "messages": messages,
                 **{k: v for k, v in parameters.items() if v is not None},
             }
-        elif prompt:
+        else:
             url = f"{self.base_url}/v1/completions"
             body = {
                 "model": self.model,
                 "prompt": prompt,
                 **{k: v for k, v in parameters.items() if v is not None},
             }
-        else:
-            raise ValueError("Provide 'messages' or 'prompt'")
 
-        # inject preset if user set one
+        # Inject preset if set
         if self.preset:
             body["preset"] = self.preset
 
+        # Inject tools schema
+        if mcp_tools:
+            body["tools"] = mcp_tools
+
+
+        # ─── Perform API request ──────────────────────────
         timeout = timeout if timeout is not None else self.generation_timeout
         r = requests.post(url, json=body, timeout=timeout)
         r.raise_for_status()
+        response = r.json()["choices"][0]
 
-        if messages: text_answ = r.json()["choices"][0]["message"]["content"]
-        else: text_answ = r.json()["choices"][0]["text"]
 
+        # ─── Extract primary response ─────────────────────
+        if messages:
+            message = response["message"]
+            text_answ = message.get("content", "")
+        else:
+            text_answ = response.get("text", "")
+
+
+        # ─── Parse structured response ────────────────────
         try:
             structured_answer = json.loads(text_answ)
         except json.JSONDecodeError:
             structured_answer = text_answ
 
+        # ─── Handle tool calls ────────────────────────────
+        executed_tools = []
+        if messages and "tool_calls" in message:
+            for tool in message["tool_calls"]:
+                name = tool["function"]["name"]
+                args = json.loads(tool["function"]["arguments"])
+
+                executed_tools.append({
+                    "name": name,
+                    "args": args,
+                })
+
+                if name in self._mcp_tools:
+                    fn = self._mcp_tools[name]
+                    try:
+                        result = fn(**args)
+                    except Exception as e:
+                        result = {"error": str(e)}
+
+                    # Send follow-up message with tool result
+                    follow_up = [
+                        *messages,
+                        {"role": "assistant", "tool_calls": [tool]},
+                        {"role": "tool", "name": name, "content": json.dumps(result)}
+                    ]
+                    return self.generate(
+                        messages=follow_up, 
+                        mcp_tools=mcp_tools, 
+                        parameters=parameters, 
+                        save_path=save_path, 
+                        timeout=timeout # More timeout due tool calls
+                    )
+
+
+        # ─── Build final output ───────────────────────────
         final_output = {
             "model": self.model,
             "input": messages if messages else prompt,
             "preset": self.preset,
             "output": structured_answer,
+            "tool_calls": executed_tools,
         }
 
+        # ─── Save output (optional) ───────────────────────
         if save_path:
             # If save_path looks like a file (has an extension), handle as file
             if os.path.splitext(save_path)[1]:  
