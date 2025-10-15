@@ -2,7 +2,6 @@ import os
 import requests
 import mimetypes
 import trafilatura
-from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 
 class GoogleSearchEngine:
