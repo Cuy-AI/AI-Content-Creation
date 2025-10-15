@@ -1,63 +1,70 @@
 import os
+import time
 import requests
 import mimetypes
 import trafilatura
-from dotenv import load_dotenv
-
-class GoogleSearchEngine:
-    def __init__(self):
-
-        load_dotenv()
-        self.api_key = os.getenv("GOOGLE_SEARCH_ENGINE_API_KEY")
-        self.engine_id = os.getenv("GOOGLE_SEARCH_ENGINE_ID")
-
-        if not self.api_key or not self.engine_id:
-            raise ValueError("Missing GOOGLE_API_KEY or GOOGLE_ENGINE_ID in .env file")
-
-        self.base_url = "https://www.googleapis.com/customsearch/v1"
+from ddgs import DDGS
 
 
-    def search(self, query, num=5, search_type=None, **kwargs):
+class RateLimiter:
+    """Simple rate limiter to avoid hitting DuckDuckGo too fast."""
+    def __init__(self, min_interval=1.0):
+        self.min_interval = min_interval
+        self.last_call = 0
+
+    def wait(self):
+        elapsed = time.time() - self.last_call
+        if elapsed < self.min_interval:
+            time.sleep(self.min_interval - elapsed)
+        self.last_call = time.time()
+
+
+
+class DuckDuckGoSearch:
+    def __init__(self, rate_limit=1.5):
+        self.rate_limiter = RateLimiter(rate_limit)
+        self.ddgs = DDGS()
+
+    def search_web(self, query, num_results=10, region="wt-wt", safesearch="moderate"):
         """
-        Run a Google Custom Search query.
-        :param query: Search query string
-        :param num: Number of results (max 10 per request)
-        :param search_type: None for normal search, "image" for image search
-        :param kwargs: 
-            Extra API parameters (gl, hl, cr, siteSearch, siteSearchFilter, etc.)
-            https://developers.google.com/custom-search/v1/reference/rest/v1/cse/list
-        :return: List of dict results
+        Perform a web search using DuckDuckGo.
+        Returns: List of {title, href, body}
         """
-        params = {
-            "key": self.api_key,
-            "cx": self.engine_id,
-            "q": query,
-            "num": num
-        }
-
-        if search_type == "image": params["searchType"] = "image"
-
-        # Merge extra parameters
-        params.update(kwargs)
-
-        response = requests.get(self.base_url, params=params)
-        response.raise_for_status()
-        data = response.json()
-
+        self.rate_limiter.wait()
         results = []
-        if "items" in data:
-            for item in data["items"]:
-                result = {
-                    "title": item.get("title"),
-                    "link": item.get("link"),
-                    "snippet": item.get("snippet")
-                }
-                if search_type == "image":
-                    result["thumbnail"] = item.get("image", {}).get("thumbnailLink")
-                results.append(result)
-
+        for r in self.ddgs.text(query, region=region, safesearch=safesearch, max_results=num_results):
+            results.append({
+                "title": r.get("title"),
+                "url": r.get("href"),
+                "snippet": r.get("body")
+            })
         return results
 
+    def search_images(self, query, num_results=10, region="wt-wt", safesearch="moderate", size=None, color=None, type_image=None):
+        """
+        Perform an image search using DuckDuckGo.
+        Returns: List of {title, image, thumbnail, source}
+        Optional filters: size, color, type_image
+        """
+        self.rate_limiter.wait()
+        results = []
+        for img in self.ddgs.images(
+            query,
+            region=region,
+            safesearch=safesearch,
+            size=size,          # "Small", "Medium", "Large", etc.
+            color=color,        # "color", "Monochrome", etc.
+            type_image=type_image,  # "photo", "clipart", "gif", etc.
+            max_results=num_results
+        ):
+            results.append({
+                "title": img.get("title"),
+                "image": img.get("image"),
+                "thumbnail": img.get("thumbnail"),
+                "source": img.get("url")
+            })
+        return results
+    
 
     def extract_content(self, html, output_format="txt"):
         """
