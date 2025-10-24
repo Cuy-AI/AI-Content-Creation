@@ -84,8 +84,6 @@ class Workflow:
             mapping.update({f"arg{i}": v for i, v in enumerate(args)})
             mapping.update(kwargs)
 
-            print("Maping:", mapping)
-
             # Provide a fallback for `func_name` if user wants it
             mapping.setdefault("func", func_name)
 
