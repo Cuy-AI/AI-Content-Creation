@@ -34,6 +34,29 @@ class TopicManager_V1:
             json.dump(topics_json, f, indent=2, ensure_ascii=False)
 
 
+    def next_topics_prompt(self, topics_json: dict, n:int) -> str:
+        """
+        Build the prompt to generate new topics.
+        This method can be overridden to customize the prompt.
+        Input:
+          - topics_json: existing topics dictionary
+          - n: number of topics to generate per category
+        """
+        category_list = list(topics_json.keys())
+        existing_by_cat = { category: list(topics_dict.keys()) for category, topics_dict in topics_json.items() }
+        prompt =  f"You are an assistant generating researchable short-form video topics.\n"
+        prompt += f"Task:\n"
+        prompt += f"- For each of these categories: {category_list}"
+        prompt += f"- Suggest up to {n} unique, specific, and concise video topics in the form of **very short questions**.\n"
+        prompt += f"- Each topic must be precise enough that someone could research and create a clear, factual 60 second video answer.\n"
+        prompt += f"- If the category is 'Competitive Programming', generate only algorithm, data structure, or coding problem questions.\n"
+        prompt += f"- Avoid these existing topics per category:\n"
+        prompt += f"{existing_by_cat}\n"
+        prompt += f"- Do not generate vague or generic ideas, catchy titles, slogans, or clickbait.\n"
+        prompt += f"- Ensure each question has potential to grab attention and spark discussion."
+        return prompt
+
+
     def extend_topics(self, topics_path: str = None, n: int = 5) -> bool:
         """
         Generate new topics for ALL categories in a single LLM call.
@@ -47,23 +70,11 @@ class TopicManager_V1:
         topics_path = topics_path or self.topics_path
         topics_json = self.load_stored_topics(topics_path)
 
-        # Flatten existing topics by category
-        existing_by_cat = { category: list(topics_dict.keys()) for category, topics_dict in topics_json.items() }
+        # Flatten existing categorys
         category_list = list(topics_json.keys())
 
         # Build unified prompt
-        prompt = f"""
-        You are an assistant generating researchable short-form video topics.
-
-        Task:
-        - For each of these categories: {category_list}
-        - Suggest up to {n} unique, specific, and concise video topics in the form of **very short questions**.
-        - Each topic must be precise enough that someone could research and create a clear, factual 60 second video answer.
-        - If the category is "Competitive Programming", generate only algorithm, data structure, or coding problem questions.
-        - Avoid these existing topics per category:{existing_by_cat}.
-        - Do not generate vague or generic ideas, catchy titles, slogans, or clickbait.
-        - Ensure each question has potential to grab attention and spark discussion.
-        """.replace("\t", "").strip()
+        prompt = self.next_topics_prompt(topics_json, n)
 
         # Call LLM (OpenRouter)
         self.openRouter_container.start()
@@ -105,8 +116,9 @@ class TopicManager_V1:
                     topics_json[category][idea] = False
 
         # Save updated JSON
-        with open(topics_path, "w", encoding="utf-8") as f:
-            json.dump(topics_json, f, indent=2, ensure_ascii=False)
+        self.update_stored_topics(topics_json)
+
+        return True
 
     
     def check_missing_topics(self, topics):
@@ -138,7 +150,7 @@ class TopicManager_V1:
 
             # Select the first available topic or warn
             if len(available_topics) > 0: next_topics[category] = available_topics[0]
-            else: print(f"\t[WARN] No available topics in category {category}")
+            else: print(f"[WARN] No available topics in category {category}")
 
         # Mark selected topics as used and save updated JSON
         for category, topic in next_topics.items(): topics_json[category][topic] = True
