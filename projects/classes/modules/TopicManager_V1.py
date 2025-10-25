@@ -34,7 +34,7 @@ class TopicManager_V1:
             json.dump(topics_json, f, indent=2, ensure_ascii=False)
 
 
-    def next_topics_prompt(self, topics_json: dict, n:int) -> str:
+    def extend_topics_prompt(self, topics_json: dict, n:int) -> str:
         """
         Build the prompt to generate new topics.
         This method can be overridden to customize the prompt.
@@ -44,16 +44,18 @@ class TopicManager_V1:
         """
         category_list = list(topics_json.keys())
         existing_by_cat = { category: list(topics_dict.keys()) for category, topics_dict in topics_json.items() }
-        prompt =  f"You are an assistant generating researchable short-form video topics.\n"
-        prompt += f"Task:\n"
-        prompt += f"- For each of these categories: {category_list}"
-        prompt += f"- Suggest up to {n} unique, specific, and concise video topics in the form of **very short questions**.\n"
-        prompt += f"- Each topic must be precise enough that someone could research and create a clear, factual 60 second video answer.\n"
-        prompt += f"- If the category is 'Competitive Programming', generate only algorithm, data structure, or coding problem questions.\n"
-        prompt += f"- Avoid these existing topics per category:\n"
-        prompt += f"{existing_by_cat}\n"
-        prompt += f"- Do not generate vague or generic ideas, catchy titles, slogans, or clickbait.\n"
-        prompt += f"- Ensure each question has potential to grab attention and spark discussion."
+        prompt = (
+            f"You are an assistant generating researchable short-form video topics.\n"
+            f"Task:\n"
+            f"- For each of these categories: {category_list}"
+            f"- Suggest up to {n} unique, specific, and concise video topics in the form of **very short questions**.\n"
+            f"- Each topic must be precise enough that someone could research and create a clear, factual 60 second video answer.\n"
+            f"- If the category is 'Competitive Programming', generate only algorithm, data structure, or coding problem questions.\n"
+            f"- Avoid these existing topics per category:\n"
+            f"{existing_by_cat}\n"
+            f"- Do not generate vague or generic ideas, catchy titles, slogans, or clickbait.\n"
+            f"- Ensure each question has potential to grab attention and spark discussion."
+        )
         return prompt
 
 
@@ -74,7 +76,7 @@ class TopicManager_V1:
         category_list = list(topics_json.keys())
 
         # Build unified prompt
-        prompt = self.next_topics_prompt(topics_json, n)
+        prompt = self.extend_topics_prompt(topics_json, n)
 
         # Call LLM (OpenRouter)
         self.openRouter_container.start()
