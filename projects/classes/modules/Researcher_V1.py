@@ -120,17 +120,17 @@ class Researcher_V1:
         """
 
         urls = self.workflow.stored_result(
-            path = f'2 - research_topic/1 - urls/{self.current_category}.json', 
+            path = f'2 - research_topics/1 - urls/{self.current_category}.json', 
             converter = Converters.DictionaryConverter
         )(self.collect_urls)(query, num_results=num_results)
 
         htmls = self.workflow.stored_result(
-            path = f'2 - research_topic/2 - htmls/{self.current_category}.json',
+            path = f'2 - research_topics/2 - htmls/{self.current_category}.json',
             converter = Converters.DictionaryConverter
         )(self.download_htmls)(urls)
 
         content = self.workflow.stored_result(
-            path = f'2 - research_topic/3 - content/{self.current_category}.json',
+            path = f'2 - research_topics/3 - content/{self.current_category}.json',
             converter = Converters.DictionaryConverter
         )(self.extract_contents)(htmls)
 
