@@ -1,109 +1,83 @@
 from time import time
+
+# Workflow
 from prefect import flow, task
+from prefect.cache_policies import NO_CACHE
 from projects.classes.Workflow import Workflow
+from projects.classes.Workflow import Serializers
 
 # Modules
 from projects.classes.modules.TopicManager_V1 import TopicManager_V1
+from projects.classes.modules.Researcher_V1 import Researcher_V1
 
 
-myWorkflow = Workflow(
+LoreLabsWorkflow = Workflow(
     base_path='volume/output/LoreLabs/Workflow2', # Path were the workflow will create folders/files to store executions
     # execution_id=None, # Will generate a new execution id
     execution_id=0, # Will run an specific execution
+    storage_block_name='lorelabs-workflow1-storage', # Prefect storage block
     id_path_digits=5, # Number of digits for the id 
 )
 
 
 # Workflow Configuration ==============================================================================
-@task(name="workflow-config", description="Configures the workflow as needed")
+@task(name="workflow-config", description="Configures the workflow as needed", cache_policy=NO_CACHE)
 def config_workflow():
-    global myWorkflow
-    print("[STEP] Configuring the workflow...") 
+    print("\n[STEP] Configuring the workflow...") 
 
 
 # Topic Generation ===================================================================================
-@task(name="topic-generation", description="Generates/Selects a topic for each video category.")
-@myWorkflow.stored_result('1 - generate_topics/topics.json')
+@task(
+    name = "topic-generation", 
+    description = "Generates or Selects a topic for each video category.",
+    cache_key_fn = lambda context, inputs: '1 - generate_topics/topics.json',
+    result_serializer = Serializers.DictionarySerializer(),
+    result_storage = LoreLabsWorkflow.result_storage
+)
 def generate_topics(branch:str = 'cs') -> dict:
-    print("[STEP] Generating topics...") 
+    print("\n[STEP] Generating topics...") 
     topicManager = TopicManager_V1(topics_path=f'projects/LoreLabs/data/topics/topics_{branch}.json',)
     return topicManager.get_next_topics()
    
 
 # Topic Researching ===================================================================================
-@task(name="topics-researching", description="Launch a research task for each topic")
+@task(name="researching-step", description="Launch a research task for each topic", cache_policy=NO_CACHE)
 def research_multiple_topics(topics:dict) -> list:
-
-    print("[STEP] Researching topics...") 
-
-    categories_topics = list(topics.items())
-    num_topics = len(categories_topics)
-
-    research = [
-        research_topic(category, topic, stop=(i == num_topics - 1))
-        for i, (category, topic) in enumerate(categories_topics)
-    ]
-        
+    print("\n[STEP] Researching topics...") 
+    research = [ research_topic(category, topic) for (category, topic) in topics.items()]
+    if 'researcher' in globals(): researcher.stop() # Stop only if created
     return research
 
 
-@task(name="single-research", description="Research a single topic")
-@myWorkflow.stored_result(lambda *a, **kw: f"2 - research_topic/{a[0].replace(' ','_')}.json")
-def research_topic(category: str, topic: str, stop:bool = False) -> dict:
+@task(
+    name = "research-topic", 
+    description = "Research a single topic",
+    cache_key_fn = lambda context, inputs: f'2 - research_topic/4 - summaries/{inputs['category'].replace(' ','_')}.json',
+    result_serializer = Serializers.DictionarySerializer(),
+    result_storage = LoreLabsWorkflow.result_storage
+)
+def research_topic(category: str, topic: str) -> dict:
+
+    # Check if researcher exists
+    if 'researcher' not in globals(): 
+        global researcher
+        researcher = Researcher_V1(workflow=LoreLabsWorkflow)
+        researcher.start()
+
+    summary = researcher.request_research(category, topic)
     return {
         "category": category,
         "topic": topic,
-        "Summary": f"Investigation: sdfsadfasf {category} - {topic} - {stop}",
+        "summary": summary
     }
-
-
-# Script Generation ===================================================================================
-@task(name="scripts-generation", description="Generates a script for each researched topic")
-def generate_multiple_scripts(research: list) -> list:
-    print("[STEP] Generating scripts...") 
-
-    scripts = [
-        generate_script(item['category'], item['topic'], item['Summary'])
-        for item in research
-    ]
-        
-    return scripts
-
-
-@task(name="single-script-generation", description="Generates a script for a single researched topic")
-@myWorkflow.stored_result(lambda *a, **kw: f"3 - generate_script/{a[0].replace(' ','_')}.json")
-def generate_script(category: str, topic: str, research_summary: str) -> dict:
-    return {
-        "category": category,
-        "topic": topic,
-        "script": {
-            "title": f"Video about {topic}",
-            "description": f"This video covers the topic of {topic} in the category of {category}.",
-            "scenes": [
-                {"character": "Host", "dialogue": f"Welcome to our video on {topic}.", "image_prompt": f"A welcoming host for a video about {topic}."},
-                {"character": "CharA", "dialogue": f"Let's explore  {topic}.", "image_prompt": f"A host explaining key aspects of {topic}."},
-                {"character": "CharB", "dialogue": f"Thank you for watching .", "image_prompt": f"A host thanking viewers for watching a video about {topic}."},
-            ]
-        },
-    }
-
-
-# Search Images ===================================================================================
-@task(name="collect-images", description="Launch an image collecter per script")
-def collect_images(scripts: list) -> list:
-    print("[STEP] Collecting images...") 
-    images_per_script = [collect_images_for_script(script) for script in scripts ]
-    return images_per_script
-
-
-@task(name="script-image-collector", description="Search and download images for a single script")
-def collect_images_for_script(script: dict) -> dict:
-    images = {}
-    return images
 
 
 # Main Workflow ===================================================================================
-@flow(name='LoreLabs - Workflow1: Video creation')
+@flow(
+    name='LoreLabs - Workflow1',
+    description="An end-to-end workflow to create educational videos using AI.",
+    flow_run_name=f"LoreLabs-Workflow1-{LoreLabsWorkflow.execution_id}"
+)
 def start(branch):
 
     # Step 0 - Set up workflow
@@ -115,17 +89,17 @@ def start(branch):
     # Step 2 - Research Topics
     research = research_multiple_topics(topics)
 
-    # Step 3 - Generate Scrips
-    scripts = generate_multiple_scripts(research)
+    # # Step 3 - Generate Scrips
+    # scripts = generate_multiple_scripts(research)
 
-    # Step 4 - Search Images
-    images = collect_images(scripts)
+    # # Step 4 - Voices
+    # voices = None
 
-    # Step 5 - Voices
-    voices = None
+    # # Step 5 - Search Images
+    # images = collect_images(scripts)
 
-    # Step 6 - Build Videos
-    video = None
+    # # Step 6 - Build Videos
+    # video = None
 
     
     
