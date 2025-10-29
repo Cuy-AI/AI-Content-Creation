@@ -236,10 +236,6 @@ class Workflow:
                 # Resolve template/callable into a Path relative to execution-specific folder
                 file_path = self._resolve_path(path, args, kwargs, func.__name__)
 
-                # If resolved path looks like a directory (no suffix)
-                if file_path.suffix == "":
-                    raise ValueError(f"Cannot load/save output with a folder path {file_path}")
-
                 # Make sure parent exists
                 file_path.parent.mkdir(parents=True, exist_ok=True)
 
