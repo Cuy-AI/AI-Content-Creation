@@ -5,12 +5,14 @@ from prefect import flow, task
 from prefect.cache_policies import NO_CACHE
 from projects.classes.Workflow import Workflow
 from projects.classes.Workflow import Serializers
+from projects.classes.Workflow import Converters
 
 # Modules
 from projects.classes.modules.TopicManager_V1 import TopicManager_V1
 from projects.classes.modules.Researcher_V1 import Researcher_V1
+from projects.classes.modules.ScriptGenerator_V1 import ScriptGenerator_V1
 
-
+# Workflow Creation ===================================================================================
 LoreLabsWorkflow = Workflow(
     base_path='volume/output/LoreLabs/Workflow2', # Path were the workflow will create folders/files to store executions
     # execution_id=None, # Will generate a new execution id
@@ -26,7 +28,7 @@ def config_workflow():
     print("\n[STEP] Configuring the workflow...") 
 
 
-# Topic Generation ===================================================================================
+# Topic Generation ====================================================================================
 @task(
     name = "topic-generation", 
     description = "Generates or Selects a topic for each video category.",
@@ -52,7 +54,7 @@ def research_multiple_topics(topics:dict) -> list:
 @task(
     name = "research-topic", 
     description = "Research a single topic",
-    cache_key_fn = lambda context, inputs: f'2 - research_topic/4 - summaries/{inputs['category'].replace(' ','_')}.json',
+    cache_key_fn = lambda context, inputs: f'2 - research_topics/4 - summaries/{inputs['category'].replace(' ','_')}.json',
     result_serializer = Serializers.DictionarySerializer(),
     result_storage = LoreLabsWorkflow.result_storage
 )
@@ -69,6 +71,35 @@ def research_topic(category: str, topic: str) -> dict:
         "category": category,
         "topic": topic,
         "summary": summary
+    }
+
+
+# Script Generation ===============================================================================
+@task(name="script-generation-step", description="Launch a script generation task for each researched topic", cache_policy=NO_CACHE)
+def generate_multiple_scripts(research: list) -> list:
+    print("\n[STEP] Generating scripts...") 
+    scripts = [ generate_script(item['category'], item['topic'], item['summary']) for item in research]
+    if 'scriptGenerator' in globals(): scriptGenerator.stop() # Stop only if created
+    return scripts
+
+
+@LoreLabsWorkflow.stored_result(
+    path = lambda *a, **kw: f'3 - generate_scripts/{a[0].replace(" ","_")}.json',
+    converter = Converters.DictionaryConverter
+)
+def generate_script(category: str, topic: str, summary: str) -> dict:
+
+    # Check if scriptGenerator exists
+    if 'scriptGenerator' not in globals(): 
+        global scriptGenerator
+        scriptGenerator = ScriptGenerator_V1()
+        scriptGenerator.start()
+
+    script = scriptGenerator.generate_script(category, topic, summary)
+    return {
+        "category": category,
+        "topic": topic,
+        "script": script
     }
 
 
@@ -90,13 +121,13 @@ def start(branch):
     research = research_multiple_topics(topics)
 
     # # Step 3 - Generate Scrips
-    # scripts = generate_multiple_scripts(research)
+    scripts = generate_multiple_scripts(research)
 
-    # # Step 4 - Voices
-    # voices = None
-
-    # # Step 5 - Search Images
+    # # Step 4 - Search Images
     # images = collect_images(scripts)
+
+    # # Step 5 - Voices
+    # voices = None
 
     # # Step 6 - Build Videos
     # video = None
