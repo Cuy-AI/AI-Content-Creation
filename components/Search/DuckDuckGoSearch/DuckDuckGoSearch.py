@@ -40,7 +40,17 @@ class DuckDuckGoSearch:
             })
         return results
 
-    def search_images(self, query, num_results=10, region="wt-wt", safesearch="moderate", size=None, color=None, type_image=None):
+    def search_images(
+            self, query, 
+            num_results=10, 
+            region="wt-wt", 
+            safesearch="off", 
+            size=None, 
+            color=None, 
+            type_image=None,
+            layout=None,
+            license_image=None,
+    ):
         """
         Perform an image search using DuckDuckGo.
         Returns: List of {title, image, thumbnail, source}
@@ -55,13 +65,18 @@ class DuckDuckGoSearch:
             size=size,          # "Small", "Medium", "Large", etc.
             color=color,        # "color", "Monochrome", etc.
             type_image=type_image,  # "photo", "clipart", "gif", etc.
+            layout=layout,
+            license_image=license_image,
             max_results=num_results
         ):
             results.append({
                 "title": img.get("title"),
                 "image": img.get("image"),
                 "thumbnail": img.get("thumbnail"),
-                "source": img.get("url")
+                "url": img.get("url"),
+                "source": img.get("source"),
+                "height": img.get("height"),
+                "width": img.get("width"),
             })
         return results
     
