@@ -1,16 +1,18 @@
 from time import time
+from pathlib import Path
 
 # Workflow
 from prefect import flow, task
 from prefect.cache_policies import NO_CACHE
 from projects.classes.Workflow import Workflow
 from projects.classes.Workflow import Serializers
-from projects.classes.Workflow import Converters
+from projects.classes.Workflow import PersistentResult
 
 # Modules
 from projects.classes.modules.TopicManager_V1 import TopicManager_V1
 from projects.classes.modules.Researcher_V1 import Researcher_V1
 from projects.classes.modules.ScriptGenerator_V1 import ScriptGenerator_V1
+from projects.classes.modules.ImageCollector_V1 import ImageCollector_V1
 
 # Workflow Creation ===================================================================================
 LoreLabsWorkflow = Workflow(
@@ -44,7 +46,7 @@ def generate_topics(branch:str = 'cs') -> dict:
 
 # Topic Researching ===================================================================================
 @task(name="researching-step", description="Launch a research task for each topic", cache_policy=NO_CACHE)
-def research_multiple_topics(topics:dict) -> list:
+def researching_step(topics:dict) -> list:
     print("\n[STEP] Researching topics...") 
     research = [ research_topic(category, topic) for (category, topic) in topics.items()]
     if 'researcher' in globals(): researcher.stop() # Stop only if created
@@ -63,7 +65,7 @@ def research_topic(category: str, topic: str) -> dict:
     # Check if researcher exists
     if 'researcher' not in globals(): 
         global researcher
-        researcher = Researcher_V1(workflow=LoreLabsWorkflow)
+        researcher = Researcher_V1(workflow_path=str(LoreLabsWorkflow.workflow_path))
         researcher.start()
 
     summary = researcher.request_research(category, topic)
@@ -83,9 +85,9 @@ def generate_multiple_scripts(research: list) -> list:
     return scripts
 
 
-@LoreLabsWorkflow.stored_result(
-    path = lambda *a, **kw: f'3 - generate_scripts/{a[0].replace(" ","_")}.json',
-    converter = Converters.DictionaryConverter
+@PersistentResult.stored_result(
+    cache_key = f'{LoreLabsWorkflow.workflow_path}/3 - generate_scripts/{{arg0}}.json',
+    converter = PersistentResult.DictionaryConverter
 )
 def generate_script(category: str, topic: str, summary: str) -> dict:
 
@@ -103,6 +105,68 @@ def generate_script(category: str, topic: str, summary: str) -> dict:
     }
 
 
+# # Image Collection ================================================================================
+@task(name="image-collection-step", description="Collect images for each script", cache_policy=NO_CACHE)
+def collect_web_images(scripts: list) -> list:
+    print("\n[STEP] Collecting images...") 
+    images_per_script = [ # List of lists
+        [ 
+            get_image(script['category'], scene["id"], scene["web_image"]) 
+            for scene in script['script']['scenes'] if scene.get("web_image", None)
+        ]
+        for script in scripts
+    ]
+    return images_per_script
+
+
+
+def web_images_solver(cache_key: str, args: tuple, kwargs: dict) -> tuple[bool, Path]:
+    '''Receives a folder as cache key instead of a file'''
+
+    valid_extensions = ('.png', '.jpg', 'jpeg', 'webp', 'tiff')
+
+    base_pattern = PersistentResult.resolve_path(cache_key, args, kwargs)
+    parent = base_pattern.parent
+    file_name = base_pattern.name
+    
+    # Check if folder exists
+    if not parent.is_dir(): return False, parent
+
+    # Check files inside the directoy
+    for file in parent.iterdir():
+        if not file.is_file(): continue
+        if file_name == file.stem and file.suffix in valid_extensions: 
+            return True, parent / file
+    
+    return False, parent
+
+
+class WebImageConverter:
+    @staticmethod
+    def save(value:str, cache_key: Path): pass
+
+    @staticmethod
+    def load(cache_key: Path) -> dict: return cache_key
+        
+
+@task(name = "collect-single-image", description = "Collect images for a single script", cache_policy=NO_CACHE)
+@PersistentResult.stored_result(
+    cache_key = f'{LoreLabsWorkflow.workflow_path}/4 - web_images/{{arg0}}/scene-{{arg1}}', # .png / .jpg / .jpeg / ...
+    solver = web_images_solver,
+    converter = WebImageConverter
+)
+def get_image(category:str, id:int, query: str) -> str:
+    saving_path = LoreLabsWorkflow.workflow_path / Path(f"4 - web_images/{category}/scene-{id}")
+
+    # Check if imageCollector exists
+    if 'imageCollector' not in globals(): 
+        global imageCollector
+        imageCollector = ImageCollector_V1()
+
+    return imageCollector.search_image(query, saving_path, size="Large", ratio="horizontal", min_w=750, n_results = 4)
+
+
+
 # Main Workflow ===================================================================================
 @flow(
     name='LoreLabs - Workflow1',
@@ -118,13 +182,13 @@ def start(branch):
     topics = generate_topics(branch)
 
     # Step 2 - Research Topics
-    research = research_multiple_topics(topics)
+    research = researching_step(topics)
 
     # # Step 3 - Generate Scrips
     scripts = generate_multiple_scripts(research)
 
     # # Step 4 - Search Images
-    # images = collect_images(scripts)
+    web_images = collect_web_images(scripts)
 
     # # Step 5 - Voices
     # voices = None
