@@ -3,8 +3,7 @@ import time
 
 from prefect import task
 from prefect.cache_policies import NO_CACHE
-from projects.classes.Workflow import Workflow
-from projects.classes.Workflow import Converters
+from projects.classes.Workflow import PersistentResult
 
 from components.LM.LMStudio.LMStudio import LMStudio
 from components.Search.DuckDuckGoSearch.DuckDuckGoSearch import DuckDuckGoSearch
@@ -12,10 +11,10 @@ from components.Search.DuckDuckGoSearch.DuckDuckGoSearch import DuckDuckGoSearch
 
 class Researcher_V1:
 
-    def __init__(self, workflow: Workflow, model_id = 'qwen/qwen3-4b-2507'):
+    def __init__(self,  model_id = 'qwen/qwen3-4b-2507', workflow_path:str = "."):
         self.lms = LMStudio(auto_start=False)
         self.searchClient = DuckDuckGoSearch()
-        self.workflow = workflow # Reference the workflow to use it's decorator
+        self.workflow_path = workflow_path # We need the workflow path to store things
 
         self.current_category = "."
         self.active = False
@@ -119,19 +118,19 @@ class Researcher_V1:
         Uses the stored_result decorator from the workflow
         """
 
-        urls = self.workflow.stored_result(
-            path = f'2 - research_topics/1 - urls/{self.current_category}.json', 
-            converter = Converters.DictionaryConverter
+        urls = PersistentResult.stored_result(
+            cache_key = f'{self.workflow_path}/2 - research_topics/1 - urls/{self.current_category}.json', 
+            converter = PersistentResult.DictionaryConverter
         )(self.collect_urls)(query, num_results=num_results)
 
-        htmls = self.workflow.stored_result(
-            path = f'2 - research_topics/2 - htmls/{self.current_category}.json',
-            converter = Converters.DictionaryConverter
+        htmls = PersistentResult.stored_result(
+            cache_key = f'{self.workflow_path}/2 - research_topics/2 - htmls/{self.current_category}.json',
+            converter = PersistentResult.DictionaryConverter
         )(self.download_htmls)(urls)
 
-        content = self.workflow.stored_result(
-            path = f'2 - research_topics/3 - content/{self.current_category}.json',
-            converter = Converters.DictionaryConverter
+        content = PersistentResult.stored_result(
+            cache_key = f'{self.workflow_path}/2 - research_topics/3 - content/{self.current_category}.json',
+            converter = PersistentResult.DictionaryConverter
         )(self.extract_contents)(htmls)
 
         combined_content = ""
