@@ -13,6 +13,7 @@ from projects.classes.modules.TopicManager_V1 import TopicManager_V1
 from projects.classes.modules.Researcher_V1 import Researcher_V1
 from projects.classes.modules.ScriptGenerator_V1 import ScriptGenerator_V1
 from projects.classes.modules.ImageCollector_V1 import ImageCollector_V1
+from projects.classes.modules.VoiceGenerator_V1 import VoiceGenerator_V1
 
 # Workflow Creation ===================================================================================
 LoreLabsWorkflow = Workflow(
@@ -76,7 +77,7 @@ def research_topic(category: str, topic: str) -> dict:
     }
 
 
-# Script Generation ===============================================================================
+# Script Generation ===================================================================================
 @task(name="script-generation-step", description="Launch a script generation task for each researched topic", cache_policy=NO_CACHE)
 def generate_multiple_scripts(research: list) -> list:
     print("\n[STEP] Generating scripts...") 
@@ -105,7 +106,7 @@ def generate_script(category: str, topic: str, summary: str) -> dict:
     }
 
 
-# # Image Collection ================================================================================
+# Image Collection ====================================================================================
 @task(name="image-collection-step", description="Collect images for each script", cache_policy=NO_CACHE)
 def collect_web_images(scripts: list) -> list:
     print("\n[STEP] Collecting images...") 
@@ -167,7 +168,50 @@ def get_image(category:str, id:int, query: str) -> str:
 
 
 
-# Main Workflow ===================================================================================
+# Voice Generation ====================================================================================
+@task(name = "voice-generation-step", description = "Generates voices for all scripts and scenes", cache_policy=NO_CACHE)
+def voice_generation_step(scripts: list):
+    print("\n[STEP] Generating Voices...") 
+    voices_per_script = [ # List of lists
+        [ 
+            get_audio(script['category'], scene["id"], scene["script"], scene["character"]) 
+            for scene in script['script']['scenes']
+        ]
+        for script in scripts
+    ]
+    if 'voiceGenerator' in globals(): voiceGenerator.stop()
+    return voices_per_script
+
+
+class AudioConverter:
+    @staticmethod
+    def save(value:str, cache_key: Path): pass
+
+    @staticmethod
+    def load(cache_key: Path) -> dict: return cache_key
+
+@PersistentResult.stored_result(
+    cache_key = f'{LoreLabsWorkflow.workflow_path}/5 - generate_audio/{{arg0}}/scene-{{arg1}}.wav',
+    converter = AudioConverter
+)
+@task(name = "generate-single-audio", description = "Generate audio for a single scene", cache_policy=NO_CACHE)
+def get_audio(category:str, id:int, dialogue: str, character:str):
+
+    saving_path = f'{str(LoreLabsWorkflow.workflow_path)}/5 - generate_audio/{category}/scene-{id}.wav'
+
+    # Check if imageCollector exists
+    if 'voiceGenerator' not in globals(): 
+        global voiceGenerator
+        voiceGenerator = VoiceGenerator_V1(resource_folder='volume/resources/LoreLabs/voices/')
+        voiceGenerator.start()
+
+    result = voiceGenerator.generate_voice(dialogue, character, 'en', saving_path)
+    return result['save_path']
+    
+
+
+
+# Main Workflow =======================================================================================
 @flow(
     name='LoreLabs - Workflow1',
     description="An end-to-end workflow to create educational videos using AI.",
@@ -190,8 +234,8 @@ def start(branch):
     # # Step 4 - Search Images
     web_images = collect_web_images(scripts)
 
-    # # Step 5 - Voices
-    # voices = None
+    # Step 5 - Voices
+    voices = voice_generation_step(scripts)
 
     # # Step 6 - Build Videos
     # video = None
