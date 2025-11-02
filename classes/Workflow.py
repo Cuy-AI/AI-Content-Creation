@@ -11,21 +11,29 @@ from prefect.filesystems import LocalFileSystem
 
 # UTILS ============================================================================================
 
-def _validate_path(path: str, throw_err:bool = True) -> bool:
-    # Ensure the resolved path string does not contain any forbidden characters.
-    INVALID_CHARS = ('<', '>', ':', '"', '|', '?', '*')
-    for char in path:
-        if char in INVALID_CHARS: # Raise a ValueError, specifying the forbidden character found
-            if throw_err:
-                raise ValueError(
-                    f"Resolved path name contains invalid character: '{char}'. "
-                    f"Forbidden characters are: {', '.join(f"'{c}'" for c in INVALID_CHARS)}"
-                )
-            else: return False
-    return True
+class Utils:
 
-def _convert_to_path(path:str|Path) -> Path:
-    return Path(path) if isinstance(path, str) else path
+    @staticmethod
+    def validate_path(path: Path|str, throw_err:bool = True) -> bool:
+
+        # Convert to string
+        if isinstance(path, Path): path = str(path)
+
+        # Ensure the resolved path string does not contain any forbidden characters.
+        INVALID_CHARS = ('<', '>', ':', '"', '|', '?', '*')
+        for char in path:
+            if char in INVALID_CHARS: # Raise a ValueError, specifying the forbidden character found
+                if throw_err:
+                    raise ValueError(
+                        f"Resolved path name contains invalid character: '{char}'. "
+                        f"Forbidden characters are: {', '.join(f"'{c}'" for c in INVALID_CHARS)}"
+                    )
+                else: return False
+        return True
+
+    @staticmethod
+    def convert_to_path(path:str|Path) -> Path:
+        return Path(path) if isinstance(path, str) else path
 
 
 # WORKFLOW CLASS ===================================================================================
@@ -94,7 +102,7 @@ class Workflow:
         self.execution_id = self._int2id(execution_id)
 
         # Resolve base path
-        base_path = _convert_to_path(base_path)
+        base_path = Utils.convert_to_path(base_path)
 
         # Resolve storage_block_name
         if storage_block_name is None: self.storage_block_name = getattr(self, 'storage_block_name', 'my-custom-local-storage')
@@ -102,7 +110,7 @@ class Workflow:
 
         # Create new workflow folder
         self.workflow_path = base_path / self.execution_id
-        _validate_path(str(self.workflow_path))
+        Utils.validate_path(str(self.workflow_path))
         self.workflow_path.mkdir(parents=True, exist_ok=True)
 
         # Set up block storage
@@ -135,63 +143,59 @@ class Workflow:
 
 class PersistentResult:
     """
-    A utility class that provides a decorator for **persistent result caching**.
+    A helper class to persist and retrieve function results based on a given cache key.
 
-    This class allows you to transparently cache and retrieve the output of functions
-    to/from disk (or other persistent storage). It supports flexible cache key
-    generation (via strings, paths, or callables), customizable verification logic,
-    and configurable serialization through *converter* classes.
+    This class provides a flexible mechanism for storing results of function calls
+    to avoid recomputation. It supports customizable logic for:
+      - Generating cache keys (`SolverFunction`)
+      - Verifying cache existence (`VerifierFunction`)
+      - Saving results (`SaverFunction`)
+      - Loading cached results (`LoaderFunction`)
 
-    With this mechanism you can decide:
-    - How interprete and generate cache keys
-    - How cache existence is cheked
-    - How to save or load a result
-
-    Usage example:
-        @PersistentResult.stored_result("cache-{0}.json", converter=PersistentResult.DictionaryConverter)
-        def expensive_computation(x):
-            return {"result": x**2}
-
-    Key features:
-      - Resolve dynamic file paths for cache storage.
-      - Verify and load cached results before recomputation.
-      - Customize how results are saved/loaded via converters.
+    The typical use case is wrapping expensive or deterministic functions so that
+    their results are stored on disk or another persistent medium and reused when possible.
     """
 
     # TEMPLATES / CLASSES ==========================================================================
-    PathTemplate = Union[str, Path, Callable[..., str]] # Can be a str, Path obj or a function
-    SolverFunction = Callable[[Any, tuple, dict], tuple[bool, Any]] # Must be a function with 3 params and return bool, any
+
+    # A str, Path obj or a function
+    PathTemplate = Union[str, Path, Callable[..., str]] 
+
+    # Receives the cache key and funciton params. Return the fixed cache key
+    SolverFunction = Callable[[Any, tuple, dict], Any] 
+
+    # Receives the fixed cache key. Returns True if result can be loaded
+    VerifierFunction = Callable[[Any], bool]
+
+    # Receives the cache key and the function result. Stores the result
+    SaverFunction = Callable[[Any, Any], None] 
+
+    # Receives the cache key. Loads an stored result
+    LoaderFunction = Callable[[Any], Any]
+
 
     # METHODS FOR PERSIST STORAGE ==================================================================
     @staticmethod
-    def resolve_path(path_template: PathTemplate, args: tuple, kwargs: dict) -> Path:
+    def DefaultSolver(path_template: PathTemplate, args: tuple, kwargs: dict) -> Path:
         """
-        Resolves a dynamic cache file path from a template, callable, or static path.
+        Default function for resolving a cache path from a template and function arguments.
 
-        Parameters:
-            path_template (str | Path | Callable):
-                - If a `Path`, it is returned as-is.
-                - If a `Callable`, it is called with `(*args, **kwargs)` and must return a string path.
-                - If a `str`, it can include Python-style placeholders for both args and kwargs.
-                  Supported placeholders:
-                    • Named placeholders: {id}, {user}, etc.
-                    • Positional indices: {0}, {1}, ...
-                    • Positional aliases: {arg0}, {arg1}, ...
-
-            args (tuple):
-                The positional arguments passed to the wrapped function.
-
-            kwargs (dict):
-                The keyword arguments passed to the wrapped function.
-
-        Returns:
-            Path:
-                The fully resolved file system path where the result should be stored.
+        This method interprets `path_template` in the following ways:
+          - If it's a `Path` object, it returns it directly.
+          - If it's a callable, it invokes it with `*args` and `**kwargs` to produce the path.
+          - If it's a string, it formats it using both positional (`0`, `1`, ...) 
+            and alias (`arg0`, `arg1`, ...) placeholders, as well as keyword arguments.
 
         Raises:
-            KeyError:
-                If a required placeholder key is missing from args/kwargs.
+            KeyError: If the provided template references a key not present in the arguments.
+
+        Example:
+            path_template = "results/{0}_{param}.json"
+            args = ("data",)
+            kwargs = {"param": "v1"}
+            → returns Path("results/data_v1.json")
         """
+
         if isinstance(path_template, Path): 
             return path_template
         elif callable(path_template):
@@ -214,91 +218,64 @@ class PersistentResult:
     
 
     @staticmethod
-    def _defaultSolver(cache_key: PathTemplate, args: tuple, kwargs: dict) -> tuple[bool, Path]:
+    def DefaultVerifier(cache_key: Path|str) -> bool:
         """
-        Default solver used by `stored_result` to determine both:
-        1. Whether a cached result already exists (cache hit).
-        2. The *resolved identifier* (a fixed cache key) that should be used to
-            either load or save the function result.
+        Default verification method that checks if a cached result exists at the given path.
 
-        Parameters:
-            cache_key (PathTemplate):
-                A key template defining how to locate or identify a cached result.
-                It can be:
-                - A static path (`Path` or string)
-                - A callable that returns a path-like string based on `args`/`kwargs`
-                - A format string with placeholders (e.g. `"cache-{user}-{0}.json"`)
-                - ANYTHING
+        It converts string paths into `Path` objects, validates the path format using
+        `Utils.validate_path`, and returns `True` if the file exists.
 
-            args (tuple):
-                Positional arguments passed to the wrapped function. Used to resolve
-                dynamic placeholders or callables in the key template.
-
-            kwargs (dict):
-                Keyword arguments passed to the wrapped function. Used for resolving
-                dynamic placeholders or callables in the key template.
+        Args:
+            cache_key (Path | str): The resolved cache key, usually a file path.
 
         Returns:
-            tuple[bool, Any]:
-                A tuple with two elements:
-                - `bool`: Indicates whether a stored result already exists (True = cache hit).
-                - `Any`: A *fixed cache key* derived from the original `cache_key`.
-                            This key is used consistently for both loading and saving the result.
+            bool: True if the cache file exists, False otherwise.
 
-        Notes:
-            • The *fixed cache key* does not need to be a filesystem path — it can represent
-            any unique identifier (e.g., a database key, URL, or hash string).
-            However, the default implementation assumes file-based caching.
-
-            • When this method returns `(True, key)`, the `key` is passed to the converter’s
-            `load()` method to retrieve the stored result.
-
-            • When it returns `(False, key)`, the `key` is passed to the converter’s
-            `save(result, key)` method after the function executes, allowing the new
-            result to be persisted using the same identifier.
-
-            • Custom solvers can redefine how cache existence is checked and how keys
-            are generated.
+        Raises:
+            ValueError: If the provided path is invalid.
         """
-        # Resolve template/callable into a Path relative to execution-specific folder
-        file_path = PersistentResult.resolve_path(cache_key, args, kwargs)
+        # Convert strings to Path objects
+        if isinstance(cache_key, str): cache_key = Path(cache_key)
 
         # Check if the path is valid, throw error if not
-        _validate_path(str(file_path))
+        Utils.validate_path(cache_key)
 
-        # Return if path exist
-        return file_path.exists(), file_path
+        # Return True if path exist
+        return cache_key.exists()
 
 
     @staticmethod
-    def stored_result(cache_key: Any, converter: Any = None, solver: SolverFunction = None) -> Callable:
+    def stored_result(
+        cache_key: Any, 
+        solver: SolverFunction = None, 
+        verifier: VerifierFunction = None, 
+        saver: SaverFunction = None,
+        loader: LoaderFunction = None, 
+    ) -> Callable:
         """
-        Decorator that caches the result of a function call to persistent storage.
+        Decorator for automatically caching function results using a persistent storage mechanism.
 
-        Parameters:
-            cache_key (Any):
-                Template or callable that determines where the cached result will be stored.
+        When a decorated function is called:
+          1. The cache key is resolved via `solver` (or the default one if not provided).
+          2. The verifier checks whether a cached result already exists.
+          3. If cached, the result is loaded via `loader` (if provided) and returned.
+          4. Otherwise, the function executes normally, its result is saved via `saver` 
+             (if provided), and the result is returned.
 
-            converter (object, optional):
-                A converter class defining how results should be saved and loaded.
-                It must implement:
-                    - `save(result, path)`
-                    - `load(path)`
-                See `DictionaryConverter` or `TextConverter` for examples.
-
-            solver (Callable, optional):
-                Custom function used to verify if the cached result exists.
-                Must return a tuple `(cache_hit: bool, resolved_key: Any)`.
+        Args:
+            cache_key (Any): The initial cache key, or a template used by the solver.
+            solver (SolverFunction, optional): Custom function to resolve the cache key.
+            verifier (VerifierFunction, optional): Function to check if a cache exists.
+            saver (SaverFunction, optional): Function to store results persistently.
+            loader (LoaderFunction, optional): Function to load results from cache.
 
         Returns:
-            Callable:
-                The decorated function that automatically loads cached results
-                when available and saves new results when computed.
+            Callable: The decorated function with persistent caching behavior.
 
-        Workflow:
-            1. Use `solver` (default: `_defaultSolver`) to check if the result is cached.
-            2. If cached → load and return the stored value (via `converter.load()`).
-            3. If not cached → execute the original function, save its output (via `converter.save()`), and return it.
+        Example:
+            @PersistentResult.stored_result("cache/{0}.json")
+            def heavy_computation(param):
+                ...
         """
 
         def decorator(func):
@@ -306,21 +283,22 @@ class PersistentResult:
             @wraps(func)
             def wrapper(*args, **kwargs):
                 
-                # Choose which verifier use
-                verifier_function = PersistentResult._defaultSolver if solver is None else solver
+                # Choose which verifier and solver to use
+                solver_function: PersistentResult.SolverFunction = solver or PersistentResult.DefaultSolver
+                verifier_function: PersistentResult.VerifierFunction = verifier or PersistentResult.DefaultVerifier
+
+                # Solve cache key
+                solved_cache_key: Any = solver_function(cache_key, args, kwargs)
 
                 # Use verifier to decide if is possible to load a result instead of calculating it
-                cache_hit, fixed_cache_key = verifier_function(cache_key, args, kwargs)
-
-                # Load the result. If not loader, return the cache_key
-                if cache_hit: return str(fixed_cache_key) if converter is None else converter.load(fixed_cache_key)
+                if verifier_function(solved_cache_key): 
+                    return solved_cache_key if loader is None else loader(solved_cache_key)
 
                 # Not cached => call function to generate a result
-                result = func(*args, **kwargs)
+                result: Any = func(*args, **kwargs)
 
-                # Save result
-                if converter is not None: 
-                    converter.save(result, fixed_cache_key) # Store value using cache key
+                # Store value using cache key
+                if saver is not None: saver(result, solved_cache_key) 
 
                 return result
 
@@ -331,42 +309,38 @@ class PersistentResult:
 
     # CONVERTER CLASSES ===================================================================================
     """
-    These classes are mean to be used as params of the stored_result method.
-    These classes were build to work with _defaultSolver 
-    These classes allow you to specify the following:
+    These functions are mean to be used as params of the stored_result method.
+    You can create you own converters using this functions as examples.
+    They allow you to specify the following:
       - Save: Given a result of any type: How should we save it?
       - Load: Given some stored data: How should we load it?
     
-    You can create you own converter using this classes as examples.
-    Hint 1: 
-        You can receive any type as value and any type as path (identifier).
-        Your logic will decide how to handle this value-identifer.
+    Hint: 
+        You can receive any type as value and any type as cache_key.
     """
-    class DictionaryConverter:
+    class Converters:
 
         @staticmethod
-        def save(result:dict, cache_key: str|Path):
-            path = _convert_to_path(cache_key)
+        def DictionarySaver(result:dict, cache_key: str|Path):
+            path = Utils.convert_to_path(cache_key)
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(json.dumps(result, indent=2))
 
         @staticmethod
-        def load(cache_key: str|Path) -> dict:
-            path = _convert_to_path(cache_key)
+        def DictionaryLoader(cache_key: str|Path) -> dict:
+            path = Utils.convert_to_path(cache_key)
             return json.loads(path.read_text())
         
 
-    class TextConverter:
-
         @staticmethod
-        def save(result:str, cache_key: str|Path):
-            path = _convert_to_path(cache_key)
+        def TextSaver(result:str, cache_key: str|Path):
+            path = Utils.convert_to_path(cache_key)
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(result)
 
         @staticmethod
-        def load(cache_key: str|Path) -> str:
-            path = _convert_to_path(cache_key)
+        def TextLoader(cache_key: str|Path) -> str:
+            path = Utils.convert_to_path(cache_key)
             return path.read_text()
 
 

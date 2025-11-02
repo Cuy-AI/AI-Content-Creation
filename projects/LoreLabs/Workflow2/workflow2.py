@@ -4,9 +4,10 @@ from pathlib import Path
 # Workflow
 from prefect import flow, task
 from prefect.cache_policies import NO_CACHE
-from projects.classes.Workflow import Workflow
-from projects.classes.Workflow import Serializers
-from projects.classes.Workflow import PersistentResult
+from classes.Workflow import Workflow
+from classes.Workflow import Serializers
+from classes.Workflow import PersistentResult
+from classes.Workflow import Utils
 
 # Modules
 from projects.classes.modules.TopicManager_V1 import TopicManager_V1
@@ -58,7 +59,8 @@ def researching_step(topics:dict) -> list:
 @task(
     name = "research-topic", 
     description = "Research a single topic",
-    cache_key_fn = lambda context, inputs: f'2 - research_topics/4 - summaries/{inputs['category'].replace(' ','_')}.json',
+    task_run_name = "research-{topic}",
+    cache_key_fn = lambda context, inputs: f'2 - research_topics/{inputs['category']}.json',
     result_serializer = Serializers.DictionarySerializer(),
     result_storage = LoreLabsWorkflow.result_storage
 )
@@ -67,7 +69,7 @@ def research_topic(category: str, topic: str) -> dict:
     # Check if researcher exists
     if 'researcher' not in globals(): 
         global researcher
-        researcher = Researcher_V1(workflow_path=str(LoreLabsWorkflow.workflow_path))
+        researcher = Researcher_V1()
         researcher.start()
 
     summary = researcher.request_research(category, topic)
@@ -89,7 +91,14 @@ def generate_multiple_scripts(research: list) -> list:
 
 @PersistentResult.stored_result(
     cache_key = f'{LoreLabsWorkflow.workflow_path}/3 - generate_scripts/{{arg0}}.json',
-    converter = PersistentResult.DictionaryConverter
+    loader = PersistentResult.Converters.DictionaryLoader,
+    saver = PersistentResult.Converters.DictionarySaver,
+)
+@task(
+    name="script-generation", 
+    description="Generates a script for a given category-topic", 
+    task_run_name="script-generation: {topic}", 
+    cache_policy=NO_CACHE
 )
 def generate_script(category: str, topic: str, summary: str) -> dict:
 
@@ -122,41 +131,48 @@ def collect_web_images(scripts: list) -> list:
 
 
 
-def web_images_solver(cache_key: str, args: tuple, kwargs: dict) -> tuple[bool, Path]:
+def web_images_solver(cache_key: str, args: tuple, kwargs: dict) -> Path:
     '''Receives a folder as cache key instead of a file'''
+
+    solved_cache_key:Path = PersistentResult.DefaultSolver(cache_key, args, kwargs)
 
     valid_extensions = ('.png', '.jpg', 'jpeg', 'webp', 'tiff')
 
-    base_pattern = PersistentResult.resolve_path(cache_key, args, kwargs)
-    parent = base_pattern.parent
-    file_name = base_pattern.name
+    parent = solved_cache_key.parent
+    file_name = solved_cache_key.name
     
     # Check if folder exists
-    if not parent.is_dir(): return False, parent
+    if not parent.is_dir(): return solved_cache_key
 
     # Check files inside the directoy
     for file in parent.iterdir():
         if not file.is_file(): continue
-        if file_name == file.stem and file.suffix in valid_extensions: 
-            return True, file
+        if file.stem == file_name and file.suffix in valid_extensions: 
+            return file
     
-    return False, parent
+    return solved_cache_key
 
 
-class WebImageConverter:
-    @staticmethod
-    def save(value:str, cache_key: Path): pass
+def web_images_verifier(solved_cache_key: Path) -> bool:
+    # Check if the path is valid, throw error if not
+    Utils.validate_path(solved_cache_key)
 
-    @staticmethod
-    def load(cache_key: Path) -> dict: return cache_key
+    # Return True if path exist and is a file
+    return solved_cache_key.exists() and solved_cache_key.is_file()
         
 
 @PersistentResult.stored_result(
     cache_key = f'{LoreLabsWorkflow.workflow_path}/4 - web_images/{{arg0}}/scene-{{arg1}}', # .png / .jpg / .jpeg / ...
     solver = web_images_solver,
-    converter = WebImageConverter
+    verifier = web_images_verifier,
+    # Default loader and saver as None work fine
 )
-@task(name = "collect-single-image", description = "Collect images for a single script", cache_policy=NO_CACHE)
+@task(
+    name = "collect-single-image", 
+    task_run_name="collect-single-image: {category}-{id}", 
+    description = "Collect images for a single script", 
+    cache_policy=NO_CACHE
+)
 def get_image(category:str, id:int, query: str) -> str:
     saving_path = LoreLabsWorkflow.workflow_path / Path(f"4 - web_images/{category}/scene-{id}")
 
@@ -175,7 +191,7 @@ def voice_generation_step(scripts: list):
     print("\n[STEP] Generating Voices...") 
     voices_per_script = [ # List of lists
         [ 
-            get_audio(script['category'], scene["id"], scene["script"], scene["character"]) 
+            get_audio(script['category'], scene["id"], scene["dialogue"], scene["character"]) 
             for scene in script['script']['scenes']
         ]
         for script in scripts
@@ -184,27 +200,29 @@ def voice_generation_step(scripts: list):
     return voices_per_script
 
 
-class AudioConverter:
-    @staticmethod
-    def save(value:str, cache_key: Path): pass
-
-    @staticmethod
-    def load(cache_key: Path) -> dict: return cache_key
-
 @PersistentResult.stored_result(
     cache_key = f'{LoreLabsWorkflow.workflow_path}/5 - generate_audio/{{arg0}}/scene-{{arg1}}.wav',
-    converter = AudioConverter
+    # Default loader and saver as None work fine
 )
-@task(name = "generate-single-audio", description = "Generate audio for a single scene", cache_policy=NO_CACHE)
+@task(
+    name = "generate-voice",
+    description = "Generate audio for a single scene",
+    task_run_name="generate-voice: {category}-{id}",
+    cache_policy=NO_CACHE
+)
 def get_audio(category:str, id:int, dialogue: str, character:str):
 
     saving_path = f'{str(LoreLabsWorkflow.workflow_path)}/5 - generate_audio/{category}/scene-{id}.wav'
 
-    # Check if imageCollector exists
+    # Check if voiceGenerator exists
     if 'voiceGenerator' not in globals(): 
         global voiceGenerator
         voiceGenerator = VoiceGenerator_V1(resource_folder='volume/resources/LoreLabs/voices/')
         voiceGenerator.start()
+        voiceGenerator.character_params.update({
+            "rick": { "temperature": 0.75, "exaggeration": 0.55, "cfg_weight": 0.5 },
+            "morty": { "temperature": 0.65, "exaggeration": 0.55, "cfg_weight": 0.5 },
+        })
 
     result = voiceGenerator.generate_voice(dialogue, character, 'en', saving_path)
     return result['save_path']
@@ -223,23 +241,16 @@ def build_video_step(scripts: list, audios:list, images:list):
     return voices_per_script
 
 
-class VideoConverter:
-    @staticmethod
-    def save(value:str, cache_key: Path): pass
-
-    @staticmethod
-    def load(cache_key: Path) -> dict: return cache_key
-
 @PersistentResult.stored_result(
     cache_key = lambda *args, **kwargs: f'{LoreLabsWorkflow.workflow_path}/6 - build_video/{args[0]['category']}.mp4',
-    converter = VideoConverter
+    # Default loader and saver as None work fine
 )
 @task(name = "build-video", description = "Generates a single video for a topic", cache_policy=NO_CACHE)
 def build_video(script: dict, audio_list:list, image_dict:dict):
 
     save_path = f'{LoreLabsWorkflow.workflow_path}/6 - build_video/{script['category']}.mp4'
 
-    # Check if imageCollector exists
+    # Check if videoBuilder exists
     if 'videoBuilder' not in globals(): 
         global videoBuilder
         videoBuilder = VideoBuilder_V1(background_video="volume/resources/videos/background/minecraft/videoplayback.webm")
@@ -267,10 +278,10 @@ def start(branch):
     # Step 2 - Research Topics
     research = researching_step(topics)
 
-    # # Step 3 - Generate Scrips
+    # Step 3 - Generate Scrips
     scripts = generate_multiple_scripts(research)
 
-    # # Step 4 - Search Images
+    # Step 4 - Search Images
     web_images = collect_web_images(scripts)
 
     # Step 5 - Voices
