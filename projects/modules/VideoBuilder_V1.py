@@ -1,6 +1,7 @@
 import os
 import time
 import random
+from prefect import get_run_logger
 from classes.ContainerManager import ContainerManager
 from components.Editor.VideoEditor.VideoEditor import VideoEditor
 from components.Editor.ImageEditor.ImageEditor import ImageEditor
@@ -39,8 +40,10 @@ class VideoBuilder_V1:
         self.active = False
     
     def build_full_video(self, script:dict, audios:list, images:dict, save_path:str):
-    
-        print('[INFO] Collecting metadata...')
+
+
+        log = get_run_logger()
+        log.info('Collecting metadata...')
 
         # Create metadata
         scenes_metadata = []
@@ -65,8 +68,7 @@ class VideoBuilder_V1:
             accumulated_time += duration
 
 
-        print('[INFO] Cutting video...')
-        start_time = time.time()
+        log.info('Cutting video...')
 
         # Cut background video 
         background_duration = self.veditor.get_duration(self.background_video)
@@ -93,14 +95,12 @@ class VideoBuilder_V1:
         video = self.veditor.cut(self.background_video, start=select_start, end=select_end, reencode=True) 
 
 
-        print(f"[INFO] Cutting the video took: {time.time() - start_time:.2f}")
-
-        print('[INFO] Changing ratio')
+        log.info('Changing ratio...')
 
         # Change ratio
         video = self.veditor.change_ratio(video, ratio="vertical", mode="crop")
 
-        print('[INFO] Inserting voices')
+        log.info('Inserting voices...')
 
         # Insert audios
         audio_list = [
@@ -110,7 +110,7 @@ class VideoBuilder_V1:
         video = self.veditor.mix_audios(video, audio_list)
 
 
-        print('[INFO] Inserting images')
+        log.info('Inserting images...')
 
         # Insert images
         full_images = []
@@ -157,7 +157,7 @@ class VideoBuilder_V1:
         video = self.veditor.insert_images(video, images=full_images, output_path=file_path)
         
 
-        print('[INFO] Generate captions')
+        log.info('Generate captions...')
 
         # Seems that whisper its a very picky, crybaby girl.
         video = video.replace("\\", "/")
@@ -172,8 +172,7 @@ class VideoBuilder_V1:
         )['answer']
 
 
-        print('[INFO] Inserting captions')
-        print(f"sending save path:{save_path}")
+        log.info('Inserting captions...')
 
         # Insert captions
         final_video = self.veditor.insert_captions(
@@ -195,6 +194,7 @@ class VideoBuilder_V1:
         # Delete images video (temp)
         if os.path.exists(video): os.remove(video)
 
+        self.veditor.cleanup()
 
         return final_video
 
