@@ -1,9 +1,8 @@
-import json
 import time
 
 from prefect import task
+from prefect import get_run_logger
 from prefect.cache_policies import NO_CACHE
-from projects.classes.Workflow import PersistentResult
 
 from components.LM.LMStudio.LMStudio import LMStudio
 from components.Search.DuckDuckGoSearch.DuckDuckGoSearch import DuckDuckGoSearch
@@ -11,15 +10,13 @@ from components.Search.DuckDuckGoSearch.DuckDuckGoSearch import DuckDuckGoSearch
 
 class Researcher_V1:
 
-    def __init__(self,  model_id = 'qwen/qwen3-4b-2507', workflow_path:str = "."):
+    def __init__(self,  model_id = 'qwen/qwen3-4b-2507'):
         self.lms = LMStudio(auto_start=False)
         self.searchClient = DuckDuckGoSearch()
-        self.workflow_path = workflow_path # We need the workflow path to store things
 
-        self.current_category = "."
         self.active = False
         self.model_id = model_id
-        self.timeout = 180  # Timeout for LM responses in seconds
+        self.timeout = 200  # Timeout for LM responses in seconds
 
     def start(self):
         if self.active: return
@@ -49,12 +46,14 @@ class Researcher_V1:
                     f"Your task is to search the web and produce a concise and well-structured report about:\n"
                     f"Topic: {topic}\n\n"
                     f"Your Goal:"
-                    f"Provide useful, non-trivial knowledge that would inform someone who already understands the basics of {category} but wants to gain deeper, practical, or conceptual insight.\n"
+                    f"Provide useful, non-trivial knowledge that would inform someone who already understands {category} but wants to gain deeper, practical, or conceptual insight.\n"
                     f"Avoid beginner-level explanations. Your objective public are {category} college students and {category} seniors.\n"
                     f"Write in a tone that's clear and information-dense, suitable for use in educational content.\n"
                     f"To make the topic even more interesting, include up-to-date {current_year} information, news about the topic, real world examples, etc.\n"
-                    f"If web_research returns invalid content, create your report with your own knowledge."
-                    f"Only output the report. Don't include emojis, links, external references or tables. Just text."
+                    f"Run max of 3 web research calls, each with a num_results=2.\n"
+                    f"If web_research returns invalid content, create your report with your own knowledge.\n"
+                    f"Only output the report. Don't include emojis, links, external references or tables. Just text.\n"
+                    f"Include as much info as you can.\n"
                 )
             },
         ]
@@ -101,7 +100,9 @@ class Researcher_V1:
         htmls = {} 
         for title, url in urls.items():
             try: htmls[title] = self.searchClient.download_html(url)
-            except Exception as e: print(f"Error downloading HTML for {url}: {str(e)}")
+            except Exception as e:
+                log = get_run_logger()
+                log.warning(f"Couldn't downloading HTML for {url}: {str(e)}")
         return htmls
     
     @task(name="extract-contents", description="Extract contents from a list of HTMLs", cache_policy=NO_CACHE)
@@ -111,27 +112,21 @@ class Researcher_V1:
         return contents
 
 
-    @task(name="web-research", description="Perform web research for a given query", cache_policy=NO_CACHE)
+    @task(
+        name="web-research",
+        description="Perform web research for a given query", 
+        task_run_name = "web-research: {query}",
+        cache_policy=NO_CACHE
+    )
     def web_research(self, query: str, num_results: int = 3) -> str:
         """
         Tool function to perform web research using DuckDuckGo.
         Uses the stored_result decorator from the workflow
         """
 
-        urls = PersistentResult.stored_result(
-            cache_key = f'{self.workflow_path}/2 - research_topics/1 - urls/{self.current_category}.json', 
-            converter = PersistentResult.DictionaryConverter
-        )(self.collect_urls)(query, num_results=num_results)
-
-        htmls = PersistentResult.stored_result(
-            cache_key = f'{self.workflow_path}/2 - research_topics/2 - htmls/{self.current_category}.json',
-            converter = PersistentResult.DictionaryConverter
-        )(self.download_htmls)(urls)
-
-        content = PersistentResult.stored_result(
-            cache_key = f'{self.workflow_path}/2 - research_topics/3 - content/{self.current_category}.json',
-            converter = PersistentResult.DictionaryConverter
-        )(self.extract_contents)(htmls)
+        urls = self.collect_urls(query, num_results=num_results)
+        htmls = self.download_htmls(urls)
+        content = self.extract_contents(htmls)
 
         combined_content = ""
         for title, cont in content.items(): combined_content += f"TITLE: {title}\nCONTENT:\n{cont}\n\n"
@@ -143,7 +138,6 @@ class Researcher_V1:
 
         if not self.active: raise RuntimeError('Server has not been started and model has not been loaded')
 
-        self.current_category = category.replace(' ','_') # The stored_result decorators will use this to store results
         messages = self.generate_messages(category, topic)
 
         # Set up parameters

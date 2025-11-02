@@ -1,3 +1,4 @@
+from prefect import get_run_logger
 from components.Search.DuckDuckGoSearch.DuckDuckGoSearch import DuckDuckGoSearch
 
 class ImageCollector_V1:
@@ -49,5 +50,6 @@ class ImageCollector_V1:
             try: return self.client.download_image(res['image'], save_path)
             except: continue
 
-        print(f'[ERROR] Unable to download image {res['image']} for query: {query}')
+        log = get_run_logger()
+        log.warning(f'Unable to download images for query: {query}')
         return None

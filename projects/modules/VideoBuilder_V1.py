@@ -1,6 +1,5 @@
 import os
 import time
-import shutil
 import random
 from classes.ContainerManager import ContainerManager
 from components.Editor.VideoEditor.VideoEditor import VideoEditor
@@ -174,6 +173,7 @@ class VideoBuilder_V1:
 
 
         print('[INFO] Inserting captions')
+        print(f"sending save path:{save_path}")
 
         # Insert captions
         final_video = self.veditor.insert_captions(

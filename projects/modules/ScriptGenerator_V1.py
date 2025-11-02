@@ -53,7 +53,7 @@ class ScriptGenerator_V1:
                                 "description": "The name of the character that is speaking during the scene",
                                 "enum": list(characters)
                             },
-                            "script": {
+                            "dialogue": {
                                 "type": "string",
                                 "description": "What is being said by the character"
                             },
@@ -68,7 +68,7 @@ class ScriptGenerator_V1:
                         },
                         "required": [
                             "character",
-                            "script",
+                            "dialogue",
                             "character_image",
                             "web_image"
                         ]
@@ -104,20 +104,20 @@ You must strictly output JSON matching the following schema:
     "scenes": [
         {{
         "character": "{characters} — the speaker of the scene",
-        "script": "What the character says in this scene",
+        "dialogue": "What the character says in this scene",
         "character_image": "One of the predefined character images that best fits the emotion or action. Vary this image across scenes to match the tone (e.g., excited, confused, explaining).",
         }}
     ]
 }}
 
 **Instructions:**
-- Make the script humorous in the style of {characters}, match their personalities.
+- Make the dialogue humorous in the style of {characters}, match their personalities.
 - If characters tend to use dark humor, you can use it.
 - Generate between {scene_number_range[0]} and {scene_number_range[1]} scenes total to keep the dialogue tight and engaging.
 - Alternate characters, one must teach while the other reacts, asks questions.
 - Include complete and informative real-world examples. 
-- Make the script as if you were an human scriptwriter, not an AI. Don't add perfect sentences, add casual language.
-- Explain the topic deeply but in a fun way. Don't use too much analogies.
+- Make the dialogue as if you were an human scriptwriter, not an AI. Don't add perfect sentences, add casual language.
+- Explain the topic deeply but in a fun way. Don't use too many vague analogies.
 - Your predefined character images will be: {images}
                 """.strip()
             },
@@ -127,12 +127,11 @@ You must strictly output JSON matching the following schema:
                 f"""
 Generate the JSON for a short video based on this topic summary:
 
-Topic: {topic}
 Category: {category}
+Topic: {topic}
 Summary: {summary}
 
 Focus on explaining the concept while keeping it fun. 
-End with a short, clever closing line. 
                 """.strip()
             },
         ]
