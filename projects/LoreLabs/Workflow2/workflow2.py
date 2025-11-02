@@ -14,6 +14,7 @@ from projects.classes.modules.Researcher_V1 import Researcher_V1
 from projects.classes.modules.ScriptGenerator_V1 import ScriptGenerator_V1
 from projects.classes.modules.ImageCollector_V1 import ImageCollector_V1
 from projects.classes.modules.VoiceGenerator_V1 import VoiceGenerator_V1
+from projects.classes.modules.VideoBuilder_V1 import VideoBuilder_V1
 
 # Workflow Creation ===================================================================================
 LoreLabsWorkflow = Workflow(
@@ -110,11 +111,11 @@ def generate_script(category: str, topic: str, summary: str) -> dict:
 @task(name="image-collection-step", description="Collect images for each script", cache_policy=NO_CACHE)
 def collect_web_images(scripts: list) -> list:
     print("\n[STEP] Collecting images...") 
-    images_per_script = [ # List of lists
-        [ 
-            get_image(script['category'], scene["id"], scene["web_image"]) 
+    images_per_script = [ # List of dicts
+        {
+            str(scene["id"]): get_image(script['category'], scene["id"], scene["web_image"]) 
             for scene in script['script']['scenes'] if scene.get("web_image", None)
-        ]
+        }
         for script in scripts
     ]
     return images_per_script
@@ -137,7 +138,7 @@ def web_images_solver(cache_key: str, args: tuple, kwargs: dict) -> tuple[bool, 
     for file in parent.iterdir():
         if not file.is_file(): continue
         if file_name == file.stem and file.suffix in valid_extensions: 
-            return True, parent / file
+            return True, file
     
     return False, parent
 
@@ -150,12 +151,12 @@ class WebImageConverter:
     def load(cache_key: Path) -> dict: return cache_key
         
 
-@task(name = "collect-single-image", description = "Collect images for a single script", cache_policy=NO_CACHE)
 @PersistentResult.stored_result(
     cache_key = f'{LoreLabsWorkflow.workflow_path}/4 - web_images/{{arg0}}/scene-{{arg1}}', # .png / .jpg / .jpeg / ...
     solver = web_images_solver,
     converter = WebImageConverter
 )
+@task(name = "collect-single-image", description = "Collect images for a single script", cache_policy=NO_CACHE)
 def get_image(category:str, id:int, query: str) -> str:
     saving_path = LoreLabsWorkflow.workflow_path / Path(f"4 - web_images/{category}/scene-{id}")
 
@@ -210,6 +211,44 @@ def get_audio(category:str, id:int, dialogue: str, character:str):
     
 
 
+# Video Builder =======================================================================================
+@task(name = "build-video-step", description = "Generates all the videos for each topic", cache_policy=NO_CACHE)
+def build_video_step(scripts: list, audios:list, images:list):
+    print("\n[STEP] Generating Videos...") 
+    voices_per_script = [ 
+        build_video(script, audio_list, image_dict) 
+        for script, audio_list, image_dict in zip(scripts, audios, images)
+    ]
+    if 'videoBuilder' in globals(): videoBuilder.stop()
+    return voices_per_script
+
+
+class VideoConverter:
+    @staticmethod
+    def save(value:str, cache_key: Path): pass
+
+    @staticmethod
+    def load(cache_key: Path) -> dict: return cache_key
+
+@PersistentResult.stored_result(
+    cache_key = lambda *args, **kwargs: f'{LoreLabsWorkflow.workflow_path}/6 - build_video/{args[0]['category']}.mp4',
+    converter = VideoConverter
+)
+@task(name = "build-video", description = "Generates a single video for a topic", cache_policy=NO_CACHE)
+def build_video(script: dict, audio_list:list, image_dict:dict):
+
+    save_path = f'{LoreLabsWorkflow.workflow_path}/6 - build_video/{script['category']}.mp4'
+
+    # Check if imageCollector exists
+    if 'videoBuilder' not in globals(): 
+        global videoBuilder
+        videoBuilder = VideoBuilder_V1(background_video="volume/resources/videos/background/minecraft/videoplayback.webm")
+        videoBuilder.start()
+
+    path = videoBuilder.build_full_video(script['script'], audio_list, image_dict, save_path)
+    print(f"[INFO] Video saved at: {path}")
+    return path
+
 
 # Main Workflow =======================================================================================
 @flow(
@@ -237,8 +276,8 @@ def start(branch):
     # Step 5 - Voices
     voices = voice_generation_step(scripts)
 
-    # # Step 6 - Build Videos
-    # video = None
+    # Step 6 - Build Videos
+    video = build_video_step(scripts, voices, web_images)
 
     
     

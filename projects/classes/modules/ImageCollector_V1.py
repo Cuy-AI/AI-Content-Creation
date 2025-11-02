@@ -42,7 +42,6 @@ class ImageCollector_V1:
 
         for res in result:
             width, height = res.get('width', None), res.get('height', None)
-            print(width, height)
 
             if not self._check_dimensions(width, height, ratio, min_w, min_h): 
                 continue # Skip to the next image if checks fail
@@ -51,5 +50,4 @@ class ImageCollector_V1:
             except: continue
 
         print(f'[ERROR] Unable to download image {res['image']} for query: {query}')
-        return "."
-
+        return None
