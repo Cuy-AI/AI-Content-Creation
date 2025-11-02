@@ -847,7 +847,7 @@ class VideoEditor:
 
             # Create a temporary intermediate file
             temp_output = (
-                output_path if (i == len(captions) // chunk_size) else self._mktemp(".mp4")
+                output_path if (i == (len(captions)-1) // chunk_size) else self._mktemp(".mp4")
             )
 
             cmd = [
