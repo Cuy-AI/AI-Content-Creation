@@ -10,16 +10,16 @@ from classes.Workflow import PersistentResult
 from classes.Workflow import Utils
 
 # Modules
-from projects.classes.modules.TopicManager_V1 import TopicManager_V1
-from projects.classes.modules.Researcher_V1 import Researcher_V1
-from projects.classes.modules.ScriptGenerator_V1 import ScriptGenerator_V1
-from projects.classes.modules.ImageCollector_V1 import ImageCollector_V1
-from projects.classes.modules.VoiceGenerator_V1 import VoiceGenerator_V1
-from projects.classes.modules.VideoBuilder_V1 import VideoBuilder_V1
+from projects.modules.TopicManager_V1 import TopicManager_V1
+from projects.modules.Researcher_V1 import Researcher_V1
+from projects.modules.ScriptGenerator_V1 import ScriptGenerator_V1
+from projects.modules.ImageCollector_V1 import ImageCollector_V1
+from projects.modules.VoiceGenerator_V1 import VoiceGenerator_V1
+from projects.modules.VideoBuilder_V1 import VideoBuilder_V1
 
 # Workflow Creation ===================================================================================
 LoreLabsWorkflow = Workflow(
-    base_path='volume/output/LoreLabs/Workflow2', # Path were the workflow will create folders/files to store executions
+    base_path='volume/output/LoreLabs/Workflow 1', # Path were the workflow will create folders/files to store executions
     # execution_id=None, # Will generate a new execution id
     execution_id=0, # Will run an specific execution
     storage_block_name='lorelabs-workflow1-storage', # Prefect storage block

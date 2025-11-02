@@ -1,7 +1,7 @@
 {
   "Software Development": {
     "What is the difference between monolithic and microservices architecture?": true,
-    "How does dependency injection improve code maintainability?": true,
+    "How does dependency injection improve code maintainability?": false,
     "Can you explain the concept of technical debt in software development?": false,
     "What are the benefits of using a static site generator?": false,
     "How does continuous integration impact software development?": false,
@@ -24,7 +24,7 @@
   },
   "Data & Artificial Intelligence": {
     "How does a neural network learn from data?": true,
-    "What is the difference between supervised and unsupervised machine learning?": true,
+    "What is the difference between supervised and unsupervised machine learning?": false,
     "Can you explain the concept of overfitting in AI models?": false,
     "What is the role of natural language processing in chatbots?": false,
     "How does data preprocessing impact AI model accuracy?": false,
@@ -47,7 +47,7 @@
   },
   "Cloud & Big Tech": {
     "What are the benefits of using a cloud-based database?": true,
-    "How Google search works": true,
+    "How Google search works": false,
     "How does serverless computing reduce costs?": false,
     "Can you explain the concept of cloud bursting?": false,
     "What is the difference between IaaS, PaaS, and SaaS?": false,
@@ -74,7 +74,7 @@
   },
   "Cybersecurity & Networking": {
     "What is the difference between a firewall and a intrusion detection system?": true,
-    "How does encryption impact network security?": true,
+    "How does encryption impact network security?": false,
     "Can you explain the concept of a man-in-the-middle attack?": false,
     "What are the benefits of using a virtual private network (VPN)?": false,
     "How does a denial-of-service (DoS) attack impact network performance?": false,
@@ -97,7 +97,7 @@
   },
   "Frameworks & Tools": {
     "What is the difference between React and Angular?": true,
-    "How does Docker improve application deployment?": true,
+    "How does Docker improve application deployment?": false,
     "Can you explain the concept of a package manager?": false,
     "What are the benefits of using a version control system like Git?": false,
     "How does a continuous integration tool like Jenkins improve software development?": false,
@@ -120,7 +120,7 @@
   },
   "History of Computing": {
     "What was the first programming language?": true,
-    "How did the invention of the microprocessor impact computing?": true,
+    "How did the invention of the microprocessor impact computing?": false,
     "Can you explain the development of the first computer network?": false,
     "What was the impact of the first graphical user interface (GUI)?": false,
     "How did the introduction of the personal computer change the industry?": false,
@@ -143,7 +143,7 @@
   },
   "Computer Science Theory & Research": {
     "Can you explain how quantum computers work?": true,
-    "How does the PageRank algorithm decide which websites to rank first?": true,
+    "How does the PageRank algorithm decide which websites to rank first?": false,
     "Is it ethical for tech companies to collect user data without consent?": false,
     "Can you explain the concept of a topological sort?": false,
     "How does the concept of entropy impact data compression?": false,
@@ -162,7 +162,7 @@
   },
   "Competitive Programming": {
     "How do you implement a binary search algorithm?": true,
-    "What is the most efficient way to solve the traveling salesman problem?": true,
+    "What is the most efficient way to solve the traveling salesman problem?": false,
     "Can you explain the concept of a sliding window algorithm?": false,
     "How do you optimize a recursive algorithm using memoization?": false,
     "What is the difference between a stack and a queue data structure?": false,
