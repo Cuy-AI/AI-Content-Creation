@@ -728,8 +728,8 @@ class VideoEditor:
         shadowy: int = 2,
         x: int = 0,
         y: int = 0,
-        padding_x: int = 10,
-        padding_y: int = 10,
+        padding_x: int = 0,
+        padding_y: int = 0,
         text_align: str = "center",
         chunk_size: int = 25,
         output_path: Optional[str] = None
@@ -792,8 +792,8 @@ class VideoEditor:
                 return str(val)
             return {
                 "left": f"{padding_x}",
-                "center": f"(w-text_w)/2",
-                "right": f"(w-text_w)-{padding_x}"
+                "center": f"((w-text_w)/2)-({padding_x})",
+                "right": f"(w-text_w)-({padding_x})"
             }.get(val, str(val))
 
         def _pos_y(val):
@@ -801,8 +801,8 @@ class VideoEditor:
                 return str(val)
             return {
                 "top": f"{padding_y}",
-                "center": f"(h-text_h)/2",
-                "bottom": f"(h-text_h)-{padding_y}"
+                "center": f"((h-text_h)/2)-({padding_y})",
+                "bottom": f"(h-text_h)-({padding_y})"
             }.get(val, str(val))
 
 
