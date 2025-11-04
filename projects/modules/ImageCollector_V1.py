@@ -1,3 +1,4 @@
+from pathlib import Path
 from prefect import get_run_logger
 from components.Search.DuckDuckGoSearch.DuckDuckGoSearch import DuckDuckGoSearch
 
@@ -5,6 +6,7 @@ class ImageCollector_V1:
 
     def __init__(self, rate_limit:int|float =2.0):
         self.client = DuckDuckGoSearch(rate_limit=rate_limit)
+        self.valid_extensions = ('.png', '.jpg', 'jpeg', 'webp', 'tiff')
 
 
     def _check_dimensions(self, width: int|None, height: int|None, required_ratio: str, min_w: int, min_h: int) -> bool:
@@ -47,7 +49,10 @@ class ImageCollector_V1:
             if not self._check_dimensions(width, height, ratio, min_w, min_h): 
                 continue # Skip to the next image if checks fail
 
-            try: return self.client.download_image(res['image'], save_path)
+            try: 
+                path = Path(self.client.download_image(res['image'], save_path))
+                if path.suffix in self.valid_extensions: return str(path)
+                else: raise ValueError('Bad extension')
             except: continue
 
         log = get_run_logger()

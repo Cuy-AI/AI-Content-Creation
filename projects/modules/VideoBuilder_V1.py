@@ -21,8 +21,9 @@ class VideoBuilder_V1:
         self.silence_at_start = True
         self.silence_at_end = True
         self.silence_between_character = 0.225
-        self.character_padding_y = 50
+        self.character_padding_y = 300
         self.character_padding_x = 50
+        self.logo = 'volume/resources/LoreLabs/logos/LoreLabs_Logo&Letters_png.png'
 
 
     def start(self):
@@ -37,6 +38,7 @@ class VideoBuilder_V1:
     def stop(self):
         if not self.active: return
         self.whisperContainer.stop()
+        self.veditor.cleanup()
         self.active = False
     
     def build_full_video(self, script:dict, audios:list, images:dict, save_path:str):
@@ -104,9 +106,21 @@ class VideoBuilder_V1:
 
         # Insert audios
         audio_list = [
-            {"audio_path": metadata['audio_path'], "start": metadata['start']}
+            {"audio_path": metadata['audio_path'], "start": metadata['start'], "volume": 1.25}
             for metadata in scenes_metadata
         ]
+        video = self.veditor.mix_audios(video, audio_list)
+
+
+        # Inserting sound effects
+        log.info('Inserting sfx...')
+        sfx_bell = 'volume/resources/LoreLabs/sound-effects/notification_bell-1.mp3'
+        sfx_whoosh = 'volume/resources/LoreLabs/sound-effects/whoosh-1.mp3'
+        audio_list = [
+            {"audio_path": sfx_whoosh, "start": metadata['start']}
+            for i, metadata in enumerate(scenes_metadata) if metadata['web_image'] and i != 0
+        ]
+        audio_list.append( {"audio_path": sfx_bell, "start": 0.0} )
         video = self.veditor.mix_audios(video, audio_list)
 
 
@@ -116,10 +130,24 @@ class VideoBuilder_V1:
         full_images = []
         flip = False
         video_dim = self.veditor.get_size(video)
+
+        # Add logo
+        img = self.img_editor.load_picture(self.logo)
+        img = self.img_editor.resize_keep_aspect(img, target_h=video_dim[1]*0.15)
+        img_dim = self.img_editor.get_size(img)
+        full_images.append({
+            "image": img,
+            "start": scenes_metadata[0]['start'],
+            "end": scenes_metadata[-1]['end'],
+            "x": 20,
+            "y": video_dim[1] -img_dim[1] - 400,
+        })
+
+
         for metadata in scenes_metadata:
             
             img = self.img_editor.load_picture(metadata['character_image'])
-            img = self.img_editor.resize_keep_aspect(img, target_h=video_dim[1]*0.3)
+            img = self.img_editor.resize_keep_aspect(img, target_h=video_dim[1]*0.4)
             img_dim = self.img_editor.get_size(img)
 
             if flip: img = self.img_editor.flip(img, axis="x")
@@ -149,7 +177,7 @@ class VideoBuilder_V1:
                     "start": metadata['start'],
                     "end": metadata['end'],
                     "x": (video_dim[0]/2) - (web_img_dim[0]/2),
-                    "y": video_dim[1]*0.08
+                    "y": video_dim[1]*0.07
                 })
 
         # Save into fixed output to be used for whisper
@@ -187,14 +215,13 @@ class VideoBuilder_V1:
             shadowy=3,
             x="center",
             y="center",
+            padding_y=+180,
             text_align="center",
             output_path=save_path
         )
 
         # Delete images video (temp)
         if os.path.exists(video): os.remove(video)
-
-        self.veditor.cleanup()
 
         return final_video
 

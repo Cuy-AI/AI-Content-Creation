@@ -111,13 +111,14 @@ You must strictly output JSON matching the following schema:
 }}
 
 **Instructions:**
-- Make the dialogue humorous in the style of {characters}, match their personalities.
-- If characters tend to use dark humor, you can use it.
-- Generate between {scene_number_range[0]} and {scene_number_range[1]} scenes total to keep the dialogue tight and engaging.
-- Alternate characters, one must teach while the other reacts, asks questions.
+- Make the dialogue humorous in the style of {characters}, match their personalities. If characters tend to use dark humor, you can use it.
+- Generate between {scene_number_range[0]} and {scene_number_range[1]} scenes total.
+- Alternate characters, one must explain while the other reacts, asks questions.
 - Include complete and informative real-world examples. 
-- Make the dialogue as if you were an human scriptwriter, not an AI. Don't add perfect sentences, add casual language.
-- Explain the topic deeply but in a fun way. Don't use too many vague analogies.
+- Make the dialogue as if you were an human scriptwriter, not an AI. Don't add repetitive perfect sentences, add casual language.
+- Focus only on explain the topic deeply. Don't use silly analogies (this is like when...) or references to the character's show.
+- Don't force your explanation. It's mandatory to think of and start from a problem or a typical situation and use it to explain your ideas.
+- Only on dialogues you are forbidden to generate emojis, or non word sounds.
 - Your predefined character images will be: {images}
                 """.strip()
             },
@@ -131,7 +132,8 @@ Category: {category}
 Topic: {topic}
 Summary: {summary}
 
-Focus on explaining the concept while keeping it fun. 
+Focus on explaining the topic. 
+It's mandatory to think and start from a problem or a typical situation and use it to explain your ideas.
                 """.strip()
             },
         ]
