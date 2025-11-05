@@ -35,14 +35,6 @@ class ScriptGenerator_V1:
         return {
             "type": "object",
             "properties": {
-                "title": {
-                    "type": "string",
-                    "description": "A catchy YouTube reel video title under 60 characters"
-                },
-                "caption": {
-                    "type": "string",
-                    "description": "A short, intriguing description, like a YouTube video caption with multiple '#' included"
-                },
                 "scenes": {
                     "type": "array",
                     "items": {
@@ -86,7 +78,6 @@ class ScriptGenerator_V1:
     def get_script_messages(self, topic: str, category: str, summary: str, characters: list, images:list):
 
         # Parameters
-        title_max_length = 60
         scene_number_range = (16, 20)
 
         return [
@@ -96,11 +87,7 @@ class ScriptGenerator_V1:
                 f"""
 You are a creative scriptwriter for short-form educational videos featuring famous characters {characters}. 
 You must strictly output JSON matching the following schema:
-
-**Schema:**
 {{
-    "title": "string — a catchy YouTube reel video title under {title_max_length} characters",
-    "caption": "string — a short, intriguing caption including at least one hashtag",
     "scenes": [
         {{
         "character": "{characters} — the speaker of the scene",
@@ -110,30 +97,26 @@ You must strictly output JSON matching the following schema:
     ]
 }}
 
-**Instructions:**
+Instructions:
 - Make the dialogue humorous in the style of {characters}, match their personalities. If characters tend to use dark humor, you can use it.
 - Generate between {scene_number_range[0]} and {scene_number_range[1]} scenes total.
-- Alternate characters, one must explain while the other reacts, asks questions.
-- Include complete and informative real-world examples. 
-- Make the dialogue as if you were an human scriptwriter, not an AI. Don't add repetitive perfect sentences, add casual language.
-- Focus only on explain the topic deeply. Don't use silly analogies (this is like when...) or references to the character's show.
-- Don't force your explanation. It's mandatory to think of and start from a problem or a typical situation and use it to explain your ideas.
-- Only on dialogues you are forbidden to generate emojis, or non word sounds.
-- Your predefined character images will be: {images}
+- Alternate characters, one or more (learners) has a problem/situation/question related to the a given topic and the other will give a smart solution while deeply explains the topic.
+- Make the dialogue as if you were an human scriptwriter, not an AI. Don't use repetitive or perfect sentences, add casual language like if you were a teenager.
+- Focus only on explaining the topic deeply. You and the characters are experts, don't waste time with silly analogies.
+- You are forbidden to generate emojis, or non word sounds or the em dash symbol (—).
+- Always remain focus on explaining the topic and solve the situation. Don't go off on tangents.
+- This is for a social network entertainment video. You must finish the dialog inviting your viewers to follow for more educational videos.
+- Your predefined character_images will be: {images}
                 """.strip()
             },
             {
                 "role": "user",
                 "content": 
                 f"""
-Generate the JSON for a short video based on this topic summary:
-
+Generate the script for a short video based on this topic summary:
 Category: {category}
 Topic: {topic}
 Summary: {summary}
-
-Focus on explaining the topic. 
-It's mandatory to think and start from a problem or a typical situation and use it to explain your ideas.
                 """.strip()
             },
         ]
@@ -168,42 +151,32 @@ It's mandatory to think and start from a problem or a typical situation and use 
             {
                 "role": "system",
                 "content": f"""
-You are given a JSON object representing a short animated script with multiple scenes.
+Analyze the provided JSON script, which contains a dialogue explaining a technical topic. Your task is to generate a list of concise, effective image search queries for 30% of the total scenes. The goal is to find visual representations that perfectly fit the dialogue's content or its primary analogy.
+Try not to select consecutive scenes. Keep the images spread out across all scenes. 
 
-Your task:
-- Select about 25% of the most important or visually meaningful scenes — the ones that best explain a key concept or idea.
-- Try sparcingly select scenes, avoid choosing consecutive scenes.
-- For each selected scene, write one **realistic Google Images search query** that represents what is being *talked about* in the dialogue.
-- The query must describe a **real, photographable or professionally illustrated concept**, not a fantasy or metaphor.
-- MOST of the images must focus on the category - topic: {category} - {topic}.
-- A small quantity of images (1 or 2 maximum) could be visuals related to the topic on a metaphorical way (e.g. When a character says "Complex interconected graph" -> Your query could be "Interconnected complex roads"). If you use this kind of metaphors ensure the image you describe is easy to find and not fictional.
+Output Format: The output must be a JSON list of objects, where each object contains the id of the scene and the generated query.
+[
+    {{"id": "<Scene ID>", "query": "<Generated Search Query>"}},
+    // ... (Repeat for up to 25% of scenes)
+]
 
-Strict rules for the image query:
-- Use only plain text describing what a person would actually search on Google Images.
-- The query must look like a real search term (e.g. "software engineer optimizing neural network", "ford motor v8", "Beethoven original music partiture").
+Query Content (Critical):
 
-**DO NOT** INCLUDE:
-- Characters/Objects of the script/scene doing/explaning things.
-- File types (e.g. "GIF", "PNG", etc.)
-- Parentheses, quotes, or explanations
-- Abstract ideas, or commentary (e.g. “metaphorical”, “concept art”, etc.)
-- Fictional or cartoon imagery.
-- Unclear or subjective visuals.
+- Queries must be designed to retrieve real-world images, stock photos, or simple technical graphics.
 
-Focus on:
-- Real-world visuals that show the concept being discussed.
-- Keep each query short (under 12 words) and specific.
-- Vary queries, avoid repeating similar images.
+- Forbidden: Do not generate queries for artistic, abstract, cartoon, fictional, or highly conceptual subjects. You are also forbidden to generate images that include the scene characters doing /using stuff because this is also fictional and will not be easy to find.
 
-Return a list of objects, each with:
-- `scene_id`: the ID of the selected scene.
-- `web_image`: the plain, realistic search query text.
+- Focus on the literal technical concept or the literal object used in the analogy. Querys must be SHORT and SIMPLE
+
+Query Quality: Each query must be specific and high-signal to ensure the first search result is high-quality and directly relevant to the line of dialogue. Assume the query will be executed by an automated system that selects the first image found.
+
+Language: Generate queries in the same language as the primary technical terms in the script (English).
                 """.strip()
             },
             {
                 "role": "user",
                 "content": f"""
-Here is the script JSON:
+The JSON script:
 {json.dumps(script, indent=2)}
                 """.strip()
             }
