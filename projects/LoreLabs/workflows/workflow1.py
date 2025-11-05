@@ -136,7 +136,7 @@ def web_images_solver(cache_key: str, args: tuple, kwargs: dict) -> Path:
 
     solved_cache_key:Path = PersistentResult.DefaultSolver(cache_key, args, kwargs)
 
-    valid_extensions = ('.png', '.jpg', 'jpeg', 'webp', 'tiff')
+    valid_extensions = ('.png', '.jpg', 'jpeg', 'webp', 'tiff', 'gif')
 
     parent = solved_cache_key.parent
     file_name = solved_cache_key.name

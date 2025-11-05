@@ -6,7 +6,7 @@ class ImageCollector_V1:
 
     def __init__(self, rate_limit:int|float =2.0):
         self.client = DuckDuckGoSearch(rate_limit=rate_limit)
-        self.valid_extensions = ('.png', '.jpg', 'jpeg', 'webp', 'tiff')
+        self.valid_extensions = ('.png', '.jpg', 'jpeg', 'webp', 'tiff', 'gif')
 
 
     def _check_dimensions(self, width: int|None, height: int|None, required_ratio: str, min_w: int, min_h: int) -> bool:
