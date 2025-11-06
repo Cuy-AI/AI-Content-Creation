@@ -3,8 +3,9 @@ import subprocess
 import tempfile
 import shutil
 import json
+import re
+from PIL import Image
 from typing import Tuple, Optional, List, Union
-from datetime import timedelta
 
 # Optional GPU detection for encoder selection
 try:
@@ -24,6 +25,7 @@ class VideoEditor:
         """
         :param temp_dir: optional folder for temporary files. If None, a temp folder is created.
         """
+        self.motion_fps = 120
         self.device = device_selection if device_selection in ("auto", "gpu", "cpu") else "auto"
         self._ensure_ffmpeg()
         if temp_dir:
@@ -66,7 +68,7 @@ class VideoEditor:
         """
         if (self.device == "auto" or self.device == "gpu") and _HAS_TORCH and torch.cuda.is_available():
             # NVENC params: tweak as desired
-            return "h264_nvenc", ["-preset", "fast", "-rc", "vbr_hq", "-cq", "19"]
+            return "h264_nvenc", ["-preset", "p6", "-rc", "vbr_hq", "-cq", "19"]
         else:
             # CPU x264
             return "libx264", ["-preset", "ultrafast", "-crf", "18", "-threads", str(max(1, os.cpu_count() or 1))]
@@ -674,14 +676,16 @@ class VideoEditor:
             x = img.get("x", 0)
             y = img.get("y", 0)
 
-            # Handle PIL.Image by saving to temp PNG
-            if hasattr(image, "save"):  # PIL image
+            # --- Handle image input (PIL or path) ---
+            if isinstance(image, Image.Image): # Check for PIL Image object
                 tmp_img = self._mktemp(".png")
                 image.save(tmp_img)
                 image_path = tmp_img
                 temp_images.append(tmp_img)
-            else:
+            elif isinstance(image, str):
                 image_path = image
+            else:
+                raise TypeError(f"Invalid image type: {type(image)}")
 
             ff_inputs += ["-i", image_path]
 
@@ -712,6 +716,163 @@ class VideoEditor:
         # Clean temp images
         self.remove_temp(temp_images)
         return output_path
+
+
+
+    def insert_images_with_motion(
+        self,
+        input_path: str,
+        images: List[dict],
+        output_path: Optional[str] = None
+    ) -> str:
+        """
+        Overlay multiple images with motion (x/y/rotate/scale as FFmpeg expressions).
+        
+        Parameters
+        ----------
+        input_path : str
+            Path to base video.
+        images : List[dict]
+            List of dictionaries defining images, positions, and motion.
+        output_path : str, optional
+            Where to save final video.
+
+        Returns
+        -------
+        str
+            Path to output video.
+        """
+        if output_path is None:
+            output_path = self._mktemp(".mp4")
+        else:
+            # Assuming os.makedirs is available
+            os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+
+        ff_inputs = ["-i", input_path]
+        filter_parts = []
+        input_index = 1
+        prev_label = "0:v" # The base video stream
+        temp_images = []
+
+        # --- Helper to replace only standalone t ---
+        def safe_t_replace(expr: str, start: float) -> str:
+            if not expr:
+                return expr
+            return re.sub(r'(?<![A-Za-z_])t(?![A-Za-z_])', f'(t-{start})', expr)
+
+        # --- Loop over all overlay images ---
+        for idx, img in enumerate(images):
+            start = img["start"]
+            end = img["end"]
+            image = img["image"]
+            time_base = img.get("time_base", "video")
+
+            # --- Handle image input (PIL or path) ---
+            if isinstance(image, Image.Image): # Check for PIL Image object
+                tmp_img = self._mktemp(".png")
+                image.save(tmp_img)
+                image_path = tmp_img
+                temp_images.append(tmp_img)
+            elif isinstance(image, str):
+                image_path = image
+            else:
+                raise TypeError(f"Invalid image type: {type(image)}")
+            
+            ff_inputs += ["-i", image_path]
+
+            # --- Extract expressions ---
+            x_expr = str(img.get("x", "0"))
+            y_expr = str(img.get("y", "0"))
+            rotate_expr = img.get("rotate")
+            scale_expr = img.get("scale")
+            fps = int(img.get("fps", self.motion_fps))
+
+            # --- Local time shift (must happen before filter chain generation) ---
+            if time_base == "image":
+                x_expr = safe_t_replace(x_expr, start)
+                y_expr = safe_t_replace(y_expr, start)
+                if rotate_expr:
+                    rotate_expr = safe_t_replace(rotate_expr, start)
+                if scale_expr:
+                    scale_expr = safe_t_replace(scale_expr, start)
+
+            label_input = f"{input_index}:v"
+            steps = []
+            
+
+            # --- 1. Prepare Image Stream ---
+
+            # Ensure alpha channel is present for rotation/overlay
+            steps.append(f"[{label_input}]format=rgba[alpha{idx}]")
+            label_input = f"alpha{idx}"
+
+            steps.append(
+                f"[{label_input}]pad=iw*1.05:ih*1.05:(ow-iw)/2:(oh-ih)/2:color=black@0[padded{idx}]"
+            )
+            label_input = f"padded{idx}"
+
+            # Create a looping stream for the 't' variable to work
+            steps.append(
+                f"[{label_input}]loop=loop=-1:size=1:start=0,setpts=PTS-STARTPTS[looped{idx}]"
+            )
+            label_input = f"looped{idx}"
+
+            # Set fps for the motion
+            steps.append(f"[{label_input}]fps=fps={fps}[fps{idx}]")
+            label_input = f"fps{idx}"
+
+            # --- 2. Optional Scale ---
+            if scale_expr:
+                # Add the mandatory 'eval=frame' to enable dynamic scaling with 't'
+                dynamic_scale_expr = f"{scale_expr}:eval=frame" 
+                
+                steps.append(f"[{label_input}]scale={dynamic_scale_expr}[s{idx}]")
+                label_input = f"s{idx}"
+
+            # --- 3. Optional Rotation (Robust) ---
+            if rotate_expr:
+                steps.append(
+                    f"[{label_input}]"
+                    f"rotate=a='{rotate_expr}':c=none:ow='hypot(iw,ih)':oh='ow'[rot{idx}]"
+                )
+                label_input = f"rot{idx}"
+                
+                
+            # --- 4. Overlay motion ---
+            out_label = f"v{idx+1}"
+            
+            # Add 'shortest=1' to the overlay. This is critical for chaining and preventing runaway encoding
+            # when a base video is short but the previous stream was implicitly infinite.
+            steps.append(
+                f"[{prev_label}][{label_input}]overlay="
+                f"x='{x_expr}':y='{y_expr}':enable='between(t,{start},{end})':shortest=1[{out_label}]"
+            )
+
+            filter_parts.append(";".join(steps))
+            prev_label = out_label
+            input_index += 1
+
+        # --- Assemble FFmpeg command (No changes here) ---
+        filter_complex = ";".join(filter_parts)
+        codec, params = self._choose_encoder() # Assuming this handles codec selection
+
+        cmd = [
+            "ffmpeg", "-y",
+            *ff_inputs,
+            "-filter_complex", filter_complex,
+            "-map", f"[{prev_label}]",
+            "-map", "0:a?",
+            "-c:v", codec, *params,
+            "-c:a", "aac", "-b:a", "192k",
+            "-movflags", "+faststart",
+            output_path
+        ]
+
+        self._run(cmd) # Assuming this executes the command
+        self.remove_temp(temp_images) # Assuming this cleans up temp files
+        
+        return output_path
+
 
 
     def insert_captions(

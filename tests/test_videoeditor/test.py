@@ -9,7 +9,7 @@ from components.Editor.ImageEditor.ImageEditor import ImageEditor
 def test_video_editor():
 
     # Create editor (uses temp folder internally)
-    veditor = VideoEditor(device_selection = "cpu")
+    veditor = VideoEditor(device_selection = "gpu")
     img_editor = ImageEditor()
 
     # Input video
@@ -190,8 +190,8 @@ def test_video_editor():
     print(f"New Video duration: {duration} ({int(duration/60)}:{(duration%60)})")
 
 
-    # 5. Insert images
-    print("\n5. Adding images to the video...")
+    # 5.1 Insert images
+    print("\n5.1 Adding images to the video...")
     image1 = "volume/resources/images/rick/rick_explaining_with_both_hands.png"
     
     image2 = img_editor.load_picture("volume/resources/images/rick/rick_happy_with_cool_sunglasses.png")
@@ -218,6 +218,60 @@ def test_video_editor():
     )
     t1 = time.time()
     print("Video with image at:", video)
+    print(f"Image took {t1 - t0:.2f} seconds")
+
+
+
+    # 5.2 Insert images with motion
+    print("\n5.2 Adding images with motion to the video...")
+    image1 = "volume/resources/LoreLabs/images/rick/Rick holding a holographic tablet, focused expression.png"
+    
+    image2 = img_editor.load_picture("volume/resources/LoreLabs/images/rick/Rick standing straight with arms crossed, serious expression.png")
+    image2 = img_editor.flip(image2, axis="x")
+
+    t0 = time.time()
+    video = veditor.insert_images_with_motion(
+        input_path=video,
+        images=[
+            # ───────────────────────────────────────────────
+            # IMAGE 1 — Complex motion (entry → float → exit)
+            # ───────────────────────────────────────────────
+            {
+                "image": image1,
+                "start": 5,
+                "end": 15,
+                "time_base": "image",  # local time (t=0 at start=5)
+                "x": (
+                    # 0–1s → slide from left to center
+                    # 1–9s → stay centered, float vertically + oscillate rotation
+                    # 9–10s → slide to right and disappear
+                    "if(lt(t,1), lerp(-w, W/2-w/2, t/1), "
+                    "if(lt(t,9), W/2-w/2, "
+                    "lerp(W/2-w/2, W, (t-9)/1)))"
+                ),
+                "y": "if(between(t,1,9), H/2 + 40*sin(t*3), H/2)",
+                "rotate": "if(between(t,1,9), sin(t*3)*0.2, 0)",
+                "scale": "iw*(1+0.1*sin(t*5)):ih*(1+0.1*sin(t*5))",
+            },
+
+            # ───────────────────────────────────────────────
+            # IMAGE 2
+            # ───────────────────────────────────────────────
+            {
+                "image": image2,
+                "start": 15,
+                "end": 30,
+                "time_base": "image",
+                "x": "W/3 + 100*sin(t*2)",
+                "y": "H - h - abs(100*sin(t*3))",
+                # "rotate": "sin(t*4)*0.05",
+                "rotate": "180"
+            },
+        ],
+        output_path="output_with_motion.mp4",
+    )
+    t1 = time.time()
+    print("Video with motion images at:", video)
     print(f"Image took {t1 - t0:.2f} seconds")
 
 
