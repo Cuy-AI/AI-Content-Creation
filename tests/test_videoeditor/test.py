@@ -268,7 +268,7 @@ def test_video_editor():
                 "rotate": "180"
             },
         ],
-        output_path="output_with_motion.mp4",
+        output_path=final_output_path+"output_with_motion.mp4",
     )
     t1 = time.time()
     print("Video with motion images at:", video)

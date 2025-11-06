@@ -25,7 +25,6 @@ class VideoEditor:
         """
         :param temp_dir: optional folder for temporary files. If None, a temp folder is created.
         """
-        self.motion_fps = 120
         self.device = device_selection if device_selection in ("auto", "gpu", "cpu") else "auto"
         self._ensure_ffmpeg()
         if temp_dir:
@@ -723,24 +722,46 @@ class VideoEditor:
         self,
         input_path: str,
         images: List[dict],
+        rotate_scale_fps: int = 60,
+        translation_fps: int = 60,
         output_path: Optional[str] = None
     ) -> str:
         """
-        Overlay multiple images with motion (x/y/rotate/scale as FFmpeg expressions).
+        Overlay multiple images with complex motion (translation, rotation, and scaling)
+        using FFmpeg time-based expressions.
+
+        The method handles two distinct FPS settings:
+        1. `translation_fps`: Controls the frame rate of the base video stream, crucial for 
+           the smoothness of X/Y position updates (translation).
+        2. `rotate_scale_fps`: Controls the frame rate of the individual image stream, 
+           critical for the smoothness of rotation and scale calculations.
         
         Parameters
         ----------
         input_path : str
-            Path to base video.
+            Path to the base video on which images will be overlaid.
         images : List[dict]
-            List of dictionaries defining images, positions, and motion.
+            List of dictionaries defining images, timing, and motion expressions. 
+            Each dictionary must contain "start" and "end" (in seconds) and "image" (PIL.Image or path).
+            Optional keys for motion expressions (must use 't' for time):
+            - "x": FFmpeg expression for horizontal position (e.g., 'W/2 - w/2 + 50*sin(t)').
+            - "y": FFmpeg expression for vertical position (e.g., 'H/2 + 50*cos(t)').
+            - "rotate": FFmpeg expression for angle in radians (e.g., 't*0.5').
+            - "scale": FFmpeg expression for width:height (e.g., 'iw*(1+0.1*sin(t)):ih*(1+0.1*sin(t))').
+            - "time_base": "image" to shift 't' by 'start' (t-start) or "video" (default).
+        rotate_scale_fps : int, optional
+            The target frame rate for the image stream's rotation and scale calculations. 
+            Higher values (e.g., 60, 120) result in smoother rotation/scale animation. Defaults to 60.
+        translation_fps : int, optional
+            The target frame rate for the base video stream's time base. 
+            Higher values (e.g., 60, 120) result in smoother X/Y translation. Defaults to 60.
         output_path : str, optional
-            Where to save final video.
+            Where to save the final video file.
 
         Returns
         -------
         str
-            Path to output video.
+            Path to the output video file.
         """
         if output_path is None:
             output_path = self._mktemp(".mp4")
@@ -759,6 +780,17 @@ class VideoEditor:
             if not expr:
                 return expr
             return re.sub(r'(?<![A-Za-z_])t(?![A-Za-z_])', f'(t-{start})', expr)
+
+
+        base_video_label = "base_high_fps"
+        
+        # Force high FPS on the base video and reset its PTS for clean chained evaluation.
+        # This is CRITICAL for smooth X/Y motion, which is driven by the base stream's FPS.
+        filter_parts.append(
+            f"[0:v]fps=fps={translation_fps},setpts=N/({translation_fps}*TB)[{base_video_label}]"
+        )
+        prev_label = base_video_label
+
 
         # --- Loop over all overlay images ---
         for idx, img in enumerate(images):
@@ -785,7 +817,6 @@ class VideoEditor:
             y_expr = str(img.get("y", "0"))
             rotate_expr = img.get("rotate")
             scale_expr = img.get("scale")
-            fps = int(img.get("fps", self.motion_fps))
 
             # --- Local time shift (must happen before filter chain generation) ---
             if time_base == "image":
@@ -806,20 +837,23 @@ class VideoEditor:
             steps.append(f"[{label_input}]format=rgba[alpha{idx}]")
             label_input = f"alpha{idx}"
 
-            steps.append(
-                f"[{label_input}]pad=iw*1.05:ih*1.05:(ow-iw)/2:(oh-ih)/2:color=black@0[padded{idx}]"
-            )
-            label_input = f"padded{idx}"
+            # Add a little pad to avoid problems on rotations
+            if rotate_expr:
+                steps.append(
+                    f"[{label_input}]pad=iw*1.05:ih*1.05:(ow-iw)/2:(oh-ih)/2:color=black@0[padded{idx}]"
+                )
+                label_input = f"padded{idx}"
 
             # Create a looping stream for the 't' variable to work
             steps.append(
-                f"[{label_input}]loop=loop=-1:size=1:start=0,setpts=PTS-STARTPTS[looped{idx}]"
+                f"[{label_input}]loop=loop=-1:size=1:start=0[looped{idx}]"
             )
             label_input = f"looped{idx}"
 
-            # Set fps for the motion
-            steps.append(f"[{label_input}]fps=fps={fps}[fps{idx}]")
-            label_input = f"fps{idx}"
+            # Set fps for scale/rptation the motion
+            if scale_expr or rotate_expr:
+                steps.append(f"[{label_input}]fps=fps={rotate_scale_fps}[fps{idx}]")
+                label_input = f"fps{idx}"
 
             # --- 2. Optional Scale ---
             if scale_expr:
