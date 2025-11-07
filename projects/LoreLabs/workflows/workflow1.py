@@ -2,7 +2,7 @@ from time import time
 from pathlib import Path
 
 # Workflow
-from prefect import flow, task
+from prefect import flow, task, get_run_logger
 from prefect.cache_policies import NO_CACHE
 from classes.Workflow import Workflow
 from classes.Workflow import Serializers
@@ -257,7 +257,7 @@ def build_video(script: dict, audio_list:list, image_dict:dict):
         videoBuilder.start()
 
     path = videoBuilder.build_full_video(script['script'], audio_list, image_dict, save_path)
-    print(f"[INFO] Video saved at: {path}")
+    get_run_logger().info(f"Video saved at: {path}")
     return path
 
 
