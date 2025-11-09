@@ -73,10 +73,16 @@ class Workflow:
         return id_str.zfill(self.id_path_digits)
     
 
-    def create_execution_id(self) -> int:
+    def next_execution_id(self, base_path: str|Path = None) -> int:
 
-        # Check for all existing folders (ids) inside basepath 
-        folders = [f for f in os.listdir(self.base_path) if os.path.isdir(os.path.join(self.base_path, f))]
+        if base_path is None: base_path = Utils.convert_to_path(self.base_path)
+        else: base_path = Utils.convert_to_path(base_path)
+
+        # If directory doesn't exist yet, start at 0
+        if not base_path.exists(): return 0
+
+        # Collect names of subdirectories (use Path API)
+        folders = [p.name for p in base_path.iterdir() if p.is_dir()]
 
         # If not folders, use id = 0
         if not folders: return 0
@@ -96,20 +102,21 @@ class Workflow:
         This method must be called whenever we want to set a new workflow path.
         '''
 
+        # Resolve base path
+        self.base_path = Utils.convert_to_path(base_path)
+
         # Resolve execution id
         if execution_id is None: execution_id = getattr(self, 'execution_id', None)
-        if execution_id is None: execution_id = self.create_execution_id()
+        if execution_id is None: execution_id = self.next_execution_id()
         self.execution_id = self._int2id(execution_id)
 
-        # Resolve base path
-        base_path = Utils.convert_to_path(base_path)
 
         # Resolve storage_block_name
         if storage_block_name is None: self.storage_block_name = getattr(self, 'storage_block_name', 'my-custom-local-storage')
         else: self.storage_block_name = storage_block_name + '-' + self.execution_id
 
         # Create new workflow folder
-        self.workflow_path = base_path / self.execution_id
+        self.workflow_path = self.base_path / self.execution_id
         Utils.validate_path(str(self.workflow_path))
         self.workflow_path.mkdir(parents=True, exist_ok=True)
 

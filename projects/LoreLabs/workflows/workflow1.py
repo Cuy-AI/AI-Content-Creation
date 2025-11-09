@@ -20,8 +20,8 @@ from projects.modules.VideoBuilder_V1 import VideoBuilder_V1
 # Workflow Creation ===================================================================================
 LoreLabsWorkflow = Workflow(
     base_path='volume/output/LoreLabs/Workflow 1', # Path were the workflow will create folders/files to store executions
-    # execution_id=None, # Will generate a new execution id
-    execution_id=0, # Will run an specific execution
+    execution_id=None, # Will generate a new execution id
+    # execution_id=0, # Will run an specific execution
     storage_block_name='lorelabs-workflow1-storage', # Prefect storage block
     id_path_digits=5, # Number of digits for the id 
 )
