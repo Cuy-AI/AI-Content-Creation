@@ -247,7 +247,8 @@ class VideoBuilder_V1:
             word_segments=response,
             words_per_segment=3,
             max_duration=1.5,
-            max_pause=0.35
+            max_pause=0.35,
+            max_chars=30
         )['answer']
 
 
