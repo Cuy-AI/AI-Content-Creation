@@ -97,7 +97,7 @@ class WhisperAI(BaseAI):
         return output
 
 
-    def merge_segments(self, word_segments, words_per_segment = None, max_duration = None, max_pause=None):
+    def merge_segments(self, word_segments, words_per_segment = None, max_duration = None, max_pause=None, max_chars=None):
         """
         Merge word-level segments into larger segments.
 
@@ -106,6 +106,7 @@ class WhisperAI(BaseAI):
             words_per_segment: if set, group by this many words per segment
             max_duration: if set, start a new segment after this many seconds
             max_pause: if set, start a new segment if speaker makes a pause for this many seconds
+            max_chars: if set, start a new segment when joined text length exceeds this many characters
 
         Returns:
             List of merged segments with {"start", "end", "text"}
@@ -136,11 +137,16 @@ class WhisperAI(BaseAI):
             if max_pause and i+1 < len(word_segments) and (word_segments[i+1]["start"] - w["end"]) > max_pause:
                 flush = True
 
+            # Also flush if current buffer text exceeds max_chars (handles single-word-over-limit case)
+            txt = " ".join(x["text"] for x in buffer)
+            if max_chars and len(txt) > max_chars:
+                flush = True
+
             if flush:
                 merged.append({
                     "start": buffer[0]["start"],
                     "end": buffer[-1]["end"],
-                    "text": " ".join(x["text"] for x in buffer)
+                    "text": txt
                 })
                 buffer = []
                 start_time = None
