@@ -78,7 +78,7 @@ class ScriptGenerator_V1:
     def get_script_messages(self, topic: str, category: str, summary: str, characters: list, images:list):
 
         # Parameters
-        scene_number_range = (16, 20)
+        scene_number_range = (13, 15)
 
         return [
             {
@@ -105,7 +105,7 @@ Instructions:
 - Focus only on explaining the topic deeply. You and the characters are experts, don't waste time with silly analogies.
 - You are forbidden to generate emojis, or non word sounds or the em dash symbol (—).
 - Always remain focus on explaining the topic and solve the situation. Don't go off on tangents.
-- This is for a social network entertainment video. You must finish the dialog inviting your viewers to follow for more educational videos.
+- It's mandatory to finish the dialog with a BRIEF "Follow us for more educational videos" phrase.
 - Your predefined character_images will be: {images}
                 """.strip()
             },
