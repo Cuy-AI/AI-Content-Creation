@@ -1,0 +1,12 @@
+{
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "max_completion_tokens": null,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "n": 1
+}
