@@ -1,0 +1,6 @@
+{
+    "models": [
+        "gpt-5-mini",
+        "gpt-5-nano"
+    ]
+}

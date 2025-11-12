@@ -18,4 +18,5 @@ from tests.test_duckduckgo.test import test_duckduckgo
 # test_video_editor()
 # test_googlesearch()
 # test_spanishf5()
-test_duckduckgo()
+# test_duckduckgo()
+test_openai()

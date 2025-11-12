@@ -1,0 +1,145 @@
+{
+  "model": "gpt-5-mini",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "caption": {
+        "type": "string",
+        "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+      },
+      "resume": {
+        "type": "string",
+        "description": "A summary of the full story, including spoilers"
+      },
+      "number_of_scenes": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 15
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string",
+              "description": "The name of the character that is speaking or narrating during the scene"
+            },
+            "script": {
+              "type": "string",
+              "description": "The dialogue or narration for the scene"
+            },
+            "image_prompt": {
+              "type": "string",
+              "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ]
+        }
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ]
+  },
+  "parameters": {
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "max_completion_tokens": null,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "n": 1
+  },
+  "output": {
+    "title": "Pulse: The Old App That Knew Too Much",
+    "caption": "A young coder finds an antique app — and a buried global conspiracy. One line of code, one race to publish the truth.",
+    "resume": "Maya Chen, a 24-year-old coder, finds an archived mobile app called Pulse on a failed startup's hard drive. While sandboxing the binary she discovers a hidden, obfuscated module that periodically transmits tiny encrypted packets. Reverse-engineering links those packets to historical anomalies: market spikes, blackouts and curated disinformation campaigns. Tracing the app's update infrastructure, Maya and her friend Lucas uncover a shell network tied to a multinational corporation, Helix Systems, which used the app as a distributed backdoor to test and trigger micro-events across cities to manipulate markets and political sentiment. As Maya collects proof, Helix deploys intimidation and cyberattacks. After a break-in and a narrow escape, Maya and Lucas infiltrate a data center, extract timestamped logs that definitively tie Helix executives to the payload triggers, and leak the evidence to journalists and a secure global drop. The world reacts: regulators move, arrests start, Helix's servers are seized — but the final scene reveals a dormant, encrypted handshake active in Pulse's code, pinging a single unknown node. The conspiracy is disrupted and leaders are exposed, but a latent backdoor remains, leaving Maya and viewers with uneasy victory and the knowledge that the code can outlive those who wrote it.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Narrator / Maya",
+        "script": "I found the app in a box of old drives — Pulse. An app from a failed startup, glossy UI, useless metadata. It was the middle of the night and the city was asleep. I told myself it was nostalgia. I told myself it was just another reverse-engineer hobby project.",
+        "image_prompt": "Dimly lit apartment at 2 AM, young Asian woman (24) hunched over a cluttered desk strewn with old hard drives, coffee cups, and a laptop screen casting cool blue light. A small cardboard box labeled 'Atlas Labs' sits open, an old smartphone with a faded icon named 'Pulse' peeking out. Rain streaks the window; city skyline blurred beyond."
+      },
+      {
+        "character": "Maya",
+        "script": "I launched it inside a sandbox. The UI loaded like a time capsule — pulsing circles, banal metrics. Then the network monitor flagged a tiny, regular outbound packet: 13 bytes, encrypted, sent to a server I couldn't resolve.",
+        "image_prompt": "Close-up of laptop screen showing an emulator running a retro mobile app with pulsing UI elements, terminal windows open showing packet logs and a small red alert indicating outbound encrypted packets. Fingers hover over keyboard; sticky notes with 'sandbox' and 'DO NOT TRUST' in the corner."
+      },
+      {
+        "character": "Narrator",
+        "script": "Obfuscation isn't creative. It's lazy fear. The module was buried deep — a folder named 'sieve' with a binary that only woke on certain triggers. When it ran, it wasn't about data collection. It was about timing.",
+        "image_prompt": "Abstract visualization: digital layers peeling back to reveal a glowing module labeled 'sieve', surrounded by strands of obfuscated code, like roots in dirt. Cold, clinical colors; a sense of something intentionally hidden but structured."
+      },
+      {
+        "character": "Maya",
+        "script": "I matched packet timestamps with public records. A tiny spike here, an outage there, a news story that swayed a local vote. Someone had been using thousands of phones running Pulse as a distributed testbed for micro-events.",
+        "image_prompt": "Split-screen: on one side, a spreadsheet with timestamps and event markers (power outage, market blip, viral news); on the other, a world map dotted with small pulsing lights connected by thin lines. Maya's reflection is faintly visible on the screen."
+      },
+      {
+        "character": "Lucas (friend, security engineer)",
+        "script": "\"You don't just stumble on coincidences like that,\" Lucas said over a jittery video call. \"Trace the update servers. Certificates, IP hops — follow the money.\"",
+        "image_prompt": "Video call window: Maya and Lucas (late 20s, beanie, tired but focused) framed by dual monitors showing traceroutes, certificate chains, and a highlighted domain 'helix-srv.com'. A digital map overlays moving hops like a chase."
+      },
+      {
+        "character": "Narrator",
+        "script": "The hops led to a tangle of shell companies. Helix Systems sat at the core — a quiet multinational with clean press releases and a private R&D history. Pulse's update signer chain pointed straight at Helix's legal team.",
+        "image_prompt": "Corporate exterior at twilight: a polished glass building with a minimalist logo 'Helix' reflecting the city lights. Superimposed are translucent documents: certificate chains, invoices, and a red string connecting shell company names like a conspiracy board."
+      },
+      {
+        "character": "Maya",
+        "script": "Then the first warning happened. A grey sedan started following me home. My mailbox filled with 'friendly' legal questions about 'unauthorized research.' Someone came to the building to ask where I worked. They knew my name.",
+        "image_prompt": "Night street scene: Maya walking briskly, backpack tightened, a plain grey sedan idling across the road with a driver staring. Streetlight casts long shadows; a flyer in a mailbox reads 'Atlas Labs — Alumni Meeting'. Tension in the posture of passersby."
+      },
+      {
+        "character": "Lucas",
+        "script": "\"Back everything up. Get offline. Drop it into a secure bucket and send the key to the journalists. If Helix is watching, they'll try to cut you off first.\" His voice was flat. We both knew what that meant.",
+        "image_prompt": "Interior, cramped server closet turned makeshift bunker: Maya hurriedly copying encrypted archives onto a small external SSD, phone off, an emergency burner phone face-down. Ambient red LED lights from a nearby router flicker; a clock shows 01:17 AM."
+      },
+      {
+        "character": "Narrator",
+        "script": "They knocked at the door at 3:12. Not a legal letter this time. The glass panel shattered in the lobby. Helix didn't care for subtlety. We watched a live feed of our own security cams as a group forced their way in and the power went inexplicably dark for 47 seconds.",
+        "image_prompt": "Chaotic lobby: shattered glass, a security camera feed on a tablet showing masked figures moving through a hallway, emergency lights strobing. Maya and Lucas huddled in a dark utility room, faces lit by the glow of a single laptop screen, breaths visible in cold air."
+      },
+      {
+        "character": "Maya",
+        "script": "Under that blackout, Pulse's algorithm triggered a chain of silent handshake pings across nodes in three cities. I decoded the payload live and realized: it wasn't just testing. It was a controller for small, coordinated disruptions — enough to sway sentiment, enough to move markets.",
+        "image_prompt": "High-intensity terminal scene: lines of decrypted payload unraveling into human-readable commands, a world map with three cities highlighted in red, animated connection lines pulsing in sync. Maya types furiously as numbers cascade down the screen."
+      },
+      {
+        "character": "Narrator",
+        "script": "We went to the physical source: a cold data center in an industrial district. Lucas slipped me a keycard he'd cloned. Inside, servers hummed like a hive. We found the logs — clear, signed, and dated — linking Helix executives to the triggers. It was everything we needed.",
+        "image_prompt": "Sterile, cavernous data center: endless racks of servers with blue status lights, a masked Maya crouching beside a rack with a laptop, Lucas standing guard. A forensic image window shows log files highlighted with executive email addresses and timestamps."
+      },
+      {
+        "character": "Maya",
+        "script": "We pushed the dump to multiple journalists, encrypted and redundant. Within hours the story blew up. Stocks began to wobble, hearings were scheduled, Helix's legal shield cracked. They called it a scandal; I called it the last thing I expected to survive.",
+        "image_prompt": "Montage of news: headlines scrolling on screens, protestors outside a Helix building, breaking news tickers. Close-up of Maya's hands as she watches live feeds, exhausted and eyes rimmed red; a public tweet thread climbs to millions of views."
+      },
+      {
+        "character": "Narrator / Maya",
+        "script": "The servers were seized, executives indicted, public oversight enacted. We watched the courtroom footage from a safe house and felt relief like a fragile thing. But my phone blinked once at 3:03 AM — a single encrypted handshake answered by a node we never traced. The code was old. The idea was older. Some doors, once built, are hard to close.",
+        "image_prompt": "Quiet dawn on a rooftop: Maya in a hooded jacket watching the city wake, laptop open with a single terminal line showing an incoming encrypted handshake to an unknown IP. The skyline glows pink; there's a sense of uneasy calm and unresolved threat in the composition."
+      }
+    ]
+  }
+}
