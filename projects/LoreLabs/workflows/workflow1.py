@@ -20,8 +20,8 @@ from projects.modules.VideoBuilder_V1 import VideoBuilder_V1
 # Workflow Creation ===================================================================================
 LoreLabsWorkflow = Workflow(
     base_path='volume/output/LoreLabs/Workflow 1', # Path were the workflow will create folders/files to store executions
-    execution_id=None, # Will generate a new execution id
-    # execution_id=0, # Will run an specific execution
+    # execution_id=None, # Will generate a new execution id
+    execution_id=2, # Will run an specific execution
     storage_block_name='lorelabs-workflow1-storage', # Prefect storage block
     id_path_digits=5, # Number of digits for the id 
 )
@@ -221,7 +221,7 @@ def get_audio(category:str, id:int, dialogue: str, character:str):
         voiceGenerator.start()
         voiceGenerator.character_params.update({
             "rick": { "temperature": 0.75, "exaggeration": 0.55, "cfg_weight": 0.5 },
-            "morty": { "temperature": 0.65, "exaggeration": 0.55, "cfg_weight": 0.5 },
+            "morty": { "temperature": 0.7, "exaggeration": 0.525, "cfg_weight": 0.5 },
         })
 
     result = voiceGenerator.generate_voice(dialogue, character, 'en', saving_path)
