@@ -1,6 +1,7 @@
 import os
 import json
 import uvicorn
+import copy
 
 from openai import OpenAI as OpenAIClient
 from dotenv import load_dotenv
@@ -55,10 +56,40 @@ class OpenAI(BaseAI):
         }
         self.client = OpenAIClient(**self._client_config)
 
+    def _add_additional_properties_to_objects(self, schema_part):
+        """
+        Recursively traverse the schema and add 'additionalProperties: false'
+        to all object types. This field is required by the Azure OpenAI API.
+        """
+        if isinstance(schema_part, dict):
+            # If this is an object type, add additionalProperties: false
+            if schema_part.get("type") == "object":
+                schema_part["additionalProperties"] = False
+            
+            # Recursively process all values in the dictionary
+            for key, value in schema_part.items():
+                if isinstance(value, (dict, list)):
+                    self._add_additional_properties_to_objects(value)
+        
+        elif isinstance(schema_part, list):
+            # Recursively process all items in the list
+            for item in schema_part:
+                if isinstance(item, (dict, list)):
+                    self._add_additional_properties_to_objects(item)
+        
+        return schema_part
+
     def set_schema(self, schema: dict):
         try:
-            Draft7Validator.check_schema(schema.copy())
-            self.schema = schema.copy()
+            # Create a deep copy to avoid modifying the original
+            schema_copy = copy.deepcopy(schema)
+            
+            # Add additionalProperties: false to all object types
+            processed_schema = self._add_additional_properties_to_objects(schema_copy)
+            
+            # Validate the processed schema
+            Draft7Validator.check_schema(processed_schema)
+            self.schema = processed_schema
             return "Json schema was set successfully"
         except Exception as e:
              raise ValueError(f"The json schema is not valid: {e}")

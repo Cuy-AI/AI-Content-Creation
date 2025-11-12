@@ -15,6 +15,10 @@ def test_openai():
     answer = openai_client.set_model_name(model_name="gpt-5-mini")
     print("Set model answer", answer)
 
+    # Set params (BaseAI method)
+    answer = openai_client.set_params(max_completion_tokens=2048)
+    print("Set params answer", answer)
+
     # Get params (BaseAI method)
     params = openai_client.get_params()
     print("Get params answer", params)
@@ -58,12 +62,10 @@ def test_openai():
                             "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
                         }
                     },
-                    "additionalProperties": False,  # The Azure OpenAI API requires this to be set to False
                     "required": ["character", "script", "image_prompt"]
                 }
             }
         },
-        "additionalProperties": False,  # The Azure OpenAI API requires this to be set to False
         "required": ["title", "caption", "resume", "number_of_scenes", "scenes"]
     }
 
