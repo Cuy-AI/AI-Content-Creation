@@ -8,6 +8,7 @@ from tests.test_videoeditor.test import test_video_editor
 from tests.test_googlesearch.test import test_googlesearch
 from tests.test_spanishf5.test import test_spanishf5
 from tests.test_duckduckgo.test import test_duckduckgo
+from tests.test_comfyui.test import test_comfyui
 
 # test_lmstudio()
 # test_openrouter()
@@ -19,4 +20,5 @@ from tests.test_duckduckgo.test import test_duckduckgo
 # test_googlesearch()
 # test_spanishf5()
 # test_duckduckgo()
-test_openai()
+# test_openai()
+test_comfyui()
