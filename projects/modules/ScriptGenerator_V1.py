@@ -78,7 +78,7 @@ class ScriptGenerator_V1:
     def get_script_messages(self, topic: str, category: str, summary: str, characters: list, images:list):
 
         # Parameters
-        scene_number_range = (13, 15)
+        scene_number_range = (10, 13)
 
         return [
             {
@@ -106,6 +106,7 @@ Instructions:
 - You are forbidden to generate emojis, or non word sounds or the em dash symbol (—).
 - Always remain focus on explaining the topic and solve the situation. Don't go off on tangents.
 - It's mandatory to finish the dialog with a BRIEF "Follow us for more educational videos" phrase.
+- IMPORTANT: The first scene (hook) should be brief, introduce the theme and leave the audience with many questions. Then, throughout the scenes, you must fulfill the expectations you set in the introduction. In the final scenes (climax), you must give the audience what they were waiting for.
 - Your predefined character_images will be: {images}
                 """.strip()
             },

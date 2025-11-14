@@ -50,7 +50,7 @@ class Researcher_V1:
                     f"Avoid beginner-level explanations. Your objective public are {category} college students and {category} seniors.\n"
                     f"Write in a tone that's clear and information-dense, suitable for use in educational content.\n"
                     f"To make the topic even more interesting, include up-to-date {current_year} information, news about the topic, real world examples, etc.\n"
-                    f"Run max of 3 web research calls, each with a num_results=2.\n"
+                    f"Run max of 2 web research calls, each with a num_results=2.\n"
                     f"If web_research returns invalid content, create your report with your own knowledge.\n"
                     f"Only output the report. Don't include emojis, links, external references or tables. Just text.\n"
                     f"Include as much info as you can.\n"
