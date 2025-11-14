@@ -1,0 +1,140 @@
+{
+  "model": "gpt-5-mini",
+  "input": "\n    You are a video scriptwriter. Craft a short, suspenseful story for a video script, targeting an audience aged 16 to 45.\n    The story should be a modern tech thriller about a young coder who uncovers a global conspiracy hidden in an old app's code.\n    The script must be engaging and immersive, with a sense of urgency and mystery.\n    The script should have exactly 12 scenes.\n    The output must strictly follow the provided JSON schema:\n    - title\n    - caption (a short, intriguing description, like a YouTube video caption without spoilers)\n    - resume (a summary of the full story, including spoilers)\n    - number_of_scenes\n    - scenes (an array of scene objects)\n\n    Each scene object must contain:\n    - character (the character speaking or narrating)\n    - script (the dialogue or narration for the scene)\n    - image_prompt (a detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene)\n    ",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "A catchy YouTube video title under 60 characters"
+      },
+      "caption": {
+        "type": "string",
+        "description": "A short, intriguing description, like a YouTube video caption without spoilers"
+      },
+      "resume": {
+        "type": "string",
+        "description": "A summary of the full story, including spoilers"
+      },
+      "number_of_scenes": {
+        "type": "integer",
+        "minimum": 10,
+        "maximum": 15
+      },
+      "scenes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "character": {
+              "type": "string",
+              "description": "The name of the character that is speaking or narrating during the scene"
+            },
+            "script": {
+              "type": "string",
+              "description": "The dialogue or narration for the scene"
+            },
+            "image_prompt": {
+              "type": "string",
+              "description": "A detailed, descriptive prompt for an AI image generator that captures the visual essence of the scene"
+            }
+          },
+          "required": [
+            "character",
+            "script",
+            "image_prompt"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "title",
+      "caption",
+      "resume",
+      "number_of_scenes",
+      "scenes"
+    ],
+    "additionalProperties": false
+  },
+  "parameters": {
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "max_completion_tokens": 2048,
+    "stream": false,
+    "stop": null,
+    "tools": [],
+    "tool_choice": null,
+    "frequency_penalty": 0,
+    "presence_penalty": 0,
+    "n": 1
+  },
+  "output": {
+    "title": "Legacy Code",
+    "caption": "A young coder peels back an old app and finds a conspiracy written between the lines of code.",
+    "resume": "Maya Reyes, a 24-year-old backend developer, discovers anachronistic, encrypted payloads hidden inside an abandoned social app's legacy commits. As she decodes a pattern embedded in image assets, it reveals geo-tagged triggers and a schedule of coordinated infrastructure nudges. She teams with hacker friend Theo and investigative journalist Rafi to trace the control servers to a private consortium that used app updates as a covert channel to manipulate public behavior and critical systems. Corporate security and a compromised former colleague, Evelyn, try to stop them; Evelyn ultimately sacrifices herself to help Maya upload incriminating proof. Maya streams the archive to the world, exposing the conspiracy and forcing international probes, but the final decrypted module hints at a deeper, dormant protocol waiting to awaken — leaving the ending both victorious and ominous.",
+    "number_of_scenes": 12,
+    "scenes": [
+      {
+        "character": "Narrator",
+        "script": "Night. A city hums below. On a cluttered desk, a single monitor bathes a young coder in blue light. She mutters to herself, hunting a ghost in an app no one uses anymore.",
+        "image_prompt": "Interior night scene, small apartment desk illuminated by one large monitor showing lines of code; rain-streaked city skyline through a window, scattered coffee cups and sticky notes, cinematic low-key lighting, moody cyberpunk realism, lens flare from the screen"
+      },
+      {
+        "character": "Maya",
+        "script": "This repo shouldn't even exist. Last commit: 2013. Why is there encrypted noise in the image assets? Whoever hid this was trying not to be found.",
+        "image_prompt": "Close-up of a young woman (mid-20s, focused eyes) leaning in to a monitor displaying a Git commit history and thumbnails of old app images, magnified hex strings and highlighted anomalies, shallow depth of field, intense focus"
+      },
+      {
+        "character": "Maya",
+        "script": "The bytes align like coordinates. If this is right... these timestamps match transit schedules. Someone used the app to whisper instructions into public systems.",
+        "image_prompt": "Desktop view showing decoded data overlaying a city map with glowing coordinate pins and timestamps; translucent code floats over satellite imagery, neon green markers, high-tech conspiracy aesthetic"
+      },
+      {
+        "character": "Theo",
+        "script": "You pulled the dead app into daylight. Nice. If those payloads are triggers, they could nudge every smart device that syncs with it. We need a safe trace — now.",
+        "image_prompt": "Two young collaborators in a dim hackerspace, one on a laptop, the other pointing at a wall of screens showing network graphs and server locations, cables and hardware strewn around, tense urgency"
+      },
+      {
+        "character": "Maya",
+        "script": "I tunneled to a mirror server in three countries. It's not just data — it's orchestration. Firmware patches, targeted ads, traffic light timings. Someone built a distributed suggestion engine using updates as the channel.",
+        "image_prompt": "Abstract visualization of interconnected servers across the globe, lines of light arcing between continents, code snippets blending into schematics of traffic lights and IoT devices, dramatic cyber-visual metaphor"
+      },
+      {
+        "character": "Security Voice (over comm)",
+        "script": "Stop what you're doing and identify yourself. Corporate records show unauthorized access originating from your address.",
+        "image_prompt": "A corporate security operator speaking into a headset over a cold, corporate command center display; red alert notifications on screens, sterile lighting, menacing formality"
+      },
+      {
+        "character": "Maya",
+        "script": "They're on to us. Theo, dump the trace — flood our footprint. I need someone to tell the world if we don't make it out.",
+        "image_prompt": "Action scene: Maya packing a laptop into a backpack while a small alarm blinks; window blinds open to a shadowy stairwell, hurried movement, low-angle perspective, tense escape lighting"
+      },
+      {
+        "character": "Rafi",
+        "script": "I started receiving tips this morning — traffic glitches, stock micro-shifts, a crowd nudged by 'recommended events'. People think it's coincidence. It's not. Send me the logs.",
+        "image_prompt": "A cluttered newsroom late at night with a middle-aged journalist (Rafi) leaning over printouts, his phone full of notifications, multiple monitors showing looping news clips and social feeds, investigative energy"
+      },
+      {
+        "character": "Evelyn",
+        "script": "I wrote the update manager five years ago. We were told it was for personalization. They asked for opaque payloads to bypass audits. I couldn't walk away. I'm trying to fix what I helped build.",
+        "image_prompt": "A tense meeting in a parking garage under sodium lights: a woman in her 30s (Evelyn) looks haunted, clutching a USB drive; a rain-streaked car and industrial pillars in the background, cinematic noir tone"
+      },
+      {
+        "character": "Maya",
+        "script": "The consortium owed no ledger to anyone. They used apps as whispers to millions — nudging markets, elections, even emergency services timing. We can prove it. We leak the archive and it's over.",
+        "image_prompt": "Interior of a gray server farm with cooling pipes and racks, one rack highlighted showing a plaque with a stylized corporate logo, server lights like a heartbeat, oppressive corporate power imagery"
+      },
+      {
+        "character": "Narrator",
+        "script": "They split: Theo scrambles routes, Rafi prepares a live stream, Evelyn rigs an automatic dump. Corporate security corners them on a rooftop as the upload spins up. A choice — run, or finish the upload.",
+        "image_prompt": "Rooftop at night with city lights below; three figures silhouetted against the skyline, a laptop open with an uploading progress bar, security figures approaching from stairs, cinematic climax framing"
+      },
+      {
+        "character": "Maya",
+        "script": "I pushed the last packet. The files hit every public mirror. The screens go white with the truth. But on my terminal — another module activates. Different signature. We exposed one engine. There's another sleeping beneath it.",
+        "image_prompt": "Dawn light breaking over the city as news tickers scroll 'DATA LEAK' on multiple skyscraper screens; close-up of Maya's monitor showing 'UPLOAD COMPLETE' and a mysterious inactive module labeled 'SUBSTRATE_02' glowing faintly, ominous but hopeful tone"
+      }
+    ]
+  }
+}

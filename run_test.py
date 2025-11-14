@@ -20,4 +20,5 @@ from tests.test_comfyui.test import test_comfyui
 # test_googlesearch()
 # test_spanishf5()
 # test_duckduckgo()
+# test_openai()
 test_comfyui()

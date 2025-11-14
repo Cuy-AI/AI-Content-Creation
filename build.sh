@@ -43,6 +43,9 @@ else
     docker build -t whisper \
       --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
       -f ./components/Editor/Whisper/Dockerfile .
+  elif [ "$1" = "openai" ]; then
+    docker build -t openai \
+      -f ./components/LM/OpenAI/Dockerfile .
   else 
     echo "Image $1 was not recognized"
   fi
