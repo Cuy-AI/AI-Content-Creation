@@ -275,8 +275,8 @@ def start(branch):
     # Step 1 - Generate topics
     topics = generate_topics(branch)
 
-    # # Step 2 - Research Topics
-    # research = researching_step(topics)
+    # Step 2 - Research Topics
+    research = researching_step(topics)
 
     # # Step 3 - Generate Scrips
     # scripts = generate_multiple_scripts(research)
