@@ -288,7 +288,7 @@ def start(branch):
     voices = voice_generation_step(scripts)
 
     # # Step 6 - Build Videos
-    # video = build_video_step(scripts, voices, web_images)
+    video = build_video_step(scripts, voices, web_images)
 
     
     
