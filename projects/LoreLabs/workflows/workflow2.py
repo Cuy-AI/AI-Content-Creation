@@ -220,8 +220,8 @@ def get_audio(category:str, id:int, dialogue: str, character:str):
         voiceGenerator = VoiceGenerator_V1(resource_folder='volume/resources/LoreLabs/voices/')
         voiceGenerator.start()
         voiceGenerator.character_params.update({
-            "rick": { "temperature": 0.75, "exaggeration": 0.55, "cfg_weight": 0.5 },
-            "morty": { "temperature": 0.7, "exaggeration": 0.525, "cfg_weight": 0.5 },
+            "rick": { "temperature": 0.7, "exaggeration": 0.74, "cfg_weight": 0.7 },
+            "morty": { "temperature": 0.72, "exaggeration": 0.69, "cfg_weight": 0.55 },
         })
 
     result = voiceGenerator.generate_voice(dialogue, character, 'en', saving_path)
@@ -281,11 +281,11 @@ def start(branch):
     # # Step 3 - Generate Scrips
     scripts = generate_multiple_scripts(research)
 
-    # # Step 4 - Search Images
-    # web_images = collect_web_images(scripts)
+    # Step 4 - Search Images
+    web_images = collect_web_images(scripts)
 
-    # # Step 5 - Voices
-    # voices = voice_generation_step(scripts)
+    # Step 5 - Voices
+    voices = voice_generation_step(scripts)
 
     # # Step 6 - Build Videos
     # video = build_video_step(scripts, voices, web_images)
