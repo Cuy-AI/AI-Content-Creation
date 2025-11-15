@@ -12,7 +12,7 @@ from classes.Workflow import Utils
 # Modules
 from projects.modules.TopicManager_V2 import TopicManager_V2
 from projects.modules.Researcher_V1 import Researcher_V1
-from projects.modules.ScriptGenerator_V1 import ScriptGenerator_V1
+from projects.modules.ScriptGenerator_V2 import ScriptGenerator_V2
 from projects.modules.ImageCollector_V1 import ImageCollector_V1
 from projects.modules.VoiceGenerator_V1 import VoiceGenerator_V1
 from projects.modules.VideoBuilder_V1 import VideoBuilder_V1
@@ -105,7 +105,7 @@ def generate_script(category: str, topic: str, summary: str) -> dict:
     # Check if scriptGenerator exists
     if 'scriptGenerator' not in globals(): 
         global scriptGenerator
-        scriptGenerator = ScriptGenerator_V1()
+        scriptGenerator = ScriptGenerator_V2()
         scriptGenerator.start()
 
     script = scriptGenerator.generate_script(category, topic, summary)
@@ -279,7 +279,7 @@ def start(branch):
     research = researching_step(topics)
 
     # # Step 3 - Generate Scrips
-    # scripts = generate_multiple_scripts(research)
+    scripts = generate_multiple_scripts(research)
 
     # # Step 4 - Search Images
     # web_images = collect_web_images(scripts)
