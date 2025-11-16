@@ -71,10 +71,10 @@ class ScriptGenerator_V2:
         }
 
 
-    def get_script_prompt(self, topic: str, category: str, summary: str, characters: list, images:list):
+    def get_script_prompt(self, topic: str, category: str, knowledge_update: str, characters: list, images:list):
 
         # Parameters
-        scene_number_range = (8, 12)
+        scene_number_range = (9, 13)
         words_per_sentence = (10, 30)
 
         return f"""
@@ -91,7 +91,7 @@ JSON OUTPUT SCHEMA:
     "character": "One of: {characters}",
     "dialogue": "Medium-length dialogue with strong emotion, personality, tension, humor, and rising stakes.",
     "character_image": "One image from this predefined list: {images}",
-    "web_image": "A SHORT, REALISTIC search query ONLY IF assigned (25% of scenes). Otherwise leave empty string."
+    "web_image": "A SHORT, REALISTIC search query ONLY IF assigned (30% of scenes). Otherwise leave empty string."
     }}
 ]
 }}
@@ -107,7 +107,7 @@ GENERAL DIALOGUE RULES:
 - One character is the confused learner, the other is the expert.
 - Avoid boring textbook tone. Avoid robotic explanations. Avoid 'perfectly composed sentences.'
 - Use dark humor IF it fits the character.
-- NO irrelevant tangents. Stay laser-focused on the topic.
+- NO irrelevant tangents. Stay focused on the topic.
 - Even while explaining, keep the emotional energy high.
 
 THE 3-ACT RETENTION ARC
@@ -127,7 +127,7 @@ Rules:
 ***ACT 2 - PROGRESSION (Middle scenes)***
 This is the rising tension.
 - Reveal the truth slowly.
-- Just a few scenes must use micro-hooks like:
+- On just a few scenes you can use micro-hooks like:
   * 'But that's not the crazy part.'
   * 'Here's where things get weird.'
   * 'And then it gets worse.'
@@ -143,7 +143,7 @@ This is the explosive payoff.
 - Deliver the final truth, the hidden insight, the shocking reason, or the real mechanism behind the topic.
 - Make it emotionally satisfying. A "holy crap" moment.
 - The characters should react powerfully: either relief, shock, or revelation.
-- After the final payoff, the final scene must include a short, clever, character-appropriate invitation to 'follow us for more educational videos.'. The invitation must always use the word follow and must feel natural in the dialogue, not bolted on. The invitation could be related to the topic, the characters' personalities, or the final emotional tone of the scene.
+- After the final payoff, include one more scene to perform a short, clever, character-appropriate invitation to the viewers to follow us. The invitation must always use the word follow and must feel natural in the dialogue, not bolted on. The invitation could be related to the topic, the characters' personalities, or the final emotional tone of the scene.
 
 WEB IMAGE GENERATION RULES
 - Only 30 percent of scenes may include a web_image. Others MUST be an empty string.
@@ -157,14 +157,16 @@ TECHNICAL STRUCTURE RULES
 - You must produce between {scene_number_range[0]} and {scene_number_range[1]} scenes.
 - Each dialogue MUST move the topic forward or escalate emotion.
 - Avoid long lectures. Break explanations into back-and-forth tension.
+- Make the topic understandable for new students.
+- Make sure that the dialogue between consecutive scenes is consistent.
 - NO meta-comments or explanations. JUST the JSON.
 - Being fun is mandatory. You must include jokes everywhere at the pure {characters} style.
-- IMPORTANT: Summary is very long, you don't have to explain all, just the most interesting parts.
+- IMPORTANT: The script content will be based on your OWN KNOWLEDGE, but a Knowledge Update will be provided. This Knowledge Update should be used as a tool to help you improve the content of the script, but it is NOT the main focus of the script.
 
 INPUT CONTEXT
 Category: {category}
 Topic: {topic}
-Summary of research: {summary}
+Knowledge Update: {knowledge_update}
         """.strip()
 
 
@@ -187,7 +189,7 @@ Summary of research: {summary}
         return images
 
 
-    def generate_script(self, category: str, topic: str, summary: str, save_path:str = None):
+    def generate_script(self, category: str, topic: str, knowledge_update: str, save_path:str = None):
 
         # Select characters
         characters = self.select_characters()
@@ -198,7 +200,7 @@ Summary of research: {summary}
         # Prepare images, messages and schema
         fixed_images = list(images.keys())
         schema = self.get_script_schema(list(characters), fixed_images)
-        prompt = self.get_script_prompt(topic, category, summary, list(characters), fixed_images)
+        prompt = self.get_script_prompt(topic, category, knowledge_update, list(characters), fixed_images)
 
         self.openai_client.set_schema(schema=schema)
 
@@ -225,8 +227,8 @@ Summary of research: {summary}
             if script['scenes'][idx]['character_image'] is None:
                 print(f"[ERROR] Image {scene['character_image']} not found on images folder")
 
-            if script['scenes'][idx]['web_images'] == "": 
-                script['scenes'][idx]['web_images'] = None
+            if script['scenes'][idx]['web_image'] == "": 
+                script['scenes'][idx]['web_image'] = None
 
         
 

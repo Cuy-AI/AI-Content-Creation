@@ -21,7 +21,7 @@ from projects.modules.VideoBuilder_V1 import VideoBuilder_V1
 LoreLabsWorkflow = Workflow(
     base_path='volume/output/LoreLabs/Workflow 2', # Path were the workflow will create folders/files to store executions
     # execution_id=None, # Will generate a new execution id
-    execution_id=3, # Will run an specific execution
+    execution_id=4, # Will run an specific execution
     storage_block_name='lorelabs-workflow2-storage', # Prefect storage block
     id_path_digits=5, # Number of digits for the id 
 )
@@ -72,11 +72,11 @@ def research_topic(category: str, topic: str) -> dict:
         researcher = Researcher_V1()
         researcher.start()
 
-    summary = researcher.request_research(category, topic)
+    knowledge_update = researcher.request_research(category, topic)
     return {
         "category": category,
         "topic": topic,
-        "summary": summary
+        "knowledge_update": knowledge_update
     }
 
 
@@ -84,7 +84,7 @@ def research_topic(category: str, topic: str) -> dict:
 @task(name="script-generation-step", description="Launch a script generation task for each researched topic", cache_policy=NO_CACHE)
 def generate_multiple_scripts(research: list) -> list:
     print("\n[STEP] Generating scripts...") 
-    scripts = [ generate_script(item['category'], item['topic'], item['summary']) for item in research]
+    scripts = [ generate_script(item['category'], item['topic'], item['knowledge_update']) for item in research]
     if 'scriptGenerator' in globals(): scriptGenerator.stop() # Stop only if created
     return scripts
 
@@ -100,7 +100,7 @@ def generate_multiple_scripts(research: list) -> list:
     task_run_name="script-generation: {topic}", 
     cache_policy=NO_CACHE
 )
-def generate_script(category: str, topic: str, summary: str) -> dict:
+def generate_script(category: str, topic: str, knowledge_update: str) -> dict:
 
     # Check if scriptGenerator exists
     if 'scriptGenerator' not in globals(): 
@@ -108,7 +108,7 @@ def generate_script(category: str, topic: str, summary: str) -> dict:
         scriptGenerator = ScriptGenerator_V2()
         scriptGenerator.start()
 
-    script = scriptGenerator.generate_script(category, topic, summary)
+    script = scriptGenerator.generate_script(category, topic, knowledge_update)
     return {
         "category": category,
         "topic": topic,
@@ -278,7 +278,7 @@ def start(branch):
     # Step 2 - Research Topics
     research = researching_step(topics)
 
-    # # Step 3 - Generate Scrips
+    # Step 3 - Generate Scrips
     scripts = generate_multiple_scripts(research)
 
     # Step 4 - Search Images
