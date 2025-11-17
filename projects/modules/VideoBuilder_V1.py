@@ -20,8 +20,8 @@ class VideoBuilder_V1:
 
         self.silence_at_start = True
         self.silence_at_end = True
-        self.silence_between_character = 0.225
-        self.character_padding_y = 100
+        self.silence_between_character = 0.20
+        self.character_padding_y = 75
         self.character_padding_x = 50
         self.logo = 'volume/resources/LoreLabs/logos/LoreLabs_Logo&Letters_png.png'
 
@@ -169,6 +169,14 @@ class VideoBuilder_V1:
             img = self.img_editor.resize_keep_aspect(img, target_h=video_dim[1]*0.5)
             img_dim = self.img_editor.get_size(img)
 
+            # Fall back if image is too wide
+            padding_y = self.character_padding_y
+            if img_dim[0] > video_dim[0] * 0.5:
+                original_y = img_dim[1]
+                img = self.img_editor.resize_keep_aspect(img, target_w=video_dim[0] * 0.5)
+                img_dim = self.img_editor.get_size(img)
+                padding_y += original_y - img_dim[1]
+
             # Set animation params
             if flip: img = self.img_editor.flip(img, axis="x")
 
@@ -177,10 +185,10 @@ class VideoBuilder_V1:
 
             padding_x = self.character_padding_x if flip else -self.character_padding_x
             x_center = f"(W/2-w/2 + ({padding_x}))"
-            y_center = f"(H-h - ({self.character_padding_y}))"
+            y_center = f"(H-h - ({padding_y}))"
 
-            x_final_spin_pos = f"({x_center}+{img_dim[0]}*0.14*sin(({duration-char_img_transition}-{char_img_transition})*{spin_factor}))"
-            y_final_spin_pos = f"({y_center}+{img_dim[0]}*0.14*cos(({duration-char_img_transition}-{char_img_transition})*{spin_factor}))"
+            x_final_spin_pos = f"({x_center}+{img_dim[0]}*0.12*sin(({duration-char_img_transition}-{char_img_transition})*{spin_factor}))"
+            y_final_spin_pos = f"({y_center}+{img_dim[0]}*0.12*cos(({duration-char_img_transition}-{char_img_transition})*{spin_factor}))"
 
             # Add image
             full_images.append({
@@ -190,12 +198,12 @@ class VideoBuilder_V1:
                 "time_base": "image",
                 "x": (
                     f"if(lt(t,{char_img_transition}), {lerp(s='r' if flip else 'l', e='c', c=x_center, tr=char_img_transition)}, " # Starting swipe
-                    f"if(lt(t,{duration-char_img_transition}), {x_center}+w*0.14*sin((t-{char_img_transition})*{spin_factor}), " # spin
+                    f"if(lt(t,{duration-char_img_transition}), {x_center}+w*0.12*sin((t-{char_img_transition})*{spin_factor}), " # spin
                     f"{lerp(s='c', e='r' if flip else 'l', c=x_final_spin_pos, p=duration-char_img_transition, tr=char_img_transition)}))" # Ending swipe
                 ),
                 "y": (
-                    f"if(lt(t,{char_img_transition}), lerp({y_center}, {y_center}+w*0.14, t/{char_img_transition}), "
-                    f"if(lt(t,{duration-char_img_transition}), {y_center}+w*0.14*cos((t-{char_img_transition})*{spin_factor}), "
+                    f"if(lt(t,{char_img_transition}), lerp({y_center}, {y_center}+w*0.12, t/{char_img_transition}), "
+                    f"if(lt(t,{duration-char_img_transition}), {y_center}+w*0.12*cos((t-{char_img_transition})*{spin_factor}), "
                     f"lerp({y_final_spin_pos}, {y_center}, (t-{duration-char_img_transition})/{char_img_transition})))"
                 ),
 
@@ -248,7 +256,7 @@ class VideoBuilder_V1:
             words_per_segment=3,
             max_duration=1.5,
             max_pause=0.35,
-            max_chars=30
+            max_chars=20
         )['answer']
 
 
@@ -258,7 +266,7 @@ class VideoBuilder_V1:
         final_video = self.veditor.insert_captions(
             video,
             fixed_subs,
-            fontfile="volume/resources/fonts/Roboto_Condensed/static/RobotoCondensed-ExtraBold.ttf",
+            fontfile="volume/resources/fonts/Bangers/Bangers-Regular.ttf",
             fontsize=82,
             fontcolor="yellow",
             borderw=3,
