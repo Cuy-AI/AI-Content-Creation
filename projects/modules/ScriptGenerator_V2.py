@@ -172,8 +172,11 @@ Knowledge Update: {knowledge_update}
 
 
     def select_characters(self):
-        # For now we are only using rick and morty. Future: select randomly?
-        characters = [['Rick', 'Morty']]
+        # Select randomly?
+        characters = [
+            # ['Rick', 'Morty'],
+            ['Peter', 'Stewie'],
+        ]
         return random.choice(characters)
     
     
