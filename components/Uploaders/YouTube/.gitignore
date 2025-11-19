@@ -1,0 +1,8 @@
+# If you save your client_secret.json inside this foler
+*.json
+
+# This will keep all your generated tokens out of commits
+tokens/*
+
+# Just in case, any other .env
+*.env
