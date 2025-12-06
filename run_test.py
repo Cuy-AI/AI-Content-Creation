@@ -9,6 +9,8 @@ from tests.test_googlesearch.test import test_googlesearch
 from tests.test_spanishf5.test import test_spanishf5
 from tests.test_duckduckgo.test import test_duckduckgo
 from tests.test_comfyui.test import test_comfyui
+from tests.test_uploaderyt.test import test_UploaderYT
+from tests.test_uploadermeta.test import test_UploaderMeta
 
 # test_lmstudio()
 # test_openrouter()
@@ -21,4 +23,6 @@ from tests.test_comfyui.test import test_comfyui
 # test_spanishf5()
 # test_duckduckgo()
 # test_openai()
-test_comfyui()
+# test_comfyui()
+# test_UploaderYT()
+test_UploaderMeta()

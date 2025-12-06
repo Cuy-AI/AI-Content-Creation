@@ -1,0 +1,5 @@
+# Inside this folder you can save your different access
+tokens/*
+
+# Any json could have screts
+*.json
