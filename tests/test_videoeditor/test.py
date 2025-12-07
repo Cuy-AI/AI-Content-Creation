@@ -345,6 +345,16 @@ def test_video_editor():
     print("Final video at:", final_video)
     print(f"Captions took {t1 - t0:.2f} seconds")
 
+
+    # Image to video
+    img_path = 'volume/resources/images/comfyui/pic.png'
+    img_pil = img_editor.load_picture(img_path)
+
+    image1 = veditor.image_to_video(img_path, duration=5, fps=30, output_path=final_output_path+'i2v_1.mp4')
+    image2 = veditor.image_to_video(img_pil, duration=5, fps=60, output_path=final_output_path+'i2v_2.mp4')
+    print(f"Image2Video: {image1}")
+    print(f"Image2Video: {image2}")
+
     # Optional cleanup
     veditor.cleanup()
 

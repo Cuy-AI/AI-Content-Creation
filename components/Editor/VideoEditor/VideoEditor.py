@@ -1199,4 +1199,71 @@ class VideoEditor:
 
         self._run(cmd)
         return output_path
- 
+
+
+
+    def image_to_video(
+        self,
+        input_image: Union[str, Image.Image],
+        duration: float,
+        output_path: Optional[str] = None,
+        fps: int = 60
+    ) -> str:
+        """
+        Transforms a static image into a video of a specified duration.
+
+        Parameters:
+        -----------
+        input_image : str or Image.Image
+            Path to the input image file (e.g., JPEG, PNG) or a PIL Image object.
+        duration : float
+            Duration of the resulting video in seconds.
+        output_path : str, optional
+            Output file path. If None, a temp file is created.
+        fps : int
+            Frames per second for the output video. Defaults to 30.
+        """
+        
+        # Determine the output path
+        if output_path is None:
+            output_path = self._mktemp(".mp4")
+        else:
+            os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
+
+        # Handle PIL Image object by saving it to a temporary file
+        if isinstance(input_image, Image.Image):
+            temp_img_path = self._mktemp(suffix=".png")
+            input_image.save(temp_img_path)
+            input_path = temp_img_path
+        elif isinstance(input_image, str):
+            input_path = input_image
+        else:
+            raise TypeError("input_image must be a file path (str) or a PIL Image object.")
+
+        # ---
+        
+        # 1. Choose the encoder and parameters
+        vcodec, vparams = self._choose_encoder()
+
+        # 2. Construct the ffmpeg command
+        cmd = [
+            "ffmpeg", "-y",
+            "-loop", "1",
+            "-r", str(fps),
+            "-i", input_path,
+            "-t", str(duration),
+            "-c:v", vcodec,
+            *vparams,
+            "-pix_fmt", "yuv420p",
+            "-an",
+            output_path
+        ]
+
+        # 3. Run the command
+        self._run(cmd)
+
+        # 4. Clean up the temporary image file if a PIL object was used
+        if 'temp_img_path' in locals():
+            self.remove_temp(temp_img_path)
+
+        return output_path
