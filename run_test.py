@@ -11,6 +11,7 @@ from tests.test_duckduckgo.test import test_duckduckgo
 from tests.test_comfyui.test import test_comfyui
 from tests.test_uploaderyt.test import test_UploaderYT
 from tests.test_uploadermeta.test import test_UploaderMeta
+from tests.test_youtubesearch.test import test_youtubesearch
 
 # test_lmstudio()
 # test_openrouter()
@@ -25,4 +26,5 @@ from tests.test_uploadermeta.test import test_UploaderMeta
 # test_openai()
 # test_comfyui()
 # test_UploaderYT()
-test_UploaderMeta()
+# test_UploaderMeta()
+test_youtubesearch()
