@@ -13,6 +13,7 @@ from tests.test_uploaderyt.test import test_UploaderYT
 from tests.test_uploadermeta.test import test_UploaderMeta
 from tests.test_youtubesearch.test import test_youtubesearch
 from tests.test_clip.test import test_clip
+from tests.test_opencvtools.test import test_opencv
 
 # test_lmstudio()
 # test_openrouter()
@@ -29,4 +30,5 @@ from tests.test_clip.test import test_clip
 # test_UploaderYT()
 # test_UploaderMeta()
 # test_youtubesearch()
-test_clip()
+# test_clip()
+test_opencv()
