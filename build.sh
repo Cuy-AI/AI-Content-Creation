@@ -22,6 +22,10 @@ if [ -z "$1" ] || [ "$1" = "all" ]; then
   docker build -t whisper \
     --build-arg INSTALL_TORCH_CUDA124=${INSTALL_TORCH_CUDA124:-false} \
     -f ./components/Editor/Whisper/Dockerfile .
+
+  docker build -t clip \
+    -f ./components/MediaAnalyzer/Clip/Dockerfile . 
+
 else
   echo "Building image for: $1"
   if [ "$1" = "openrouter" ]; then
@@ -46,6 +50,9 @@ else
   elif [ "$1" = "openai" ]; then
     docker build -t openai \
       -f ./components/LM/OpenAI/Dockerfile .
+  elif [ "$1" = "clip" ]; then
+    docker build -t clip \
+      -f ./components/MediaAnalyzer/Clip/Dockerfile . 
   else 
     echo "Image $1 was not recognized"
   fi
